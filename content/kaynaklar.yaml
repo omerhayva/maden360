@@ -1,0 +1,206 @@
+# Kaynak kayıtları (plan: SOURCE tablosu).
+#
+# Kaynak türü (type) ve öncelik sırası — bkz. Kaynak Politikası:
+#   resmi-kurum → mevzuat → akademik / kitap → standart / kilavuz → sektor
+#
+# Zorunlu alanlar: id, type, title, publisher, published (belge tarihi: YYYY, YYYY-AA veya YYYY-AA-GG)
+# URL varsa accessedAt (erişim / son kontrol tarihi) zorunludur.
+# Kitaplarda ISBN, makalelerde DOI, mevzuatta Resmî Gazete tarih ve sayısı "identifier" alanına yazılır.
+# Standartların tam metni izinsiz kopyalanmaz; yalnızca künyesi ve ilgili madde numarası verilir.
+
+# ------------------------------------------------------------------
+# Mevzuat
+# ------------------------------------------------------------------
+
+- id: maden-kanunu-3213
+  type: mevzuat
+  title: 3213 sayılı Maden Kanunu
+  publisher: T.C. Cumhurbaşkanlığı Mevzuat Bilgi Sistemi
+  published: 1985-06-15
+  identifier: "Kabul: 04.06.1985 · Resmî Gazete: 15.06.1985, Sayı 18785"
+  url: https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=3213&MevzuatTur=1&MevzuatTertip=5
+  accessedAt: 2026-10-15
+  language: tr
+  note: Güncel metin; son değişiklik 7554 sayılı Kanun (Resmî Gazete 24.07.2025, Sayı 32965).
+
+- id: maden-yonetmeligi-2022
+  type: mevzuat
+  title: Maden Yönetmeliği
+  publisher: Enerji ve Tabii Kaynaklar Bakanlığı (T.C. Resmî Gazete)
+  published: 2022-12-11
+  identifier: "Resmî Gazete: 11.12.2022, Sayı 32040"
+  url: https://www.resmigazete.gov.tr/eskiler/2022/12/20221211-1.htm
+  accessedAt: 2026-10-15
+  language: tr
+  note: İlk yayım metni. Sonraki değişiklikler için mevzuat.gov.tr'deki güncel metin kontrol edilmelidir.
+
+- id: maden-isg-yonetmeligi-2013
+  type: mevzuat
+  title: Maden İşyerlerinde İş Sağlığı ve Güvenliği Yönetmeliği
+  publisher: Çalışma ve Sosyal Güvenlik Bakanlığı (T.C. Resmî Gazete)
+  published: 2013-09-19
+  identifier: "Resmî Gazete: 19.09.2013, Sayı 28770"
+  url: https://www.resmigazete.gov.tr/eskiler/2013/09/20130919-3.htm
+  accessedAt: 2026-10-15
+  language: tr
+  note: İlk yayım metni. Sonraki değişiklikler için mevzuat.gov.tr'deki güncel metin kontrol edilmelidir.
+
+# ------------------------------------------------------------------
+# Resmî kurumlar
+# ------------------------------------------------------------------
+
+- id: mapeg
+  type: resmi-kurum
+  title: Maden ve Petrol İşleri Genel Müdürlüğü resmî internet sitesi
+  publisher: Maden ve Petrol İşleri Genel Müdürlüğü (MAPEG)
+  published: 2026
+  url: https://www.mapeg.gov.tr/
+  accessedAt: 2026-10-15
+  language: tr
+
+- id: mta-maden-haritalari
+  type: resmi-kurum
+  title: Maden haritaları (il ve bölge maden haritaları)
+  publisher: Maden Tetkik ve Arama Genel Müdürlüğü (MTA)
+  published: 2026
+  url: https://www.mta.gov.tr/v3.0/hizmetler/maden-haritalari
+  accessedAt: 2026-10-15
+  language: tr
+
+- id: mta-maden-yataklari
+  type: resmi-kurum
+  title: Türkiye maden yatakları (Bilgi Merkezi)
+  publisher: Maden Tetkik ve Arama Genel Müdürlüğü (MTA)
+  published: 2026
+  url: https://www.mta.gov.tr/v3.0/bilgi-merkezi/maden-yataklari
+  accessedAt: 2026-10-15
+  language: tr
+
+# ------------------------------------------------------------------
+# Standart ve kılavuzlar
+# ------------------------------------------------------------------
+
+- id: umrek
+  type: standart
+  title: UMREK Kodu — Ulusal Maden Kaynak ve Rezerv Raporlama Komisyonu
+  publisher: Ulusal Maden Kaynak ve Rezerv Raporlama Komisyonu (UMREK)
+  published: 2018
+  url: http://www.umrek.com.tr/
+  accessedAt: 2026-10-15
+  language: tr
+  note: UMREK Kodu, CRIRSCO şablonu temel alınarak hazırlanmış ve Nisan 2018'de onaylanmıştır; UMREK 2018'den beri CRIRSCO üyesidir.
+
+- id: gmg-zaman-siniflandirma-2020
+  type: kilavuz
+  title: "A Standardized Time Classification Framework for Mobile Equipment in Surface Mining: Operational Definitions, Time Usage Model, and Key Performance Indicators"
+  publisher: Global Mining Guidelines Group (GMG)
+  published: 2020-07
+  url: https://gmggroup.org/wp-content/uploads/2024/07/20200713_Time_Classification_Framework-GMG-DAU-v01-r01-1.pdf
+  accessedAt: 2026-10-15
+  language: en
+
+- id: cema-2014
+  type: kilavuz
+  title: Belt Conveyors for Bulk Materials
+  publisher: Conveyor Equipment Manufacturers Association (CEMA)
+  published: 2014
+  edition: 7. baskı
+  identifier: ISBN 978-1-891171-44-4
+  language: en
+
+# ------------------------------------------------------------------
+# Teknik kitaplar
+# ------------------------------------------------------------------
+
+- id: wills-finch-2016
+  type: kitap
+  title: "Wills' Mineral Processing Technology: An Introduction to the Practical Aspects of Ore Treatment and Mineral Recovery"
+  authors: Wills, Barry A.; Finch, James A.
+  publisher: Butterworth-Heinemann (Elsevier)
+  published: 2016
+  edition: 8. baskı
+  identifier: ISBN 978-0-08-097053-0
+  language: en
+
+- id: sme-handbook-2011
+  type: kitap
+  title: SME Mining Engineering Handbook
+  authors: Darling, Peter (ed.)
+  publisher: Society for Mining, Metallurgy, and Exploration (SME)
+  published: 2011
+  edition: 3. baskı
+  identifier: ISBN 978-0-87335-264-2
+  language: en
+
+- id: hustrulid-2013
+  type: kitap
+  title: Open Pit Mine Planning and Design
+  authors: Hustrulid, William A.; Kuchta, Mark; Martin, Randall K.
+  publisher: CRC Press
+  published: 2013
+  edition: 3. baskı
+  identifier: ISBN 978-1-4665-7512-7
+  language: en
+
+- id: hartman-mutmansky-2002
+  type: kitap
+  title: Introductory Mining Engineering
+  authors: Hartman, Howard L.; Mutmansky, Jan M.
+  publisher: John Wiley & Sons
+  published: 2002
+  edition: 2. baskı
+  identifier: ISBN 978-0-471-34851-1
+  language: en
+
+- id: brady-brown-2004
+  type: kitap
+  title: Rock Mechanics for Underground Mining
+  authors: Brady, Barry H. G.; Brown, Edwin T.
+  publisher: Springer (Kluwer Academic Publishers)
+  published: 2004
+  edition: 3. baskı
+  identifier: ISBN 978-1-4020-2064-3 · DOI 10.1007/978-1-4020-2116-9
+  language: en
+
+- id: hoek-pratik-kaya-muhendisligi
+  type: kitap
+  title: Practical Rock Engineering
+  authors: Hoek, Evert
+  publisher: Rocscience (çevrim içi ders notları)
+  published: 2007
+  url: https://www.rocscience.com/assets/resources/learning/hoek/Practical-Rock-Engineering-Full-Text.pdf
+  accessedAt: 2026-10-15
+  language: en
+
+- id: mcpherson-1993
+  type: kitap
+  title: Subsurface Ventilation and Environmental Engineering
+  authors: McPherson, Malcolm J.
+  publisher: Chapman & Hall
+  published: 1993
+  url: http://www.mvsengineering.com/
+  accessedAt: 2026-10-15
+  language: en
+  note: Kitabın güncellenmiş baskısı yazarın kurduğu MVS Engineering sitesinde yayımlanmaktadır.
+
+- id: agi-sozluk-1997
+  type: kitap
+  title: Dictionary of Mining, Mineral, and Related Terms
+  publisher: American Geological Institute (AGI)
+  published: 1997
+  edition: 2. baskı
+  identifier: ISBN 978-0-922152-36-0
+  language: en
+
+# ------------------------------------------------------------------
+# Sektör ve meslek kuruluşları
+# ------------------------------------------------------------------
+
+- id: maden-muhendisleri-odasi
+  type: sektor
+  title: TMMOB Maden Mühendisleri Odası resmî internet sitesi
+  publisher: TMMOB Maden Mühendisleri Odası
+  published: 2026
+  url: https://www.maden.org.tr/
+  accessedAt: 2026-10-15
+  language: tr

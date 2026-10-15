@@ -1,0 +1,90 @@
+# Sektör rehberi bölümleri. Öğeler mevcut içeriklere bağlanır:
+#   makale:<slug> · sozluk:<slug> · hesaplama:<slug>
+# Yayımlanmamış öğeler üretim derlemesinde otomatik olarak gizlenir.
+
+- id: maden-turleri
+  title: Maden türleri ve grupları
+  description: Türk mevzuatında neyin maden sayıldığı, madenlerin nasıl gruplandırıldığı ve temel tanımlar.
+  items:
+    - makale:maden-gruplari
+    - sozluk:cevher
+    - sozluk:tenor
+    - sozluk:kompleks-maden
+    - sozluk:pasa
+
+- id: uretim-yontemleri
+  title: Üretim yöntemleri
+  description: Açık ocak ve yeraltı yöntemleri, yöntem seçimini belirleyen etkenler ve sahada kullanılan terimler.
+  items:
+    - makale:acik-ocak-ve-yeralti-yontemleri
+    - sozluk:acik-ocak
+    - sozluk:kademe
+    - sozluk:sev
+    - sozluk:oda-topuk
+    - sozluk:uzunayak
+    - sozluk:ayak
+    - sozluk:topuk
+
+- id: cevherden-urune
+  title: Cevherden ürüne
+  description: Tüvenan cevherin zenginleştirilerek satılabilir ürüne dönüştürülmesi ve süreç performansının ölçülmesi.
+  items:
+    - makale:kutle-verimi-ve-metal-kazanimi
+    - hesaplama:kutle-verimi-ve-kazanim
+    - sozluk:tuvenan
+    - sozluk:konsantre
+    - sozluk:artik
+    - sozluk:flotasyon
+    - sozluk:metal-kazanimi
+
+- id: planlama-ve-hesap
+  title: Planlama ve temel hesaplar
+  description: Üretim planlamasında en sık kullanılan oranlar, dönüşümler ve performans göstergeleri.
+  items:
+    - makale:dekapaj-orani-nedir
+    - hesaplama:dekapaj-orani
+    - makale:tonaj-hacim-ve-yogunluk
+    - hesaplama:tonaj-hacim
+    - makale:vardiya-ve-ekipman-performansi
+    - hesaplama:vardiya-performansi
+    - makale:bant-konveyor-kapasitesi
+
+- id: kaynak-ve-rezerv
+  title: Kaynak, rezerv ve raporlama
+  description: Bir maden yatağının ne kadarının ekonomik olarak üretilebileceğini tanımlayan kavramlar ve ulusal raporlama kodu.
+  items:
+    - makale:cevher-tenor-kaynak-ve-rezerv
+    - sozluk:kaynak
+    - sozluk:rezerv
+    - sozluk:gorunur-rezerv
+    - sozluk:muhtemel-rezerv
+    - sozluk:umrek
+    - sozluk:prospeksiyon
+
+- id: gorev-ve-sorumluluklar
+  title: Görev, izin ve sorumluluklar
+  description: Maden işletmelerinde mevzuatta tanımlanan görevler, ruhsatlar ve sözleşmeler.
+  items:
+    - sozluk:daimi-nezaretci
+    - sozluk:teknik-eleman
+    - sozluk:atesleyici
+    - sozluk:ytk
+    - sozluk:arama-ruhsati
+    - sozluk:isletme-ruhsati
+    - sozluk:rodovans
+
+- id: guvenlik-temelleri
+  title: Güvenlik ve yeraltı temelleri
+  description: Havalandırma ve tahkimatın temel kavramları. Saha kararları için yetkili mühendis değerlendirmesi ve mevzuat esastır.
+  items:
+    - makale:havalandirmanin-temelleri
+    - makale:tahkimat-turleri
+    - sozluk:grizu
+    - sozluk:tahkimat
+    - sozluk:kaya-saplamasi
+
+- id: bilgi-kaynaklari
+  title: Resmî bilgi ve veri kaynakları
+  description: Mevzuatın, ruhsat bilgilerinin ve maden yatağı verilerinin güvenilir biçimde nereden takip edileceği.
+  items:
+    - makale:madencilik-veri-kaynaklari

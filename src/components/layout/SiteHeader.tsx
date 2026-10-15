@@ -1,0 +1,42 @@
+import Link from 'next/link';
+import { Search } from 'lucide-react';
+import { LogoMark, Wordmark } from '@/components/brand/Logo';
+import { SearchForm } from '@/components/search/SearchForm';
+import { siteConfig } from '@/config/site';
+import { routes } from '@/i18n/routes';
+import { MobileMenu } from './MobileMenu';
+import { NavLinks } from './NavLinks';
+
+export function SiteHeader() {
+  return (
+    <header className="no-print sticky top-0 z-40 border-b border-graphite-800 bg-graphite-950 text-white">
+      <div className="relative mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
+        <Link
+          href={routes.home()}
+          className="flex shrink-0 items-center gap-2.5 rounded-md py-1"
+          aria-label={`${siteConfig.name} ana sayfa`}
+        >
+          <LogoMark className="h-8 w-8" />
+          <Wordmark className="text-lg font-bold tracking-tight" />
+        </Link>
+
+        <nav aria-label="Ana menü" className="ml-4 hidden lg:block">
+          <NavLinks />
+        </nav>
+
+        <div className="ml-auto hidden w-full max-w-xs md:block">
+          <SearchForm variant="header" id="header-search" />
+        </div>
+
+        <Link
+          href={routes.search()}
+          className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-md text-graphite-100 hover:bg-graphite-800 md:hidden"
+        >
+          <Search aria-hidden="true" className="h-5 w-5" />
+          <span className="sr-only">Ara</span>
+        </Link>
+        <MobileMenu />
+      </div>
+    </header>
+  );
+}

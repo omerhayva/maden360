@@ -1,0 +1,6 @@
+# Windows ve Linux/macOS arasında satır sonu farklarını önlemek için
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.woff2 binary
+*.ico binary

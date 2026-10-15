@@ -1,0 +1,34 @@
+# Etiketler: konulardan bağımsız, çapraz gruplama için.
+
+- slug: temel-kavramlar
+  name: Temel kavramlar
+- slug: acik-ocak
+  name: Açık ocak
+- slug: yeralti
+  name: Yeraltı
+- slug: birim-donusumu
+  name: Birim dönüşümü
+- slug: kutle-dengesi
+  name: Kütle dengesi
+- slug: verimlilik
+  name: Verimlilik
+- slug: planlama
+  name: Planlama
+- slug: ekipman
+  name: Ekipman
+- slug: guvenlik
+  name: İş sağlığı ve güvenliği
+- slug: mevzuat
+  name: Mevzuat
+- slug: rezerv
+  name: Kaynak ve rezerv
+- slug: flotasyon
+  name: Flotasyon
+- slug: komur
+  name: Kömür
+- slug: metalik-madenler
+  name: Metalik madenler
+- slug: veri-kaynaklari
+  name: Veri kaynakları
+- slug: gorev-ve-sorumluluk
+  name: Görev ve sorumluluk

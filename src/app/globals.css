@@ -1,0 +1,204 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/*
+ * Tasarım belirteçleri (design tokens)
+ * Renk düzeni: koyu grafit (yapı), bakır/turuncu (vurgu), açık taş (zemin), beyaz (kartlar).
+ * Kontrast notları (WCAG 2.2 AA, normal metin ≥ 4.5:1):
+ *   copper-700 (#87421b) beyaz üzerinde ≈ 8,1:1  → bağlantılar
+ *   copper-600 (#a9541f) üzerinde beyaz metin ≈ 5,3:1 → birincil buton
+ *   copper-400 (#df8446) graphite-950 üzerinde ≈ 6,9:1 → koyu zeminde vurgu
+ */
+@theme {
+  --font-sans:
+    'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --color-graphite-50: #f6f7f8;
+  --color-graphite-100: #eceef0;
+  --color-graphite-200: #d5d9de;
+  --color-graphite-300: #b0b7c0;
+  --color-graphite-400: #848d99;
+  --color-graphite-500: #646d79;
+  --color-graphite-600: #4d5560;
+  --color-graphite-700: #3c434c;
+  --color-graphite-800: #2a2f36;
+  --color-graphite-900: #1c2025;
+  --color-graphite-950: #14171a;
+
+  --color-copper-50: #fdf6f0;
+  --color-copper-100: #fae9da;
+  --color-copper-200: #f4cfb0;
+  --color-copper-300: #ecae7e;
+  --color-copper-400: #df8446;
+  --color-copper-500: #c96a2b;
+  --color-copper-600: #a9541f;
+  --color-copper-700: #87421b;
+  --color-copper-800: #6c361a;
+  --color-copper-900: #592e18;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    @apply bg-stone-100 text-graphite-900 antialiased;
+    font-feature-settings:
+      'cv11',
+      'tnum' 0;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-copper-500);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-copper-200);
+    color: var(--color-graphite-950);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Uzun metinler için tipografi */
+  .prose-maden {
+    --tw-prose-body: var(--color-graphite-800);
+    --tw-prose-headings: var(--color-graphite-950);
+    --tw-prose-lead: var(--color-graphite-700);
+    --tw-prose-links: var(--color-copper-700);
+    --tw-prose-bold: var(--color-graphite-950);
+    --tw-prose-counters: var(--color-graphite-500);
+    --tw-prose-bullets: var(--color-copper-500);
+    --tw-prose-hr: var(--color-graphite-200);
+    --tw-prose-quotes: var(--color-graphite-800);
+    --tw-prose-quote-borders: var(--color-copper-400);
+    --tw-prose-captions: var(--color-graphite-500);
+    --tw-prose-code: var(--color-graphite-900);
+    --tw-prose-th-borders: var(--color-graphite-300);
+    --tw-prose-td-borders: var(--color-graphite-200);
+    max-width: 72ch;
+  }
+
+  .prose-maden a {
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  .prose-maden a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  .prose-maden a.external::after {
+    content: '↗';
+    font-size: 0.75em;
+    margin-left: 0.15em;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .prose-maden h2,
+  .prose-maden h3 {
+    scroll-margin-top: 5rem;
+  }
+
+  /* Kaynak atıfları */
+  .prose-maden sup.cite {
+    font-size: 0.72em;
+    font-style: normal;
+    line-height: 0;
+    white-space: nowrap;
+    color: var(--color-graphite-500);
+  }
+
+  .prose-maden sup.cite a {
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0 0.1em;
+    color: var(--color-copper-700);
+  }
+
+  .prose-maden sup.cite a:hover {
+    text-decoration: underline;
+  }
+
+  /* Mobilde tablolar yatay kaydırılır, sayfa taşmaz */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 1.5em 0;
+    border: 1px solid var(--color-graphite-200);
+    border-radius: 0.5rem;
+    background: white;
+  }
+
+  .table-wrap table {
+    margin: 0 !important;
+    min-width: 32rem;
+  }
+
+  .table-wrap th,
+  .table-wrap td {
+    padding: 0.6rem 0.8rem !important;
+  }
+
+  .table-wrap thead {
+    background: var(--color-stone-100);
+  }
+
+  /* KaTeX formülleri dar ekranlarda kendi içinde kayar */
+  .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.5rem 0;
+    max-width: 100%;
+  }
+
+  .katex {
+    font-size: 1.08em;
+  }
+
+  /* Hedeflenen kaynak (atıfa tıklanınca) vurgulanır */
+  li:target {
+    background: var(--color-copper-50);
+    outline: 2px solid var(--color-copper-300);
+    outline-offset: 4px;
+    border-radius: 0.25rem;
+  }
+
+  /* Kontur çizgisi deseni (hero) */
+  .contour-bg {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300' fill='none' stroke='%23343a42' stroke-width='1.2'%3E%3Cpath d='M-20 220 C 80 180 140 250 240 210 S 420 140 520 190 S 640 230 660 200'/%3E%3Cpath d='M-20 190 C 90 150 150 215 250 180 S 410 110 520 160 S 640 200 660 170'/%3E%3Cpath d='M-20 160 C 100 120 160 180 260 150 S 400 80 520 130 S 640 170 660 140'/%3E%3Cpath d='M-20 130 C 110 95 170 150 270 120 S 395 55 520 100 S 640 140 660 110'/%3E%3Cpath d='M-20 100 C 120 70 180 120 280 92 S 390 32 520 72 S 640 110 660 82'/%3E%3Cpath d='M-20 70 C 130 45 190 92 290 65 S 385 12 520 46 S 640 82 660 56'/%3E%3Cpath d='M-20 260 C 70 215 130 285 230 245 S 430 175 520 225 S 640 265 660 235'/%3E%3C/svg%3E");
+    background-size: 600px 300px;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+  }
+
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.8em;
+    color: #555;
+  }
+}

@@ -1,0 +1,25 @@
+# Yazarlar ve teknik inceleyiciler.
+#
+# kind: kisi (gerçek kişi) | ekip (yayın ekibi / kurumsal imza)
+# canReview: true → bu kişi içerikleri teknik olarak inceleyip yayına onay verebilir.
+#
+# KURAL: Yapay zekâ desteğiyle hazırlanan (aiAssisted: true) bir içerik, ancak
+# kind: kisi ve canReview: true olan bir inceleyici tarafından onaylanırsa yayımlanabilir.
+
+- id: maden360-editorluk
+  name: Maden360 Editörlüğü
+  kind: ekip
+  title: Yayın ekibi
+  bio: İçerik taslaklarını hazırlar, kaynakları derler ve teknik incelemeye gönderir.
+  canReview: false
+
+# Teknik inceleyici örneği — gerçek bilgilerle doldurup başındaki # işaretlerini kaldırın:
+#
+# - id: ad-soyad
+#   name: Ad Soyad
+#   kind: kisi
+#   title: Maden Mühendisi
+#   affiliation: Kurum veya şirket
+#   bio: Uzmanlık alanı ve deneyimi (ör. açık ocak planlama, 12 yıl).
+#   url: https://www.linkedin.com/in/ornek
+#   canReview: true

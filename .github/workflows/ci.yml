@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  kalite:
+    name: kalite
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SITE_URL: https://maden360.example
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Bağımlılıklar
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tip denetimi
+        run: npm run typecheck
+
+      - name: Birim testleri
+        run: npm test
+
+      - name: İçerik doğrulama
+        run: npm run content:check
+
+      - name: Üretim derlemesi (yalnızca yayımlanmış içerik)
+        run: npm run build
+
+      - name: Site denetimi (üretim)
+        run: npm run site:check
+
+      - name: Önizleme derlemesi (taslaklar dahil)
+        run: npm run build:onizleme
+
+      - name: Site denetimi (önizleme)
+        run: npm run site:check
