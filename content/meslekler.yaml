@@ -1,0 +1,90 @@
+# Meslekler / pozisyonlar (iş ilanları ve aday profilleri için).
+#
+# group: muhendis | teknik | saha | isg | idari
+# term : sözlükte karşılığı olan pozisyonlarda terim slug'ı (content/sozluk/<slug>.md).
+#        İlan sayfasında "Bu görev nedir?" bağlantısı olarak gösterilir.
+
+# Mühendislik
+- slug: maden-muhendisi
+  name: Maden Mühendisi
+  group: muhendis
+- slug: jeoloji-muhendisi
+  name: Jeoloji Mühendisi
+  group: muhendis
+- slug: cevher-hazirlama-muhendisi
+  name: Cevher Hazırlama Mühendisi
+  group: muhendis
+- slug: jeofizik-muhendisi
+  name: Jeofizik Mühendisi
+  group: muhendis
+- slug: harita-muhendisi
+  name: Harita Mühendisi
+  group: muhendis
+- slug: makine-muhendisi
+  name: Makine Mühendisi
+  group: muhendis
+- slug: elektrik-muhendisi
+  name: Elektrik / Elektrik-Elektronik Mühendisi
+  group: muhendis
+- slug: daimi-nezaretci
+  name: Daimî Nezaretçi
+  group: muhendis
+  term: daimi-nezaretci
+- slug: teknik-eleman
+  name: Teknik Eleman
+  group: muhendis
+  term: teknik-eleman
+
+# Teknik personel
+- slug: maden-teknikeri
+  name: Maden Teknikeri / Teknisyeni
+  group: teknik
+- slug: harita-teknikeri
+  name: Harita Teknikeri
+  group: teknik
+- slug: laboratuvar-teknisyeni
+  name: Laboratuvar Teknisyeni / Kimyager
+  group: teknik
+- slug: bakim-teknisyeni
+  name: Bakım-Onarım Teknisyeni
+  group: teknik
+
+# Saha ve operatör
+- slug: is-makinesi-operatoru
+  name: İş Makinesi Operatörü
+  group: saha
+- slug: kamyon-soforu
+  name: Kamyon / Damperli Şoförü
+  group: saha
+- slug: sondor
+  name: Sondör / Sondaj Operatörü
+  group: saha
+- slug: atesleyici
+  name: Ateşleyici
+  group: saha
+  term: atesleyici
+- slug: yeralti-maden-iscisi
+  name: Yeraltı Maden İşçisi
+  group: saha
+- slug: tesis-operatoru
+  name: Tesis / Kırıcı Operatörü
+  group: saha
+- slug: kaynakci
+  name: Kaynakçı
+  group: saha
+
+# İş sağlığı ve güvenliği
+- slug: is-guvenligi-uzmani
+  name: İş Güvenliği Uzmanı
+  group: isg
+- slug: isyeri-hekimi
+  name: İşyeri Hekimi
+  group: isg
+
+# İdari ve destek
+- slug: idari-personel
+  name: İdari Personel / Satın Alma / Muhasebe
+  group: idari
+- slug: diger
+  name: Diğer
+  group: idari

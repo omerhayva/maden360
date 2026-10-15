@@ -10,6 +10,10 @@ Site statik olarak üretildiği için `out/` klasörünü sunabilen her hizmette
 - [ ] Gerekirse site adı (`name`) ve paylaşım görseli güncellendi (`node scripts/generate-og-image.mjs`).
 - [ ] En az bir teknik inceleyici `content/kisiler.yaml` dosyasına eklendi.
 - [ ] Yayımlanacak içerikler teknik incelemeden geçti (`status: published`, `reviewers`, `reviewedAt`).
+- [ ] İlan bölümleri açılacaksa: `listingsEmail` gerçek adresle değiştirildi; `content/sayfalar/kvkk.md`
+  dolduruldu, hukuki kontrolden geçti ve `content/sayfalar/ilan-kurallari.md` ile birlikte yayımlandı;
+  günlük yeniden derleme için `DEPLOY_HOOK_URL` gizli değişkeni eklendi
+  (bkz. [ilanlar-ve-fuar.md](ilanlar-ve-fuar.md#yayına-almadan-önce-bir-kez)).
 - [ ] Yerelde tüm kontroller geçiyor:
 
 ```powershell
@@ -32,7 +36,7 @@ macOS/Linux'ta ortam değişkeni: `SITE_URL=https://www.alanadiniz.com.tr npm ru
    | Production branch | `main` |
    | Build command | `npm run build` |
    | Build output directory | `out` |
-   | Ortam değişkenleri (Production) | `SITE_URL` = `https://www.alanadiniz.com.tr`, `NODE_VERSION` = `22` |
+   | Ortam değişkenleri (Production) | `SITE_URL` = `https://www.alanadiniz.com.tr`, `NODE_VERSION` = `22`; isteğe bağlı `NEXT_PUBLIC_FORM_ENDPOINT` (ilan formları için form hizmeti) |
 
 3. **Önizleme ortamı (isteğe bağlı):** Preview ortamı için build command olarak `npm run build:onizleme`
    kullanılırsa her dal ve çekme isteği için taslakların da göründüğü, arama motorlarına kapalı bir
@@ -77,6 +81,12 @@ git push origin main             # CI geçer ve site otomatik yeniden yayımlan�
 Tek bir içeriği hızlıca yayından kaldırmak için ilgili dosyada `status: review` yapıp birleştirmek
 yeterlidir; sayfa bir sonraki derlemede siteden ve site haritasından kalkar. Yayımlanmış bir içerikte
 hata düzeltildiğinde `corrections` alanına tarihli not eklenir.
+
+**İlanlar (fuar standı, iş ilanı, aday profili, market):** Şikâyet veya kaldırma talebinde dosyayı silin
+(ya da `status: draft` yapın) ve `main` dalına gönderin. Kişisel veri içeren bir ilanı kaldırırken
+panelden, o ilanı içeren eski bir dağıtıma **geri dönmeyin**. Süresi dolan ilanlar her gece
+`.github/workflows/gunluk-derleme.yml` ile tetiklenen derlemede kendiliğinden kalkar. Git geçmişi ve
+kişisel veri talepleri için: [ilanlar-ve-fuar.md](ilanlar-ve-fuar.md#kişisel-veriler-ve-kaldırma-talepleri).
 
 ## Yedekleme
 

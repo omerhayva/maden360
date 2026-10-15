@@ -10,6 +10,10 @@ ve teknik incelemeden geçtikten sonra yayımlanır.
 > seviyeleri, zorunlu inceleme, değişiklik geçmişi ve geri alma. İleride teknik olmayan editörler için
 > Git tabanlı bir CMS (ör. Decap CMS) aynı dosyaları düzenleyecek şekilde eklenebilir.
 
+> **İlanlar:** Sanal fuar standları, iş ilanları, aday profilleri ve market ilanları teknik inceleme
+> değil, **editör onayı** (`moderatedBy`, `canModerate: true`) ile yayımlanır ve yayın süreleri sınırlıdır.
+> Ayrıntılar: [ilanlar-ve-fuar.md](ilanlar-ve-fuar.md).
+
 ## Durumlar
 
 ```mermaid

@@ -11,7 +11,7 @@
 import { calculatorSlugs } from '../src/calculators/registry';
 import { loadContentStore } from '../src/lib/content/repository';
 import { validateStore, type Issue } from '../src/lib/content/validate';
-import { todayIso } from '../src/lib/format';
+import { todayInTurkey } from '../src/lib/listings/dates';
 
 const args = new Set(process.argv.slice(2));
 const strict = args.has('--strict');
@@ -27,7 +27,8 @@ const green = color(32);
 const dim = color(2);
 const bold = color(1);
 
-const today = todayIso();
+// Editörler tarihleri Türkiye saatine göre yazar; CI (UTC) gece yarısından sonra da doğru çalışsın
+const today = todayInTurkey();
 const { store, errors: loadErrors } = loadContentStore();
 
 const issues: Issue[] = [
@@ -51,9 +52,18 @@ console.log(`  Makale       : ${countByStatus(store.articles)}`);
 console.log(`  Sözlük terimi: ${countByStatus(store.terms)}`);
 console.log(`  Hesaplayıcı  : ${countByStatus(store.calculators)}`);
 console.log(`  Sayfa        : ${store.pages.length}`);
+
+function countListings(items: { status: string; example?: boolean }[]) {
+  const examples = items.filter((item) => item.example).length;
+  return `${countByStatus(items)}${examples ? `, örnek ${examples}` : ''}`;
+}
+console.log(`  Fuar standı  : ${countListings(store.stands)}`);
+console.log(`  İş ilanı     : ${countListings(store.jobs)}`);
+console.log(`  Aday profili : ${countListings(store.candidates)}`);
+console.log(`  Market ilanı : ${countListings(store.marketListings)}`);
 console.log(
   dim(
-    `  Kaynak ${store.sources.length} · Kişi ${store.people.length} · Konu ${store.categories.length} · Etiket ${store.tags.length}`,
+    `  Kaynak ${store.sources.length} · Kişi ${store.people.length} · Konu ${store.categories.length} · Etiket ${store.tags.length} · Salon ${store.halls.length} · Market kategorisi ${store.marketCategories.length} · Meslek ${store.positions.length}`,
   ),
 );
 

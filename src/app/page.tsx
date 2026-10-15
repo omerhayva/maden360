@@ -1,5 +1,14 @@
 import Link from 'next/link';
-import { ArrowRight, BookA, ClipboardCheck, Library, Sigma } from 'lucide-react';
+import {
+  ArrowRight,
+  BookA,
+  Briefcase,
+  ClipboardCheck,
+  Library,
+  Sigma,
+  Store,
+  Tent,
+} from 'lucide-react';
 import { ArticleCard, CalculatorCard } from '@/components/content/Cards';
 import { Container } from '@/components/layout/Container';
 import { SearchForm } from '@/components/search/SearchForm';
@@ -13,10 +22,15 @@ import {
   categoryCounts,
   getArticles,
   getCalculators,
+  getCandidates,
   getCategories,
   getCategory,
+  getJobs,
+  getMarketListings,
+  getStands,
   getTerms,
 } from '@/lib/content';
+import { formatPrice } from '@/lib/listings/format';
 import { pageMetadata } from '@/lib/seo/metadata';
 
 export const metadata = pageMetadata({
@@ -49,6 +63,52 @@ export default function HomePage() {
   const articles = getArticles().slice(0, 6);
   const categories = getCategories();
   const terms = getTerms().slice(0, 14);
+  const stands = getStands();
+  const jobs = getJobs();
+  const candidates = getCandidates();
+  const marketListings = getMarketListings();
+  const sectorCards = [
+    {
+      icon: Tent,
+      title: 'Sanal Fuar',
+      href: routes.fair(),
+      linkLabel: 'Fuarı gezin',
+      description:
+        'İş makinesi, kırma-eleme, sondaj, İSG, laboratuvar ve mühendislik firmalarının standları.',
+      count: stands.length > 0 ? `${stands.length} stand` : 'İlk standlar bekleniyor',
+      latest: stands
+        .slice(0, 3)
+        .map((stand) => ({ href: stand.url, title: stand.name, meta: stand.city })),
+    },
+    {
+      icon: Briefcase,
+      title: 'İş İlanları',
+      href: routes.jobs(),
+      linkLabel: 'İlanlara göz atın',
+      description: 'İşçi arayan işverenler ve iş arayan mühendis, tekniker ve saha çalışanları.',
+      count:
+        jobs.length + candidates.length > 0
+          ? `${jobs.length} iş ilanı · ${candidates.length} aday profili`
+          : 'İlk ilanlar bekleniyor',
+      latest: jobs.slice(0, 3).map((job) => ({ href: job.url, title: job.title, meta: job.city })),
+    },
+    {
+      icon: Store,
+      title: 'Market',
+      href: routes.market(),
+      linkLabel: "Market'e gidin",
+      description:
+        'Satılık ve kiralık ekipman, yedek parça, hizmetler, cevher ve saha/rödövans ilanları.',
+      count: marketListings.length > 0 ? `${marketListings.length} ilan` : 'İlk ilanlar bekleniyor',
+      latest: marketListings
+        .slice(0, 3)
+        .map((listing) => ({
+          href: listing.url,
+          title: listing.title,
+          meta: formatPrice(listing.price),
+        })),
+    },
+  ];
 
   return (
     <>
@@ -194,6 +254,63 @@ export default function HomePage() {
           )}
         </section>
       </Container>
+
+      {/* Sektör ağı: fuar, iş ilanları, market */}
+      <section aria-labelledby="sektor-agi" className="border-y border-stone-200 bg-white">
+        <Container className="py-14">
+          <SectionHeading
+            id="sektor-agi"
+            title="Sektör ağı: fuar, iş ve market"
+            description="Tedarikçi firmalar, iş ilanları ve ekipman–hizmet–cevher ilanları. Üyelik gerekmez; her başvuru editör onayından geçer."
+            href={routes.postListing()}
+            linkLabel="İlan ver"
+          />
+          <ul className="mt-6 grid gap-4 lg:grid-cols-3">
+            {sectorCards.map(({ icon: Icon, ...card }) => (
+              <li
+                key={card.href}
+                className="flex flex-col rounded-xl border border-stone-200 bg-stone-50 p-5"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-graphite-900 text-copper-400">
+                    <Icon aria-hidden="true" className="h-5 w-5" />
+                  </span>
+                  <h3 className="text-lg font-semibold text-graphite-950">
+                    <Link href={card.href} className="hover:text-copper-800 hover:underline">
+                      {card.title}
+                    </Link>
+                  </h3>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-graphite-600">{card.description}</p>
+                <p className="mt-3 text-sm font-semibold text-copper-700">{card.count}</p>
+                {card.latest.length > 0 && (
+                  <ul className="mt-3 divide-y divide-stone-200 rounded-lg border border-stone-200 bg-white">
+                    {card.latest.map((item) => (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          className="flex min-h-11 items-center justify-between gap-3 px-3 py-2 text-sm hover:bg-copper-50"
+                        >
+                          <span className="line-clamp-1 font-medium text-graphite-900">
+                            {item.title}
+                          </span>
+                          <span className="shrink-0 text-xs text-graphite-500">{item.meta}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <Link
+                  href={card.href}
+                  className="mt-auto inline-flex min-h-11 items-center gap-1 pt-4 text-sm font-semibold text-copper-700 hover:underline"
+                >
+                  {card.linkLabel} <ArrowRight aria-hidden="true" className="h-4 w-4" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </section>
 
       {/* Güven ilkeleri */}
       <section aria-labelledby="ilkeler" className="bg-graphite-950 text-white">

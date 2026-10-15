@@ -3,9 +3,9 @@
 import Form from 'next/form';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Search, X } from 'lucide-react';
+import { Menu, Plus, Search, X } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
-import { mainNav, trustNav } from '@/i18n/navigation';
+import { mainNav, sectorNav, trustNav, type NavItem } from '@/i18n/navigation';
 import { routes } from '@/i18n/routes';
 import { isActivePath } from './NavLinks';
 
@@ -84,27 +84,18 @@ export function MobileMenu() {
             </div>
           </Form>
 
-          <nav aria-label="Mobil ana menü" className="mt-4">
-            <ul className="divide-y divide-graphite-800">
-              {mainNav.map((item) => {
-                const active = isActivePath(pathname, item.href);
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      aria-current={active ? 'page' : undefined}
-                      className={`flex min-h-14 flex-col justify-center py-2 ${active ? 'text-copper-400' : 'text-white'}`}
-                    >
-                      <span className="text-base font-semibold">{item.label}</span>
-                      {item.description && (
-                        <span className="text-sm text-graphite-400">{item.description}</span>
-                      )}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+          <nav aria-label="Mobil ana menü" className="mt-4 space-y-5">
+            <NavGroup title="Bilgi ve araçlar" items={mainNav} pathname={pathname} />
+            <NavGroup title="Sektör ağı" items={sectorNav} pathname={pathname} />
           </nav>
+
+          <Link
+            href={routes.postListing()}
+            className="mt-5 flex min-h-12 items-center justify-center gap-2 rounded-md bg-copper-600 px-4 font-semibold text-white hover:bg-copper-700"
+          >
+            <Plus aria-hidden="true" className="h-4 w-4" />
+            İlan ver
+          </Link>
 
           <nav aria-label="Kurumsal bağlantılar" className="mt-4 border-t border-graphite-800 pt-4">
             <ul className="grid grid-cols-2 gap-x-4">
@@ -122,6 +113,41 @@ export function MobileMenu() {
           </nav>
         </div>
       </div>
+    </div>
+  );
+}
+
+function NavGroup({
+  title,
+  items,
+  pathname,
+}: {
+  title: string;
+  items: NavItem[];
+  pathname: string;
+}) {
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-wider text-graphite-400">{title}</p>
+      <ul className="mt-1 divide-y divide-graphite-800">
+        {items.map((item) => {
+          const active = isActivePath(pathname, item.href);
+          return (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                aria-current={active ? 'page' : undefined}
+                className={`flex min-h-14 flex-col justify-center py-2 ${active ? 'text-copper-400' : 'text-white'}`}
+              >
+                <span className="text-base font-semibold">{item.label}</span>
+                {item.description && (
+                  <span className="text-sm text-graphite-400">{item.description}</span>
+                )}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

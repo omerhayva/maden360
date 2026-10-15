@@ -180,6 +180,11 @@
     border-radius: 0.25rem;
   }
 
+  /* Süresi tarayıcıda dolan ilanlarda iletişim ve başvuru kutuları gizlenir (ExpiryNotice) */
+  [data-ilan-suresi-doldu] .ilan-iletisim {
+    display: none;
+  }
+
   /* Kontur çizgisi deseni (hero) */
   .contour-bg {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300' fill='none' stroke='%23343a42' stroke-width='1.2'%3E%3Cpath d='M-20 220 C 80 180 140 250 240 210 S 420 140 520 190 S 640 230 660 200'/%3E%3Cpath d='M-20 190 C 90 150 150 215 250 180 S 410 110 520 160 S 640 200 660 170'/%3E%3Cpath d='M-20 160 C 100 120 160 180 260 150 S 400 80 520 130 S 640 170 660 140'/%3E%3Cpath d='M-20 130 C 110 95 170 150 270 120 S 395 55 520 100 S 640 140 660 110'/%3E%3Cpath d='M-20 100 C 120 70 180 120 280 92 S 390 32 520 72 S 640 110 660 82'/%3E%3Cpath d='M-20 70 C 130 45 190 92 290 65 S 385 12 520 46 S 640 82 660 56'/%3E%3Cpath d='M-20 260 C 70 215 130 285 230 245 S 430 175 520 225 S 640 265 660 235'/%3E%3C/svg%3E");

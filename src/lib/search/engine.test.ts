@@ -102,3 +102,48 @@ describe('Türkçe arama', () => {
     expect(hasSearchableTerms('tenör nedir')).toBe(true);
   });
 });
+
+describe('ilanlar aramada', () => {
+  it('süresi dolan ilanlar sonuçlardan çıkarılır, ilanlar teknik içeriğin önüne geçmez', async () => {
+    const { createSearchIndex, runSearch, withoutExpired } = await import('./engine');
+    const index = createSearchIndex([
+      {
+        id: 'makale:x',
+        type: 'makale',
+        title: 'Ekskavatör verimliliği',
+        url: '/bilgi/x',
+        summary: 'Ekskavatör',
+        keywords: '',
+        headings: '',
+        body: '',
+      },
+      {
+        id: 'market:a',
+        type: 'market',
+        title: 'Ekskavatör verimliliği',
+        url: '/market/a',
+        summary: 'Ekskavatör',
+        keywords: '',
+        headings: '',
+        body: '',
+        expiresAt: '2026-10-20',
+      },
+      {
+        id: 'market:b',
+        type: 'market',
+        title: 'Satılık ekskavatör',
+        url: '/market/b',
+        summary: '',
+        keywords: '',
+        headings: '',
+        body: '',
+        expiresAt: '2026-10-01',
+      },
+    ]);
+    const { hits } = runSearch(index, 'ekskavatör');
+    expect(hits[0]?.type).toBe('makale');
+    const live = withoutExpired(hits, '2026-10-16').map((hit) => hit.id);
+    expect(live).toContain('market:a');
+    expect(live).not.toContain('market:b');
+  });
+});

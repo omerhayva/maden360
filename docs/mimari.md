@@ -40,7 +40,14 @@ content/                  İçerik (editörlerin çalıştığı yer)
   makaleler/*.md          Bilgi merkezi makaleleri
   sozluk/*.md             Sözlük terimleri
   hesaplamalar/*.md       Hesaplayıcı açıklama sayfaları
-  sayfalar/*.md           Hakkımızda, politikalar, iletişim
+  sayfalar/*.md           Hakkımızda, politikalar, iletişim, ilan kuralları, KVKK metni
+  fuar/*.md               Sanal fuar standları (firma vitrinleri)
+  is-ilanlari/*.md        İş ilanları (işçi arayanlar)
+  is-arayanlar/*.md       Aday profilleri (kişisel veri içermez; dosya adı = başvuru no)
+  market/*.md             Market ilanları (ekipman, parça, hizmet, cevher, saha)
+  fuar-salonlari.yaml     Sanal fuar salonları
+  market-kategorileri.yaml Market kategorileri ve yasal notları
+  meslekler.yaml          Meslek / pozisyon listesi
   konular.yaml            Konular (kategoriler)
   etiketler.yaml          Etiketler
   kaynaklar.yaml          Kaynak kayıtları
@@ -57,6 +64,10 @@ src/
   lib/content/            İçerik şemaları, yükleme, Markdown işleme, doğrulama
   lib/search/             Arama motoru ve dizin üretimi
   lib/seo/                Meta veriler ve yapılandırılmış veri (JSON-LD)
+  lib/listings/           İlan seçenekleri, tarih/süre, iletişim bilgisi denetimi, kart verisi
+  lib/submissions/        Başvuru formu tanımları, doğrulama, taslak dosya üretimi, gönderim
+  components/listings/    İlan kartları, süzme, ilan sayfası parçaları
+  components/forms/       Erişilebilir başvuru formu
 scripts/                  Doğrulama, site denetimi, yerel sunucu, içerik oluşturma
 docs/                     Belgeler
 ```
@@ -78,6 +89,9 @@ Git'teki dosyalarla karşılanır:
 | (ek) TERM | `content/sozluk/<slug>.md` |
 | (ek) PERSON | `content/kisiler.yaml` (yazar ve inceleyiciler) |
 | revisions | Git geçmişi + içerikteki `corrections` (düzeltme geçmişi) |
+| (ek) HALL / STAND | `content/fuar-salonlari.yaml` / `content/fuar/<firma>.md` |
+| (ek) POSITION / JOB / CANDIDATE | `content/meslekler.yaml` / `content/is-ilanlari/*.md` / `content/is-arayanlar/<başvuru-no>.md` |
+| (ek) MARKET_CATEGORY / MARKET_LISTING | `content/market-kategorileri.yaml` / `content/market/*.md` |
 
 İleride veritabanına geçilirse (`users`, `roles`, `revisions`, `calculator_tests`, `translations`,
 `organizations`) bu dosyalar doğrudan tablolara aktarılabilir; zod şemaları tablo yapısının taslağıdır.
@@ -91,6 +105,11 @@ Git'teki dosyalarla karşılanır:
 | `npm run dev` | Tümü (taslaklar uyarı bandıyla) | — |
 | `npm run build:onizleme` (`CONTENT_PREVIEW=1`) | Tümü | Kapalı (`noindex`, robots `Disallow: /`) |
 | `npm run build` (üretim) | Yalnızca `published` | Açık; site haritası yalnızca yayımlanmışları listeler |
+
+İlanlarda ayrıca: süresi dolan (`expiresAt` geçmiş, Türkiye saati) ve örnek (`example: true`) ilanlar
+üretim derlemesine girmez; tarayıcı da süresi dolan ilanı listelerden ve aramadan gizler. İlan kuralları
+ve KVKK sayfaları (`/[sayfa]` rotası) yalnızca yayımlandıklarında üretilir ve başvuru formları bu iki
+sayfa yayımlanınca açılır (`areSubmissionsOpen`).
 
 Statik dışa aktarma her dinamik rotanın en az bir sayfa üretmesini ister. Bir bölümde henüz yayımlanmış
 içerik yoksa `src/lib/static-params.ts` 404 gösteren bir yer tutucu sayfa üretir; ilk içerik
@@ -125,7 +144,10 @@ Tüm bağlantılar `src/i18n/routes.ts` üzerinden üretilir. İngilizce eklendi
 ## SEO
 
 - Her sayfada özgün `<title>`, meta açıklama, kanonik URL ve Open Graph etiketleri (`src/lib/seo/metadata.ts`).
-- Yapılandırılmış veri: WebSite + Organization, TechArticle, DefinedTerm, WebApplication, BreadcrumbList.
+- Yapılandırılmış veri: WebSite + Organization, TechArticle, DefinedTerm, WebApplication, BreadcrumbList;
+  yayımlanmış iş ilanlarında JobPosting, fuar standlarında Organization.
+- Aday profilleri ve iletişim talebi sayfası `noindex`'tir; aday profilleri site haritasına ve arama
+  dizinine girmez.
 - `sitemap.xml`, `robots.txt`, `manifest.webmanifest` derlemede üretilir.
 - `npm run site:check` derleme çıktısındaki tüm sayfaları denetler (bkz. [kabul-kriterleri.md](kabul-kriterleri.md)).
 
@@ -140,7 +162,11 @@ Tüm bağlantılar `src/i18n/routes.ts` üzerinden üretilir. İngilizce eklendi
 
 ## Güvenlik notları
 
-- Markdown içinde ham HTML devre dışıdır; dış bağlantılara `rel="noopener noreferrer"` eklenir.
+- Markdown içinde ham HTML devre dışıdır; dış bağlantılara `rel="noopener noreferrer"`, kullanıcı
+  içeriğindeki (ilan, stand) dış bağlantılara ayrıca `nofollow ugc` eklenir. Web adresleri yalnızca
+  `http(s)` olabilir.
 - JSON-LD çıktısında `<` karakteri kaçışlanır.
-- Sitede kullanıcı verisi toplanmaz, çerez kullanılmaz.
+- Çerez ve izleme betiği kullanılmaz. Sitede veri saklanmaz: ilan başvuruları ziyaretçinin e-posta
+  programıyla (veya isteğe bağlı form hizmetiyle) doğrudan editöre gider; formlarda bot tuzağı alanı
+  vardır. Kişisel veri işleme KVKK aydınlatma metninde açıklanır.
 - `npm audit`'te kalan bulgu yalnızca geliştirme aracı (ESLint) bağımlılığındadır; yayımlanan siteye girmez.

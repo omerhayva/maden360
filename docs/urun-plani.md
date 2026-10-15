@@ -33,7 +33,8 @@ Türkiye'deki madencilik profesyonelleri için bir **dijital başvuru ve hesapla
 ### v1'de olmayacaklar
 
 - Üyelik, kullanıcı profili, sosyal özellikler
-- Kullanıcıların ilan verdiği pazar yeri
+- Kullanıcıların ilan verdiği pazar yeri — *16 Ekim 2026'da güncellendi:* üyelik ve ödeme olmadan,
+  başvuru formu + editör onayıyla çalışan ilan bölümleri eklendi (bkz. [§11](#11-kapsam-güncellemesi-sanal-fuar-iş-ilanları-ve-market))
 - Ödeme ve abonelik
 - Gerçek zamanlı emtia veya borsa fiyatları
 - Karmaşık işletme yönetimi yazılımı
@@ -52,6 +53,10 @@ Türkiye'deki madencilik profesyonelleri için bir **dijital başvuru ve hesapla
 | `/sozluk`, `/sozluk/[slug]` | Madencilik sözlüğü |
 | `/ara?q=...` | Arama |
 | `/hakkimizda`, `/kaynak-politikasi`, `/duzeltme-politikasi`, `/iletisim` | Güven sayfaları |
+| `/fuar`, `/fuar/salonlar/[salon]`, `/fuar/[firma]` | Sanal fuar (§11) |
+| `/is-ilanlari`, `/is-ilanlari/[slug]`, `/is-arayanlar`, `/is-arayanlar/[no]` | İş ilanları ve aday profilleri (§11) |
+| `/market`, `/market/kategori/[kategori]`, `/market/[slug]` | Market (§11) |
+| `/ilan-ver`, `/ilan-ver/[tür]`, `/iletisim-talebi`, `/ilan-kurallari`, `/kvkk` | Başvuru formları ve kurallar (§11) |
 
 - İngilizce sürüm `/en/...` altında, Türkçe URL'leri bozmadan eklenebilmelidir.
 - Bir yönetim alanı eklenirse `/yonetim` altında olmalı ve kimlik doğrulama ile yetkilendirme gerektirmelidir.
@@ -190,3 +195,87 @@ erDiagram
 7. Her içeriğin başlığı, açıklaması ve kanonik URL'si vardır.
 8. Gizli bir yönetim alanı varsa kimlik doğrulamayla korunur.
 9. Yayına alma ve geri alma adımları belgelenmiştir.
+
+## 11. Kapsam güncellemesi: Sanal Fuar, İş İlanları ve Market
+
+**Tarih:** 16 Ekim 2026 · **Karar:** Ürün sahibi, platforma üç sektör bölümü eklenmesini istedi.
+
+| Bölüm | Seçilen model |
+|---|---|
+| Sanal fuar | Tedarikçi ve hizmet firmaları için **stand sayfaları** (ürün, hizmet, iletişim), 11 salonda gruplanır |
+| İş ilanları | **İşçi arayanlar** (iş ilanları) ve **iş arayanlar** (aday profilleri); aday kimliği ve iletişim bilgisi yayımlanmaz |
+| Market | Ekipman, yedek parça ve hizmet ilanlarına ek olarak **cevher/ürün** ve **saha/ruhsat (rödövans)** ilanları; yasal uyarılarla |
+| İlan girişi | **Başvuru formu + editör onayı:** üyelik, veritabanı ve ödeme yok; site statik ve ücretsiz kalır; süresi dolan ilan kendiliğinden kalkar |
+
+v1 sınırlarından korunanlar: üyelik ve kullanıcı profili yok, ödeme ve abonelik yok, platform alım-satıma
+ve işe alıma taraf değil. Uygulama ayrıntıları ve editör iş akışı: [ilanlar-ve-fuar.md](ilanlar-ve-fuar.md).
+
+```mermaid
+erDiagram
+    HALL ||--o{ STAND : "gruplar"
+    STAND |o--o{ JOB : "işveren standı"
+    STAND |o--o{ MARKET_LISTING : "satıcı standı"
+    POSITION ||--o{ JOB : "meslek"
+    POSITION ||--o{ CANDIDATE : "meslek"
+    MARKET_CATEGORY ||--o{ MARKET_LISTING : "içerir"
+    SOURCE ||--o{ MARKET_CATEGORY : "yasal not dayanağı"
+    PERSON ||--o{ STAND : "onaylar (moderatedBy)"
+
+    HALL {
+        string slug PK
+        string code "A, B, C..."
+        string name
+    }
+    STAND {
+        string slug PK
+        string name
+        string summary
+        string[] halls
+        string city
+        json offerings
+        json verification
+        string status
+        date posted_at
+        date expires_at "en fazla 365 gün"
+    }
+    JOB {
+        string slug PK
+        string title
+        string position FK
+        json employer
+        string site_type
+        string employment_type
+        json salary
+        json apply
+        date expires_at "en fazla 60 gün"
+    }
+    CANDIDATE {
+        string ref PK "ADY-YYYYAAGG-XXXX"
+        string headline
+        string position FK
+        int experience_years
+        string[] preferred_cities
+        date consent_at "açık rıza"
+        date expires_at "en fazla 60 gün"
+    }
+    MARKET_LISTING {
+        string slug PK
+        string category FK
+        string type "satilik | kiralik | aranan | hizmet"
+        json price
+        json contact "dogrudan | aracili"
+        json ore "cevher ilanında zorunlu"
+        json license "saha ilanında zorunlu"
+        date expires_at "en fazla 90 gün"
+    }
+    MARKET_CATEGORY {
+        string slug PK
+        string kind "ekipman | parca | hizmet | cevher | saha"
+        json notice
+    }
+    POSITION {
+        string slug PK
+        string name
+        string group
+    }
+```

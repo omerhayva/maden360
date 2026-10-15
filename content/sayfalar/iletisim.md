@@ -2,7 +2,7 @@
 title: İletişim
 summary: Hata bildirimi, içerik önerisi, teknik inceleyici olarak katkı ve genel sorularınız için bize e-postayla ulaşabilirsiniz.
 status: published
-updatedAt: 2026-10-15
+updatedAt: 2026-10-16
 ---
 
 ## Bize ne için yazabilirsiniz?
@@ -10,6 +10,7 @@ updatedAt: 2026-10-15
 - **Hata bildirimi:** Bir makalede, terimde veya hesaplayıcıda hata gördüyseniz sayfanın adresini, hatalı bilgiyi ve dayanağınızı yazın. Ayrıntılar: [Düzeltme politikası](/duzeltme-politikasi).
 - **İçerik önerisi:** Eklenmesini istediğiniz hesaplayıcı, konu veya terim.
 - **Teknik inceleyici olarak katkı:** Konusunda deneyimli maden, jeoloji, cevher hazırlama veya iş güvenliği uzmanlarının inceleme desteğine açığız. Lütfen uzmanlık alanınızı ve deneyiminizi kısaca belirtin.
+- **İlan ve stand başvuruları:** Fuar standı, iş ilanı, aday profili ve market ilanı başvuruları [İlan ver](/ilan-ver) sayfasındaki formlarla alınır. Yayımlanmış bir ilanı düzeltmek veya kaldırmak için başvuru numaranızla yazın.
 - **Genel sorular ve iş birliği.**
 
 ## Önemli not

@@ -4,24 +4,38 @@ import type { z } from 'zod';
 import { routes } from '@/i18n/routes';
 import { readingMinutes, SLUG_PATTERN } from '@/lib/text';
 import { ContentError, parseFrontmatter, parseYamlFile } from './frontmatter';
-import { renderMarkdown, type RenderedMarkdown } from './markdown';
+import { renderMarkdown, type RenderedMarkdown, type RenderOptions } from './markdown';
 import {
   articleFrontmatterSchema,
   calculatorFrontmatterSchema,
+  candidateFrontmatterSchema,
   categoriesFileSchema,
   guideFileSchema,
+  hallsFileSchema,
+  jobFrontmatterSchema,
+  marketCategoriesFileSchema,
+  marketFrontmatterSchema,
   pageFrontmatterSchema,
   peopleFileSchema,
+  positionsFileSchema,
   sourcesFileSchema,
+  standFrontmatterSchema,
   tagsFileSchema,
   termFrontmatterSchema,
   type ArticleFrontmatter,
   type CalculatorFrontmatter,
+  type CandidateFrontmatter,
   type Category,
   type GuideSection,
+  type Hall,
+  type JobFrontmatter,
+  type MarketCategory,
+  type MarketFrontmatter,
   type PageFrontmatter,
   type Person,
+  type Position,
   type Source,
+  type StandFrontmatter,
   type Tag,
   type TermFrontmatter,
 } from './schemas';
@@ -50,16 +64,39 @@ export interface StaticPage extends PageFrontmatter, BaseEntry {
 
 export type EditorialEntry = Article | Term | CalculatorContent;
 
+/* İlanlar: kullanıcıların başvuru formuyla gönderdiği, editör onayıyla yayımlanan içerikler */
+export interface Stand extends StandFrontmatter, BaseEntry {
+  kind: 'stand';
+}
+export interface JobPosting extends JobFrontmatter, BaseEntry {
+  kind: 'job';
+}
+export interface Candidate extends CandidateFrontmatter, BaseEntry {
+  kind: 'candidate';
+}
+export interface MarketListing extends MarketFrontmatter, BaseEntry {
+  kind: 'market';
+}
+
+export type ListingEntry = Stand | JobPosting | Candidate | MarketListing;
+
 export interface ContentStore {
   categories: Category[];
   tags: Tag[];
   people: Person[];
   sources: Source[];
   guide: GuideSection[];
+  halls: Hall[];
+  marketCategories: MarketCategory[];
+  positions: Position[];
   articles: Article[];
   terms: Term[];
   calculators: CalculatorContent[];
   pages: StaticPage[];
+  stands: Stand[];
+  jobs: JobPosting[];
+  candidates: Candidate[];
+  marketListings: MarketListing[];
 }
 
 export interface LoadResult {
@@ -72,6 +109,10 @@ export const CONTENT_DIRS = {
   terms: 'sozluk',
   calculators: 'hesaplamalar',
   pages: 'sayfalar',
+  stands: 'fuar',
+  jobs: 'is-ilanlari',
+  candidates: 'is-arayanlar',
+  marketListings: 'market',
 } as const;
 
 export const REGISTRY_FILES = {
@@ -80,7 +121,13 @@ export const REGISTRY_FILES = {
   people: 'kisiler.yaml',
   sources: 'kaynaklar.yaml',
   guide: 'rehber.yaml',
+  halls: 'fuar-salonlari.yaml',
+  marketCategories: 'market-kategorileri.yaml',
+  positions: 'meslekler.yaml',
 } as const;
+
+/** Kullanıcı içeriğindeki dış bağlantılar arama motorlarına "nofollow ugc" olarak bildirilir. */
+const UGC_RENDER: RenderOptions = { externalRel: ['nofollow', 'ugc', 'noopener', 'noreferrer'] };
 
 function formatZodError(error: z.ZodError): string {
   return error.issues
@@ -142,6 +189,11 @@ export function loadContentStore(rootDir = path.join(process.cwd(), 'content')):
   const people = readRegistry(REGISTRY_FILES.people, peopleFileSchema);
   const sources = readRegistry(REGISTRY_FILES.sources, sourcesFileSchema);
   const guide = readRegistry(REGISTRY_FILES.guide, guideFileSchema);
+  const halls = readRegistry(REGISTRY_FILES.halls, hallsFileSchema).sort((a, b) => a.order - b.order);
+  const marketCategories = readRegistry(REGISTRY_FILES.marketCategories, marketCategoriesFileSchema).sort(
+    (a, b) => a.order - b.order,
+  );
+  const positions = readRegistry(REGISTRY_FILES.positions, positionsFileSchema);
   const sourceMap = new Map(sources.map((source) => [source.id, source]));
 
   function readCollection<F extends object, E>(
@@ -149,6 +201,7 @@ export function loadContentStore(rootDir = path.join(process.cwd(), 'content')):
     schema: z.ZodType<F>,
     build: (frontmatter: F, base: BaseEntry) => E,
     urlFor: (slug: string) => string,
+    renderOptions: RenderOptions = {},
   ): E[] {
     const dir = path.join(rootDir, dirName);
     if (!fs.existsSync(dir)) return [];
@@ -182,7 +235,7 @@ export function loadContentStore(rootDir = path.join(process.cwd(), 'content')):
           const source = sourceMap.get(ref.id);
           if (source) citationLabels.set(ref.id, citationLabel(source));
         });
-        const rendered = renderMarkdown(body, { citationNumbers, citationLabels });
+        const rendered = renderMarkdown(body, { ...renderOptions, citationNumbers, citationLabels });
         entries.push(
           build(frontmatter, {
             ...rendered,
@@ -225,8 +278,54 @@ export function loadContentStore(rootDir = path.join(process.cwd(), 'content')):
     (slug) => `/${slug}`,
   );
 
+  const stands = readCollection(
+    CONTENT_DIRS.stands,
+    standFrontmatterSchema,
+    (fm, base): Stand => ({ ...fm, ...base, kind: 'stand' }),
+    (slug) => routes.stand(slug),
+    UGC_RENDER,
+  );
+  const jobs = readCollection(
+    CONTENT_DIRS.jobs,
+    jobFrontmatterSchema,
+    (fm, base): JobPosting => ({ ...fm, ...base, kind: 'job' }),
+    (slug) => routes.job(slug),
+    UGC_RENDER,
+  );
+  const candidates = readCollection(
+    CONTENT_DIRS.candidates,
+    candidateFrontmatterSchema,
+    (fm, base): Candidate => ({ ...fm, ...base, kind: 'candidate' }),
+    (slug) => routes.candidate(slug),
+    UGC_RENDER,
+  );
+  const marketListings = readCollection(
+    CONTENT_DIRS.marketListings,
+    marketFrontmatterSchema,
+    (fm, base): MarketListing => ({ ...fm, ...base, kind: 'market' }),
+    (slug) => routes.marketListing(slug),
+    UGC_RENDER,
+  );
+
   return {
-    store: { categories, tags, people, sources, guide, articles, terms, calculators, pages },
+    store: {
+      categories,
+      tags,
+      people,
+      sources,
+      guide,
+      halls,
+      marketCategories,
+      positions,
+      articles,
+      terms,
+      calculators,
+      pages,
+      stands,
+      jobs,
+      candidates,
+      marketListings,
+    },
     errors,
   };
 }

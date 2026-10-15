@@ -18,6 +18,13 @@
 - [ ] Bilinen örnek testleri eklendi/güncellendi (`npm test`).
 - [ ] Formül veya doğrulama değiştiyse `version` artırıldı ve açıklama sayfasına düzeltme notu eklendi.
 
+## İlan ve stand değişikliklerinde (fuar, iş, aday, market)
+
+- [ ] Başvuru [ilan kurallarına](../docs/ilanlar-ve-fuar.md#kontrol-listesi) göre kontrol edildi (yanıltıcı bilgi, patlayıcı madde, ayrımcı ifade, ücret isteyen iş ilanı yok).
+- [ ] Yayımlanacaksa `status: published`, `postedAt`, `expiresAt` (süre sınırı içinde), `moderatedBy`, `moderatedAt` dolduruldu.
+- [ ] Aday profilinde ad, telefon, e-posta, adres veya firma adı yok; dosya adı başvuru numarası.
+- [ ] Fuar standında doğrulama yöntemi (`verification`) yazıldı; saha/ruhsat ilanında yetki belgesi istendi.
+
 ## Kontroller
 
 - [ ] `npm run check` yerelde geçti.

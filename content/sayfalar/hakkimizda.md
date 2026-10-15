@@ -2,7 +2,7 @@
 title: Hakkımızda
 summary: Maden360, Türkiye'deki madencilik profesyonelleri ve öğrenciler için kaynaklı teknik bilgi ve test edilmiş hesaplama araçları sunan bağımsız bir dijital başvuru platformudur.
 status: published
-updatedAt: 2026-10-15
+updatedAt: 2026-10-16
 ---
 
 ## Ne yapıyoruz?
@@ -16,6 +16,14 @@ Platform dört ana bölümden oluşur:
 - **Sektör Rehberi:** Maden türleri, üretim yöntemleri, süreçler ve görevler için başlangıç noktası.
 - **Sözlük:** Mevzuattaki resmî tanımlar ve İngilizce karşılıklarıyla madencilik terimleri.
 
+Bunlara ek olarak sektörü bir araya getiren üç bölüm vardır:
+
+- **[Sanal Fuar](/fuar):** Tedarikçi ve hizmet firmalarının ürün ve hizmetlerini tanıttığı stand sayfaları.
+- **[İş İlanları](/is-ilanlari):** İşçi arayan işverenlerin ilanları ve iş arayanların, iletişim bilgisi yayımlanmayan aday profilleri.
+- **[Market](/market):** Ekipman, yedek parça, hizmet, cevher ve saha ilanları.
+
+Bu bölümlerdeki başvurular formla alınır ve editör kontrolünden sonra yayımlanır.
+
 ## Nasıl çalışıyoruz?
 
 Her teknik içerik bir **yayın sürecinden** geçer: taslak, teknik inceleme ve yayın. Bir içerik ancak kaynakları doğrulandıktan ve konusunda yetkin bir kişi tarafından teknik olarak incelendikten sonra yayımlanır. Her sayfada yazar, teknik inceleyen, ilk yayın ve son gözden geçirme tarihi ile kaynaklar gösterilir. Ayrıntılar için [Kaynak politikası](/kaynak-politikasi) ve [Düzeltme politikası](/duzeltme-politikasi) sayfalarına bakabilirsiniz.
@@ -25,7 +33,8 @@ Taslak hazırlığında yapay zekâ araçlarından yararlanabiliriz. Ancak yapay
 ## Neler yapmıyoruz?
 
 - Gerçek zamanlı emtia veya borsa fiyatı yayımlamıyoruz.
-- Üyelik, kullanıcı profili veya kullanıcıların ilan verdiği bir pazar yeri işletmiyoruz.
+- Üyelik ve kullanıcı hesabı sistemi işletmiyoruz; ilanlar ve fuar standları editör onayıyla yayımlanır.
+- Alım-satıma, kiralamaya, ruhsat devrine ve işe alıma taraf olmuyor, ödeme veya komisyon almıyoruz.
 - Doğrulanmamış, otomatik üretilmiş teknik cevaplar sunmuyoruz.
 - Madende doğrudan kontrol veya güvenlik kararı veren bir yazılım sunmuyoruz.
 

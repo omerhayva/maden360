@@ -2,16 +2,19 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { BookA, BookOpen, Calculator, Search, SearchX } from 'lucide-react';
+import { BookA, BookOpen, Briefcase, Calculator, Search, SearchX, Store, Tent } from 'lucide-react';
 import type MiniSearch from 'minisearch';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { siteConfig } from '@/config/site';
 import { routes } from '@/i18n/routes';
+import { todayInTurkey } from '@/lib/listings/dates';
 import {
   createSearchIndex,
   hasSearchableTerms,
   runSearch,
+  SEARCH_DOC_TYPES,
   typeLabels,
+  withoutExpired,
   type SearchDocType,
   type SearchDocument,
 } from '@/lib/search/engine';
@@ -41,6 +44,9 @@ const typeIcons: Record<SearchDocType, typeof Calculator> = {
   hesaplama: Calculator,
   makale: BookOpen,
   terim: BookA,
+  stand: Tent,
+  'is-ilani': Briefcase,
+  market: Store,
 };
 
 const FILTERS: { value: 'tum' | SearchDocType; label: string }[] = [
@@ -48,7 +54,12 @@ const FILTERS: { value: 'tum' | SearchDocType; label: string }[] = [
   { value: 'hesaplama', label: 'Hesaplayıcılar' },
   { value: 'makale', label: 'Makaleler' },
   { value: 'terim', label: 'Sözlük' },
+  { value: 'stand', label: 'Fuar' },
+  { value: 'is-ilani', label: 'İş ilanları' },
+  { value: 'market', label: 'Market' },
 ];
+
+const LISTING_FILTERS = new Set<string>(['stand', 'is-ilani', 'market']);
 
 export function SearchClient() {
   const searchParams = useSearchParams();
@@ -56,10 +67,9 @@ export function SearchClient() {
   const pathname = usePathname();
   const query = searchParams.get('q') ?? '';
   const filterParam = searchParams.get('tur');
-  const filter: 'tum' | SearchDocType =
-    filterParam === 'hesaplama' || filterParam === 'makale' || filterParam === 'terim'
-      ? filterParam
-      : 'tum';
+  const filter: 'tum' | SearchDocType = SEARCH_DOC_TYPES.includes(filterParam as SearchDocType)
+    ? (filterParam as SearchDocType)
+    : 'tum';
 
   const [input, setInput] = useState(query);
   const [lastQuery, setLastQuery] = useState(query);
@@ -103,17 +113,16 @@ export function SearchClient() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- yalnızca kullanıcı girdisi değiştiğinde
   }, [input]);
 
-  const outcome = useMemo(
-    () => (index ? runSearch(index, query) : { hits: [], relaxed: false }),
-    [index, query],
-  );
+  const outcome = useMemo(() => {
+    if (!index) return { hits: [], relaxed: false };
+    const result = runSearch(index, query);
+    return { ...result, hits: withoutExpired(result.hits, todayInTurkey()) };
+  }, [index, query]);
   const counts = useMemo(() => {
-    const result: Record<'tum' | SearchDocType, number> = {
-      tum: outcome.hits.length,
-      hesaplama: 0,
-      makale: 0,
-      terim: 0,
-    };
+    const result = Object.fromEntries([
+      ['tum', outcome.hits.length],
+      ...SEARCH_DOC_TYPES.map((type) => [type, 0]),
+    ]) as Record<'tum' | SearchDocType, number>;
     for (const hit of outcome.hits) result[hit.type] += 1;
     return result;
   }, [outcome]);
@@ -163,7 +172,11 @@ export function SearchClient() {
 
       {trimmed && searchable && index && (
         <div className="mt-5 flex flex-wrap gap-2" role="group" aria-label="Sonuç türü">
-          {FILTERS.map((item) => (
+          {FILTERS.filter(
+            // İlan türleri yalnızca sonuç varsa gösterilir
+            (item) =>
+              !LISTING_FILTERS.has(item.value) || counts[item.value] > 0 || filter === item.value,
+          ).map((item) => (
             <button
               key={item.value}
               type="button"

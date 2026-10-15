@@ -1,15 +1,28 @@
 import Link from 'next/link';
 import { LogoMark, Wordmark } from '@/components/brand/Logo';
 import { siteConfig } from '@/config/site';
-import { mainNav, trustNav } from '@/i18n/navigation';
-import { routes } from '@/i18n/routes';
+import { mainNav, sectorNav, trustNav } from '@/i18n/navigation';
+import { optionalPageFiles, routes } from '@/i18n/routes';
+import { getOptionalPage } from '@/lib/content';
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
   const platformLinks = [...mainNav, { href: routes.topics(), label: 'Konular' }];
+  const rulesPublished = Boolean(getOptionalPage(optionalPageFiles.listingRules));
+  const privacyPublished = Boolean(getOptionalPage(optionalPageFiles.privacy));
+  const sectorLinks = [
+    ...sectorNav,
+    { href: routes.candidates(), label: 'Aday Profilleri' },
+    { href: routes.postListing(), label: 'İlan ver' },
+    ...(rulesPublished ? [{ href: routes.listingRules(), label: 'İlan kuralları' }] : []),
+  ];
+  const trustLinks = [
+    ...trustNav,
+    ...(privacyPublished ? [{ href: routes.privacy(), label: 'KVKK aydınlatma metni' }] : []),
+  ];
   return (
     <footer className="no-print mt-16 bg-graphite-950 text-graphite-300">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.5fr_1fr_1fr] lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
         <div>
           <Link href={routes.home()} className="inline-flex items-center gap-2.5 text-white">
             <LogoMark className="h-8 w-8" />
@@ -20,6 +33,11 @@ export function SiteFooter() {
             Hesaplama sonuçları ve teknik içerikler bilgilendirme amaçlıdır. Havalandırma, tahkimat,
             patlatma ve iş sağlığı ve güvenliği gibi saha kararları; yetkili mühendis
             değerlendirmesi, ilgili mevzuat ve standartlar esas alınarak verilmelidir.
+          </p>
+          <p className="mt-3 max-w-md text-xs leading-5 text-graphite-400">
+            Fuar standları ve ilanlar, sahiplerinin beyanıdır ve editör kontrolünden sonra
+            yayımlanır;
+            {` ${siteConfig.name}`} alım-satıma ve işe alıma taraf değildir, ödeme almaz.
           </p>
         </div>
         <nav aria-label="Platform">
@@ -37,12 +55,27 @@ export function SiteFooter() {
             ))}
           </ul>
         </nav>
+        <nav aria-label="Sektör ağı">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-white">Sektör ağı</h2>
+          <ul className="mt-3 space-y-1">
+            {sectorLinks.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="inline-flex min-h-9 items-center text-sm hover:text-white"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
         <nav aria-label="Güven ve iletişim">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-white">
             Güven ve iletişim
           </h2>
           <ul className="mt-3 space-y-1">
-            {trustNav.map((item) => (
+            {trustLinks.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}

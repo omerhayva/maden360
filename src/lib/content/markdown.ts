@@ -34,6 +34,11 @@ export interface RenderOptions {
   citationNumbers?: Map<string, number>;
   /** Kaynak kimliği → erişilebilir etiket ("Wills ve Finch, 2016"). */
   citationLabels?: Map<string, string>;
+  /**
+   * Dış bağlantılara eklenecek rel değerleri. Kullanıcıların gönderdiği metinlerde
+   * (ilanlar, fuar standları) arama motorlarına "nofollow ugc" bildirilir.
+   */
+  externalRel?: string[];
 }
 
 /** [@id] veya [@id1; @id2] biçimindeki atıflar */
@@ -116,13 +121,14 @@ function rehypeResponsiveTables() {
 }
 
 /** Dış bağlantılara güvenli rel ekler, site içi bağlantıları toplar. */
-function rehypeLinks(internalLinks: string[]) {
+function rehypeLinks(options: { internalLinks: string[]; rel: string[] }) {
+  const { internalLinks, rel } = options;
   return (tree: HastRoot) => {
     visit(tree, 'element', (node: Element) => {
       if (node.tagName !== 'a') return;
       const href = String(node.properties?.href ?? '');
       if (/^https?:\/\//.test(href)) {
-        node.properties = { ...node.properties, rel: ['noopener', 'noreferrer'], className: ['external'] };
+        node.properties = { ...node.properties, rel, className: ['external'] };
       } else if (href.startsWith('/')) {
         internalLinks.push(href);
       }
@@ -159,7 +165,7 @@ export function renderMarkdown(markdown: string, options: RenderOptions = {}): R
     .use(remarkRehype, { allowDangerousHtml: false })
     .use(rehypeHeadings, toc)
     .use(rehypeResponsiveTables)
-    .use(rehypeLinks, internalLinks)
+    .use(rehypeLinks, { internalLinks, rel: options.externalRel ?? ['noopener', 'noreferrer'] })
     .use(rehypeKatex, { strict: 'ignore', output: 'htmlAndMathml' })
     .use(rehypeFocusableMath)
     .use(rehypeStringify);

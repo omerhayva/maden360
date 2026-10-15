@@ -1,0 +1,34 @@
+name: Günlük yeniden derleme
+
+# Süresi dolan ilanların (fuar standı, iş ilanı, aday profili, market) yayından kalkması
+# için barındırma hizmetinde her gece yeni bir derleme tetikler.
+#
+# Kurulum (bir kez):
+#   1. Cloudflare Pages → proje → Settings → Builds & deployments → Deploy hooks → kanca oluşturun.
+#   2. GitHub → depo → Settings → Secrets and variables → Actions → New repository secret:
+#      Ad: DEPLOY_HOOK_URL, değer: kanca adresi.
+# Kanca tanımlı değilse iş akışı hiçbir şey yapmadan biter. Ayrıntılar: docs/ilanlar-ve-fuar.md
+
+on:
+  schedule:
+    - cron: '15 0 * * *' # her gün 00:15 UTC = 03:15 Türkiye saati
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  tetikle:
+    name: derleme kancası
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Derleme kancasını çağır
+        env:
+          DEPLOY_HOOK_URL: ${{ secrets.DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$DEPLOY_HOOK_URL" ]; then
+            echo "DEPLOY_HOOK_URL tanımlı değil; yeniden derleme atlandı (kurulum: docs/ilanlar-ve-fuar.md)."
+            exit 0
+          fi
+          curl --fail --silent --show-error --max-time 30 -X POST "$DEPLOY_HOOK_URL" > /dev/null
+          echo "Yeniden derleme tetiklendi."

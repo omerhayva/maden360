@@ -6,6 +6,7 @@ export interface NavItem {
   description?: string;
 }
 
+/** Bilgi ve araçlar */
 export const mainNav: NavItem[] = [
   {
     href: routes.articles(),
@@ -26,6 +27,25 @@ export const mainNav: NavItem[] = [
     href: routes.glossary(),
     label: 'Sözlük',
     description: 'Madencilik terimleri',
+  },
+];
+
+/** Sektör ağı: fuar, iş ve market (editör onaylı ilanlar) */
+export const sectorNav: NavItem[] = [
+  {
+    href: routes.fair(),
+    label: 'Sanal Fuar',
+    description: 'Tedarikçi ve hizmet firmalarının standları',
+  },
+  {
+    href: routes.jobs(),
+    label: 'İş İlanları',
+    description: 'İşçi arayanlar ve iş arayanlar',
+  },
+  {
+    href: routes.market(),
+    label: 'Market',
+    description: 'Ekipman, parça, hizmet, cevher ve saha',
   },
 ];
 

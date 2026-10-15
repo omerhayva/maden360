@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Container } from '@/components/layout/Container';
 import { SearchForm } from '@/components/search/SearchForm';
-import { mainNav } from '@/i18n/navigation';
+import { mainNav, sectorNav } from '@/i18n/navigation';
 import { routes } from '@/i18n/routes';
 
 export const metadata = {
@@ -27,7 +27,7 @@ export default function NotFound() {
           <SearchForm id="not-found-search" />
         </div>
         <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-          {mainNav.map((item) => (
+          {[...mainNav, ...sectorNav].map((item) => (
             <li key={item.href}>
               <Link
                 href={item.href}

@@ -29,6 +29,18 @@ export const siteConfig = {
    * ".example" uzantısı ayrılmış bir alan adıdır; yanlışlıkla başkasına e-posta gitmez.
    */
   contactEmail: 'iletisim@maden360.example',
+  /**
+   * TODO(yayın öncesi): İlan, stand ve iletişim talebi başvurularının gideceği adres.
+   * Form hizmeti ayarlanmamışsa başvurular bu adrese e-postayla (mailto) gönderilir.
+   */
+  listingsEmail: 'ilan@maden360.example',
+  /**
+   * İsteğe bağlı form hizmeti (Formspree, Web3Forms vb.). Ayarlanırsa başvurular e-posta
+   * programı açılmadan doğrudan bu adrese gönderilir. Bkz. docs/ilanlar-ve-fuar.md
+   */
+  formEndpoint: process.env.NEXT_PUBLIC_FORM_ENDPOINT?.trim() ?? '',
+  /** Web3Forms gibi erişim anahtarı isteyen hizmetler için (gizli değildir, tarayıcıya gider). */
+  formAccessKey: process.env.NEXT_PUBLIC_FORM_ACCESS_KEY?.trim() ?? '',
   /** Ana sayfada ve aramada önerilen sorgular. */
   popularSearches: ['dekapaj oranı', 'metal kazanımı', 'tonaj hesabı', 'kabarma', 'maden grupları'],
 } as const;

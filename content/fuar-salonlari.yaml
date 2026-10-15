@@ -1,0 +1,84 @@
+# Sanal fuar salonları (tedarikçi ve hizmet firması grupları).
+#
+# Her fuar standı (content/fuar/*.md) en az bir, en fazla üç salona bağlanır.
+# code : salon harfi; kartlarda "Salon A" olarak görünür (tek büyük harf)
+# icon : truck | factory | drill | zap | pickaxe | hard-hat | microscope | compass | cog | leaf | map
+#        (tam liste: src/lib/content/schemas.ts → categoryIconSchema)
+# order: listelerde görünme sırası
+
+- slug: is-makineleri
+  code: A
+  name: İş Makineleri ve Taşıma
+  description: Ekskavatör, loder, dozer, kaya kamyonu ve damperli araç satışı, kiralaması ve servisi yapan firmalar.
+  icon: truck
+  order: 1
+
+- slug: kirma-eleme
+  code: B
+  name: Kırma, Eleme ve Cevher Hazırlama
+  description: Konkasör, elek, değirmen, yıkama ve zenginleştirme ekipmanı üreticileri; tesis kurulumu ve işletme hizmetleri.
+  icon: factory
+  order: 2
+
+- slug: sondaj-arama
+  code: C
+  name: Sondaj, Arama ve Jeoloji
+  description: Karotlu ve karotsuz sondaj, jeofizik etüt, jeolojik haritalama ve kaynak–rezerv raporlama hizmetleri.
+  icon: drill
+  order: 3
+
+- slug: delme-patlatma
+  code: D
+  name: Delme ve Patlatma
+  description: Delici makineler ve delme takımları; yetkili ve belgeli patlatma hizmeti veren firmalar.
+  icon: zap
+  order: 4
+
+- slug: yeralti
+  code: E
+  name: Yeraltı Ekipmanları ve Havalandırma
+  description: Tahkimat malzemeleri, havalandırma fanları, yeraltı yükleme ve taşıma makineleri, kuyu ve galeri ekipmanları.
+  icon: pickaxe
+  order: 5
+
+- slug: isg
+  code: F
+  name: İş Sağlığı ve Güvenliği
+  description: Kişisel koruyucu donanım, gaz ölçüm cihazları, ferdi kurtarıcılar; İSG eğitimi ve danışmanlığı.
+  icon: hard-hat
+  order: 6
+
+- slug: laboratuvar
+  code: G
+  name: Laboratuvar ve Analiz
+  description: Kimyasal ve mineralojik analiz, numune hazırlama, kaya mekaniği deneyleri ve kalibrasyon hizmetleri.
+  icon: microscope
+  order: 7
+
+- slug: muhendislik
+  code: H
+  name: Mühendislik, Yazılım ve Danışmanlık
+  description: Maden planlama ve tasarımı, ruhsat ve çevre danışmanlığı, harita–ölçüm, dron ve madencilik yazılımları.
+  icon: compass
+  order: 8
+
+- slug: yedek-parca
+  code: I
+  name: Yedek Parça ve Aşınma Parçaları
+  description: İş makinesi ve tesis yedek parçaları, aşınma plakaları, elek telleri, konveyör bantları ve rulolar.
+  icon: cog
+  order: 9
+
+- slug: cevre-su
+  code: J
+  name: Çevre, Su ve Rehabilitasyon
+  description: Toz bastırma, su arıtma ve drenaj, atık yönetimi ve maden sahalarının doğaya yeniden kazandırılması.
+  icon: leaf
+  order: 10
+
+- slug: lojistik
+  code: K
+  name: Lojistik ve Nakliye
+  description: Cevher ve ürün taşımacılığı, ağır yük nakliyesi, liman, depolama ve gümrük hizmetleri.
+  icon: map
+  order: 11

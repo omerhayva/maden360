@@ -8,14 +8,39 @@ import {
   loadContentStore,
   type Article,
   type CalculatorContent,
+  type Candidate,
   type ContentStore,
+  type JobPosting,
+  type MarketListing,
+  type Stand,
   type StaticPage,
   type Term,
 } from './repository';
-import type { Category, Person, Source, SourceRef, Tag } from './schemas';
-import { isVisible } from './visibility';
+import type {
+  Category,
+  Hall,
+  MarketCategory,
+  Person,
+  Position,
+  Source,
+  SourceRef,
+  Tag,
+} from './schemas';
+import { isListingVisible, isVisible } from './visibility';
+import { optionalPageFiles } from '@/i18n/routes';
 
-export type { Article, CalculatorContent, EditorialEntry, StaticPage, Term } from './repository';
+export type {
+  Article,
+  CalculatorContent,
+  Candidate,
+  EditorialEntry,
+  JobPosting,
+  ListingEntry,
+  MarketListing,
+  Stand,
+  StaticPage,
+  Term,
+} from './repository';
 
 let cache: { store: ContentStore; signature: string } | undefined;
 
@@ -132,6 +157,117 @@ export function getPage(slug: string): StaticPage {
   const page = getStore().pages.find((entry) => entry.slug === slug);
   if (!page) throw new Error(`content/sayfalar/${slug}.md bulunamadı.`);
   return page;
+}
+
+/** Yayın durumuna bağlı sayfa (ilan kuralları, KVKK): yayımlanmadıysa üretimde yoktur. */
+export function getOptionalPage(slug: string): StaticPage | undefined {
+  const page = getStore().pages.find((entry) => entry.slug === slug);
+  return page && isVisible(page.status) ? page : undefined;
+}
+
+/**
+ * İlan başvuru formları, ilan kuralları ve KVKK aydınlatma metni yayımlandığında
+ * açılır (önizleme ortamında her zaman açıktır).
+ */
+export function areSubmissionsOpen(): boolean {
+  return Object.values(optionalPageFiles).every((slug) => getOptionalPage(slug) !== undefined);
+}
+
+/* --------------------------- Sanal fuar --------------------------- */
+
+export function getHalls(): Hall[] {
+  return getStore().halls;
+}
+
+export function getHall(slug: string): Hall | undefined {
+  return getStore().halls.find((hall) => hall.slug === slug);
+}
+
+const standOrder = (a: Stand, b: Stand) =>
+  Number(b.featured) - Number(a.featured) || turkishCollator.compare(a.name, b.name);
+
+export function getStands(): Stand[] {
+  return getStore()
+    .stands.filter((stand) => isListingVisible(stand))
+    .sort(standOrder);
+}
+
+export function getStand(slug: string | undefined): Stand | undefined {
+  if (!slug) return undefined;
+  const stand = getStore().stands.find((entry) => entry.slug === slug);
+  return stand && isListingVisible(stand) ? stand : undefined;
+}
+
+export function getStandsByHall(slug: string): Stand[] {
+  return getStands().filter((stand) => stand.halls.includes(slug));
+}
+
+/* --------------------------- İş ilanları ve adaylar --------------------------- */
+
+const byPostedDesc = <T extends { postedAt?: string; slug: string }>(a: T, b: T) =>
+  (b.postedAt ?? '').localeCompare(a.postedAt ?? '') || a.slug.localeCompare(b.slug);
+
+export function getPositions(): Position[] {
+  return getStore().positions;
+}
+
+export function getPosition(slug: string): Position | undefined {
+  return getStore().positions.find((position) => position.slug === slug);
+}
+
+export function getJobs(): JobPosting[] {
+  return getStore()
+    .jobs.filter((job) => isListingVisible(job))
+    .sort(byPostedDesc);
+}
+
+export function getJob(slug: string): JobPosting | undefined {
+  const job = getStore().jobs.find((entry) => entry.slug === slug);
+  return job && isListingVisible(job) ? job : undefined;
+}
+
+export function getJobsByStand(standSlug: string): JobPosting[] {
+  return getJobs().filter((job) => job.employer.stand === standSlug);
+}
+
+export function getCandidates(): Candidate[] {
+  return getStore()
+    .candidates.filter((candidate) => isListingVisible(candidate))
+    .sort(byPostedDesc);
+}
+
+export function getCandidate(slug: string): Candidate | undefined {
+  const candidate = getStore().candidates.find((entry) => entry.slug === slug);
+  return candidate && isListingVisible(candidate) ? candidate : undefined;
+}
+
+/* --------------------------- Market --------------------------- */
+
+export function getMarketCategories(): MarketCategory[] {
+  return getStore().marketCategories;
+}
+
+export function getMarketCategory(slug: string): MarketCategory | undefined {
+  return getStore().marketCategories.find((category) => category.slug === slug);
+}
+
+export function getMarketListings(): MarketListing[] {
+  return getStore()
+    .marketListings.filter((listing) => isListingVisible(listing))
+    .sort(byPostedDesc);
+}
+
+export function getMarketListing(slug: string): MarketListing | undefined {
+  const listing = getStore().marketListings.find((entry) => entry.slug === slug);
+  return listing && isListingVisible(listing) ? listing : undefined;
+}
+
+export function getMarketListingsByCategory(slug: string): MarketListing[] {
+  return getMarketListings().filter((listing) => listing.category === slug);
+}
+
+export function getMarketListingsByStand(standSlug: string): MarketListing[] {
+  return getMarketListings().filter((listing) => listing.seller.stand === standSlug);
 }
 
 /* --------------------------- İlişkiler --------------------------- */
