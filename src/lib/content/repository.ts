@@ -2,15 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { z } from 'zod';
 import { routes } from '@/i18n/routes';
-import { readingMinutes, SLUG_PATTERN } from '@/lib/text';
+import { SLUG_PATTERN } from '@/lib/text';
 import { ContentError, parseFrontmatter, parseYamlFile } from './frontmatter';
 import { renderMarkdown, type RenderedMarkdown, type RenderOptions } from './markdown';
 import {
-  articleFrontmatterSchema,
-  calculatorFrontmatterSchema,
   candidateFrontmatterSchema,
-  categoriesFileSchema,
-  guideFileSchema,
   hallsFileSchema,
   jobFrontmatterSchema,
   marketCategoriesFileSchema,
@@ -18,15 +14,8 @@ import {
   pageFrontmatterSchema,
   peopleFileSchema,
   positionsFileSchema,
-  sourcesFileSchema,
   standFrontmatterSchema,
-  tagsFileSchema,
-  termFrontmatterSchema,
-  type ArticleFrontmatter,
-  type CalculatorFrontmatter,
   type CandidateFrontmatter,
-  type Category,
-  type GuideSection,
   type Hall,
   type JobFrontmatter,
   type MarketCategory,
@@ -34,37 +23,22 @@ import {
   type PageFrontmatter,
   type Person,
   type Position,
-  type Source,
   type StandFrontmatter,
-  type Tag,
-  type TermFrontmatter,
 } from './schemas';
 
 interface BaseEntry extends RenderedMarkdown {
   slug: string;
   url: string;
-  /** Depo köküne göre dosya yolu (hata mesajları ve "düzenle" bağlantıları için) */
+  /** Depo köküne göre dosya yolu (hata mesajları için) */
   file: string;
   body: string;
-  readingMinutes: number;
 }
 
-export interface Article extends ArticleFrontmatter, BaseEntry {
-  kind: 'article';
-}
-export interface Term extends TermFrontmatter, BaseEntry {
-  kind: 'term';
-}
-export interface CalculatorContent extends CalculatorFrontmatter, BaseEntry {
-  kind: 'calculator';
-}
 export interface StaticPage extends PageFrontmatter, BaseEntry {
   kind: 'page';
 }
 
-export type EditorialEntry = Article | Term | CalculatorContent;
-
-/* İlanlar: kullanıcıların başvuru formuyla gönderdiği, editör onayıyla yayımlanan içerikler */
+/* İlanlar: başvuru formuyla gönderilen, editör onayıyla yayımlanan içerikler */
 export interface Stand extends StandFrontmatter, BaseEntry {
   kind: 'stand';
 }
@@ -81,17 +55,10 @@ export interface MarketListing extends MarketFrontmatter, BaseEntry {
 export type ListingEntry = Stand | JobPosting | Candidate | MarketListing;
 
 export interface ContentStore {
-  categories: Category[];
-  tags: Tag[];
   people: Person[];
-  sources: Source[];
-  guide: GuideSection[];
   halls: Hall[];
   marketCategories: MarketCategory[];
   positions: Position[];
-  articles: Article[];
-  terms: Term[];
-  calculators: CalculatorContent[];
   pages: StaticPage[];
   stands: Stand[];
   jobs: JobPosting[];
@@ -105,9 +72,6 @@ export interface LoadResult {
 }
 
 export const CONTENT_DIRS = {
-  articles: 'makaleler',
-  terms: 'sozluk',
-  calculators: 'hesaplamalar',
   pages: 'sayfalar',
   stands: 'fuar',
   jobs: 'is-ilanlari',
@@ -116,11 +80,7 @@ export const CONTENT_DIRS = {
 } as const;
 
 export const REGISTRY_FILES = {
-  categories: 'konular.yaml',
-  tags: 'etiketler.yaml',
   people: 'kisiler.yaml',
-  sources: 'kaynaklar.yaml',
-  guide: 'rehber.yaml',
   halls: 'fuar-salonlari.yaml',
   marketCategories: 'market-kategorileri.yaml',
   positions: 'meslekler.yaml',
@@ -136,25 +96,6 @@ function formatZodError(error: z.ZodError): string {
       return `  • ${where}: ${issue.message}`;
     })
     .join('\n');
-}
-
-/** Kaynak için kısa, okunur atıf etiketi: "Wills ve Finch, 2016" */
-export function citationLabel(source: Source): string {
-  const year = source.published.slice(0, 4);
-  if (source.authors) {
-    const surnames = source.authors
-      .split(';')
-      .map((author) => author.split(',')[0]?.trim())
-      .filter((name): name is string => Boolean(name));
-    const who =
-      surnames.length === 1
-        ? surnames[0]
-        : surnames.length === 2
-          ? `${surnames[0]} ve ${surnames[1]}`
-          : `${surnames[0]} vd.`;
-    return `${who}, ${year}`;
-  }
-  return `${source.publisher}, ${year}`;
 }
 
 export function loadContentStore(rootDir = path.join(process.cwd(), 'content')): LoadResult {
@@ -182,19 +123,13 @@ export function loadContentStore(rootDir = path.join(process.cwd(), 'content')):
     }
   }
 
-  const categories = readRegistry(REGISTRY_FILES.categories, categoriesFileSchema).sort(
-    (a, b) => a.order - b.order,
-  );
-  const tags = readRegistry(REGISTRY_FILES.tags, tagsFileSchema);
   const people = readRegistry(REGISTRY_FILES.people, peopleFileSchema);
-  const sources = readRegistry(REGISTRY_FILES.sources, sourcesFileSchema);
-  const guide = readRegistry(REGISTRY_FILES.guide, guideFileSchema);
   const halls = readRegistry(REGISTRY_FILES.halls, hallsFileSchema).sort((a, b) => a.order - b.order);
-  const marketCategories = readRegistry(REGISTRY_FILES.marketCategories, marketCategoriesFileSchema).sort(
-    (a, b) => a.order - b.order,
-  );
+  const marketCategories = readRegistry(
+    REGISTRY_FILES.marketCategories,
+    marketCategoriesFileSchema,
+  ).sort((a, b) => a.order - b.order);
   const positions = readRegistry(REGISTRY_FILES.positions, positionsFileSchema);
-  const sourceMap = new Map(sources.map((source) => [source.id, source]));
 
   function readCollection<F extends object, E>(
     dirName: string,
@@ -226,26 +161,8 @@ export function loadContentStore(rootDir = path.join(process.cwd(), 'content')):
         if (!parsed.success) {
           throw new ContentError(display, `Ön bilgi geçersiz:\n${formatZodError(parsed.error)}`);
         }
-        const frontmatter = parsed.data;
-        const citationNumbers = new Map<string, number>();
-        const citationLabels = new Map<string, string>();
-        const refs = 'sources' in frontmatter ? ((frontmatter as { sources?: { id: string }[] }).sources ?? []) : [];
-        refs.forEach((ref, index) => {
-          citationNumbers.set(ref.id, index + 1);
-          const source = sourceMap.get(ref.id);
-          if (source) citationLabels.set(ref.id, citationLabel(source));
-        });
-        const rendered = renderMarkdown(body, { ...renderOptions, citationNumbers, citationLabels });
-        entries.push(
-          build(frontmatter, {
-            ...rendered,
-            slug,
-            url: urlFor(slug),
-            file: display,
-            body,
-            readingMinutes: readingMinutes(rendered.plainText),
-          }),
-        );
+        const rendered = renderMarkdown(body, renderOptions);
+        entries.push(build(parsed.data, { ...rendered, slug, url: urlFor(slug), file: display, body }));
       } catch (error) {
         errors.push(error instanceof ContentError ? error : new ContentError(display, String(error)));
       }
@@ -253,31 +170,12 @@ export function loadContentStore(rootDir = path.join(process.cwd(), 'content')):
     return entries;
   }
 
-  const articles = readCollection(
-    CONTENT_DIRS.articles,
-    articleFrontmatterSchema,
-    (fm, base): Article => ({ ...fm, ...base, kind: 'article' }),
-    (slug) => routes.article(slug),
-  );
-  const terms = readCollection(
-    CONTENT_DIRS.terms,
-    termFrontmatterSchema,
-    (fm, base): Term => ({ ...fm, ...base, kind: 'term' }),
-    (slug) => routes.term(slug),
-  );
-  const calculators = readCollection(
-    CONTENT_DIRS.calculators,
-    calculatorFrontmatterSchema,
-    (fm, base): CalculatorContent => ({ ...fm, ...base, kind: 'calculator' }),
-    (slug) => routes.calculator(slug),
-  );
   const pages = readCollection(
     CONTENT_DIRS.pages,
     pageFrontmatterSchema,
     (fm, base): StaticPage => ({ ...fm, ...base, kind: 'page' }),
     (slug) => `/${slug}`,
   );
-
   const stands = readCollection(
     CONTENT_DIRS.stands,
     standFrontmatterSchema,
@@ -308,24 +206,7 @@ export function loadContentStore(rootDir = path.join(process.cwd(), 'content')):
   );
 
   return {
-    store: {
-      categories,
-      tags,
-      people,
-      sources,
-      guide,
-      halls,
-      marketCategories,
-      positions,
-      articles,
-      terms,
-      calculators,
-      pages,
-      stands,
-      jobs,
-      candidates,
-      marketListings,
-    },
+    store: { people, halls, marketCategories, positions, pages, stands, jobs, candidates, marketListings },
     errors,
   };
 }

@@ -5,15 +5,15 @@ Site statik olarak üretildiği için `out/` klasörünü sunabilen her hizmette
 
 ## Yayın öncesi kontrol listesi
 
-- [ ] `src/config/site.ts` içindeki `contactEmail` gerçek adresle değiştirildi (şu an `iletisim@maden360.example`).
+- [ ] `src/config/site.ts` içindeki `contactEmail` ve `listingsEmail` gerçek adreslerle değiştirildi
+  (şu an `iletisim@maden360.example` ve `ilan@maden360.example`).
 - [ ] Alan adı alındı; barındırma hizmetinde `SITE_URL` ortam değişkeni bu adresle ayarlandı.
 - [ ] Gerekirse site adı (`name`) ve paylaşım görseli güncellendi (`node scripts/generate-og-image.mjs`).
-- [ ] En az bir teknik inceleyici `content/kisiler.yaml` dosyasına eklendi.
-- [ ] Yayımlanacak içerikler teknik incelemeden geçti (`status: published`, `reviewers`, `reviewedAt`).
-- [ ] İlan bölümleri açılacaksa: `listingsEmail` gerçek adresle değiştirildi; `content/sayfalar/kvkk.md`
-  dolduruldu, hukuki kontrolden geçti ve `content/sayfalar/ilan-kurallari.md` ile birlikte yayımlandı;
-  günlük yeniden derleme için `DEPLOY_HOOK_URL` gizli değişkeni eklendi
-  (bkz. [ilanlar-ve-fuar.md](ilanlar-ve-fuar.md#yayına-almadan-önce-bir-kez)).
+- [ ] En az bir ilan editörü (`canModerate: true`) `content/kisiler.yaml` dosyasına eklendi.
+- [ ] `content/sayfalar/kvkk.md` dolduruldu, hukuki kontrolden geçti ve `content/sayfalar/ilan-kurallari.md`
+  ile birlikte yayımlandı (başvuru formları bu iki sayfa yayımlanınca açılır).
+- [ ] Günlük yeniden derleme için `DEPLOY_HOOK_URL` gizli değişkeni eklendi; süresi dolan ilanlar böylece
+  her gece siteden kalkar (bkz. [ilanlar-ve-fuar.md](ilanlar-ve-fuar.md#yayına-almadan-önce-bir-kez)).
 - [ ] Yerelde tüm kontroller geçiyor:
 
 ```powershell
@@ -40,7 +40,7 @@ macOS/Linux'ta ortam değişkeni: `SITE_URL=https://www.alanadiniz.com.tr npm ru
 
 3. **Önizleme ortamı (isteğe bağlı):** Preview ortamı için build command olarak `npm run build:onizleme`
    kullanılırsa her dal ve çekme isteği için taslakların da göründüğü, arama motorlarına kapalı bir
-   önizleme adresi oluşur. Bu adresi yalnızca inceleyicilerle paylaşın. Önizleme adreslerine erişimi
+   önizleme adresi oluşur. Bu adresi yalnızca editörlerle paylaşın. Önizleme adreslerine erişimi
    kısıtlamak için Cloudflare Access (ücretsiz katman) kullanılabilir.
 4. **Custom domains** bölümünden alan adını bağlayın; HTTPS sertifikası otomatik verilir.
 
@@ -54,13 +54,26 @@ Bundan sonra `main` dalına her birleştirme siteyi otomatik olarak yeniden derl
 | Vercel | Framework: Next.js; statik dışa aktarma otomatik algılanır; `SITE_URL` ortam değişkeni |
 | GitHub Pages | GitHub Actions ile `npm run build` çıktısı (`out/`) yayımlanır; alt dizinde yayın için `basePath` ayarı gerekir |
 
-## Yayımlama adımları (her içerik için)
+## Yayımlama adımları (her ilan için)
 
-1. İçerik dalında çalışın, `npm run content:check` ile doğrulayın.
+1. Başvurudan ilan dosyasını oluşturun: formun ürettiği taslak dosyayı `content/` altına kaydedin veya
+   `npm run new -- market "Başlık"` ile şablondan başlayın. `npm run content:check` ile doğrulayın.
 2. Çekme isteği açın; CI kontrollerinin geçmesini bekleyin.
-3. Teknik inceleyici onaylasın ve `status: published`, `reviewers`, `reviewedAt`, `publishedAt` alanlarını doldursun.
+3. Editör, başvuruyu [kontrol listesine](ilanlar-ve-fuar.md#kontrol-listesi) göre inceleyip `status: published`,
+   `moderatedBy` ve `moderatedAt` alanlarını doldursun.
 4. Çekme isteğini `main` dalına birleştirin. Cloudflare Pages birkaç dakika içinde yeni sürümü yayımlar.
 5. Yayındaki sayfayı kontrol edin.
+
+## GitHub'da önerilen ayarlar
+
+**Settings → Branches → Branch protection rule (`main`):**
+
+- Require a pull request before merging (en az 1 onay)
+- Require status checks to pass: **CI / kalite**
+- Do not allow bypassing the above settings
+
+Böylece hiçbir ilan veya sayfa değişikliği editör onayı ve otomatik kontroller olmadan yayına çıkamaz.
+Editör hesaplarında iki adımlı doğrulamayı (2FA) zorunlu tutun.
 
 ## Geri alma
 
@@ -78,9 +91,9 @@ git revert <commit-kimliği>      # birleştirme commit'i ise: git revert -m 1 <
 git push origin main             # CI geçer ve site otomatik yeniden yayımlanır
 ```
 
-Tek bir içeriği hızlıca yayından kaldırmak için ilgili dosyada `status: review` yapıp birleştirmek
-yeterlidir; sayfa bir sonraki derlemede siteden ve site haritasından kalkar. Yayımlanmış bir içerikte
-hata düzeltildiğinde `corrections` alanına tarihli not eklenir.
+Tek bir ilanı veya sayfayı hızlıca yayından kaldırmak için ilgili dosyada `status: review` yapıp
+birleştirmek yeterlidir; sayfa bir sonraki derlemede siteden ve site haritasından kalkar. Yayımlanmış
+bir ilan düzeltildiğinde `updatedAt` alanını güncelleyin.
 
 **İlanlar (fuar standı, iş ilanı, aday profili, market):** Şikâyet veya kaldırma talebinde dosyayı silin
 (ya da `status: draft` yapın) ve `main` dalına gönderin. Kişisel veri içeren bir ilanı kaldırırken
@@ -110,17 +123,19 @@ git clone --mirror https://github.com/omerhayva/maden360.git maden360-yedek.git
 - **Erişilebilirlik ve trafik:** Çerez kullanmayan Cloudflare Web Analytics, panelden tek tıkla
   açılabilir (Faz 6 — analitik).
 - **Kırık bağlantılar:** `npm run site:check` her CI çalışmasında site içi bağlantıları denetler.
-  Dış kaynak bağlantıları (mevzuat, kurum siteleri) altı ayda bir elle kontrol edilmelidir.
+- **Mevzuat atıfları:** Market kategori notlarındaki resmî metinler (`content/market-kategorileri.yaml` →
+  `references`) altı ayda bir güncel metinle karşılaştırılmalı ve `checkedAt` yenilenmelidir;
+  `npm run content:check` kontrol tarihi 180 günü geçen atıf için uyarı verir.
 
 ## Faz 5 kalite kontrol listesi
 
 | Kontrol | Nasıl? |
 |---|---|
 | Mobil uyum | Telefon genişliğinde (390 px) her bölümü gezin; yatay kaydırma olmamalı |
-| Erişilebilirlik | Yalnızca klavyeyle (Tab, Shift+Tab, Enter, ok tuşları) bir hesap yapın; tarayıcıda Lighthouse/axe denetimi |
-| Performans | Lighthouse (mobil) ile ana sayfa ve bir hesaplayıcı sayfası |
+| Erişilebilirlik | Yalnızca klavyeyle (Tab, Shift+Tab, Enter, ok tuşları) bir başvuru formunu doldurup gönderin; tarayıcıda Lighthouse/axe denetimi |
+| Performans | Lighthouse (mobil) ile ana sayfa ve bir market ilanı sayfası |
 | Kırık bağlantılar | `npm run site:check` |
 | SEO | `npm run site:check` (başlık, açıklama, kanonik URL, tek h1, site haritası) |
-| Formül ve kaynak | Teknik inceleyici onayı + `npm test` |
+| İlan kuralları ve yasal notlar | Editör kontrol listesi + `npm run content:check` |
 | Yedekleme | Git + periyodik `git clone --mirror` |
 | Hata günlükleri | Cloudflare build log, GitHub Actions, tarayıcı konsolu |

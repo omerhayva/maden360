@@ -28,8 +28,6 @@ import {
   getMarketListing,
   getMarketListings,
   getStand,
-  getTerm,
-  resolveSources,
   type MarketListing,
 } from '@/lib/content';
 import { isExpired, todayInTurkey } from '@/lib/listings/dates';
@@ -112,19 +110,6 @@ function factsFor(listing: MarketListing): Fact[] {
   return facts;
 }
 
-const glossaryLinks = (listing: MarketListing): string[] => {
-  if (listing.license) {
-    return [
-      listing.license.kind === 'arama' ? 'arama-ruhsati' : 'isletme-ruhsati',
-      ...(listing.license.offer === 'rodovans' ? ['rodovans'] : []),
-      ...(listing.license.reserve === 'umrek-raporu' ? ['umrek'] : []),
-      'rezerv',
-    ];
-  }
-  if (listing.ore) return ['tenor', 'cevher'];
-  return [];
-};
-
 export default async function MarketListingPage({ params }: Props) {
   const listing = getMarketListing((await params).slug);
   if (!listing) notFound();
@@ -132,9 +117,6 @@ export default async function MarketListingPage({ params }: Props) {
   const category = getMarketCategory(listing.category);
   const stand = getStand(listing.seller.stand);
   const expiredAtBuild = isExpired(listing.expiresAt, todayInTurkey());
-  const terms = glossaryLinks(listing)
-    .map((slug) => getTerm(slug))
-    .filter((term) => term !== undefined);
   const unverifiedGrade =
     listing.ore && (listing.ore.analysis === 'beyan' || listing.ore.analysis === 'yok');
 
@@ -237,28 +219,8 @@ export default async function MarketListingPage({ params }: Props) {
               <NoticeBox
                 title={category.notice.title}
                 text={category.notice.text}
-                sources={resolveSources(category.notice)}
+                references={category.notice.references}
               />
-            )}
-
-            {terms.length > 0 && (
-              <nav aria-labelledby="ilgili-terimler">
-                <h2 id="ilgili-terimler" className="text-lg font-bold text-graphite-950">
-                  İlgili terimler
-                </h2>
-                <ul className="mt-3 flex flex-wrap gap-2">
-                  {terms.map((term) => (
-                    <li key={term.slug}>
-                      <Link
-                        href={term.url}
-                        className="inline-flex min-h-10 items-center rounded-md border border-stone-200 bg-white px-3 text-sm font-medium text-graphite-800 hover:border-copper-300"
-                      >
-                        {term.term}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
             )}
 
             <ListingMetaFooter

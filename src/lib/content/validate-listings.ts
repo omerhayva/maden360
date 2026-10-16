@@ -19,6 +19,8 @@ export interface ListingValidationContext {
   checkInternalLink: (file: string, href: string, isPublished: boolean) => void;
   /** public/ altındaki dosyanın bayt cinsinden boyutu; dosya yoksa null */
   publicFileSize: (publicPath: string) => number | null;
+  /** Mevzuat atıflarının yeniden kontrol edilmesi gereken gün sayısı */
+  legalCheckMaxAgeDays: number;
 }
 
 /** Patlayıcı madde alım-satımı ilan kurallarına göre kabul edilmez. */
@@ -58,17 +60,17 @@ export function validateListings(store: ContentStore, ctx: ListingValidationCont
   );
   duplicates(store.positions.map((position) => position.slug), 'content/meslekler.yaml', 'meslek kimliği');
 
-  const terms = new Set(store.terms.map((term) => term.slug));
-  for (const position of store.positions) {
-    if (position.term && !terms.has(position.term)) {
-      error('content/meslekler.yaml', `"${position.slug}": sözlükte "${position.term}" terimi yok.`);
-    }
-  }
-  const sourceIds = new Set(store.sources.map((source) => source.id));
+  // Kategori notlarındaki mevzuat atıfları: tarih geçerli ve güncel olmalı
   for (const category of store.marketCategories) {
-    for (const ref of category.notice?.sources ?? []) {
-      if (!sourceIds.has(ref.id)) {
-        error('content/market-kategorileri.yaml', `"${category.slug}" notunda tanımsız kaynak: "${ref.id}".`);
+    for (const reference of category.notice?.references ?? []) {
+      const where = `"${category.slug}" notu (${reference.title})`;
+      if (reference.checkedAt > today) {
+        error('content/market-kategorileri.yaml', `${where}: checkedAt gelecekte olamaz.`);
+      } else if (daysBetween(reference.checkedAt, today) > ctx.legalCheckMaxAgeDays) {
+        warn(
+          'content/market-kategorileri.yaml',
+          `${where}: resmî metin ${Math.round(ctx.legalCheckMaxAgeDays / 30)} aydan uzun süredir kontrol edilmedi; güncel metni kontrol edip checkedAt'i yenileyin.`,
+        );
       }
     }
   }

@@ -1,5 +1,3 @@
-import 'katex/dist/katex.min.css';
-
 /**
  * Derleme sırasında Markdown'dan üretilen HTML'i gösterir.
  * Ham HTML Markdown içinde devre dışıdır (allowDangerousHtml: false); içerik

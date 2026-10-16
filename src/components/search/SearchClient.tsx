@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { BookA, BookOpen, Briefcase, Calculator, Search, SearchX, Store, Tent } from 'lucide-react';
+import { Briefcase, Search, SearchX, Store, Tent, type LucideIcon } from 'lucide-react';
 import type MiniSearch from 'minisearch';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { siteConfig } from '@/config/site';
@@ -40,10 +40,7 @@ function loadIndex(): Promise<MiniSearch<SearchDocument>> {
   return indexPromise;
 }
 
-const typeIcons: Record<SearchDocType, typeof Calculator> = {
-  hesaplama: Calculator,
-  makale: BookOpen,
-  terim: BookA,
+const typeIcons: Record<SearchDocType, LucideIcon> = {
   stand: Tent,
   'is-ilani': Briefcase,
   market: Store,
@@ -51,15 +48,10 @@ const typeIcons: Record<SearchDocType, typeof Calculator> = {
 
 const FILTERS: { value: 'tum' | SearchDocType; label: string }[] = [
   { value: 'tum', label: 'Tümü' },
-  { value: 'hesaplama', label: 'Hesaplayıcılar' },
-  { value: 'makale', label: 'Makaleler' },
-  { value: 'terim', label: 'Sözlük' },
   { value: 'stand', label: 'Fuar' },
   { value: 'is-ilani', label: 'İş ilanları' },
   { value: 'market', label: 'Market' },
 ];
-
-const LISTING_FILTERS = new Set<string>(['stand', 'is-ilani', 'market']);
 
 export function SearchClient() {
   const searchParams = useSearchParams();
@@ -158,7 +150,7 @@ export function SearchClient() {
             onChange={(event) => setInput(event.target.value)}
             autoComplete="off"
             enterKeyHint="search"
-            placeholder="Örn. dekapaj oranı, tenör, uzunayak"
+            placeholder="Örn. ekskavatör, kırıcı"
             className="min-h-14 w-full rounded-lg border border-graphite-300 bg-white pl-11 pr-24 text-lg text-graphite-950 shadow-sm placeholder:text-graphite-500 focus:border-copper-500 focus:outline-none"
           />
           <button
@@ -172,11 +164,7 @@ export function SearchClient() {
 
       {trimmed && searchable && index && (
         <div className="mt-5 flex flex-wrap gap-2" role="group" aria-label="Sonuç türü">
-          {FILTERS.filter(
-            // İlan türleri yalnızca sonuç varsa gösterilir
-            (item) =>
-              !LISTING_FILTERS.has(item.value) || counts[item.value] > 0 || filter === item.value,
-          ).map((item) => (
+          {FILTERS.map((item) => (
             <button
               key={item.value}
               type="button"
@@ -218,18 +206,16 @@ export function SearchClient() {
           </div>
         )}
 
-        {!trimmed && <SearchSuggestions />}
+        {!trimmed && index && <SearchSuggestions hasDocuments={index.documentCount > 0} />}
 
         {trimmed && !searchable && (
           <p className="mt-4 text-graphite-700">
-            Aramanız yalnızca “ve, nedir, nasıl” gibi genel kelimeler içeriyor. Lütfen bir teknik
-            terim ekleyin.
+            Aramanız yalnızca “ve, nedir, nasıl” gibi genel kelimeler içeriyor. Lütfen aradığınız
+            ürünü, mesleği veya firma adını ekleyin.
           </p>
         )}
 
-        {trimmed && searchable && index && outcome.hits.length === 0 && (
-          <NoResults query={trimmed} />
-        )}
+        {trimmed && searchable && index && outcome.hits.length === 0 && <NoResults />}
 
         {visibleHits.length > 0 && (
           <ol className="mt-4 space-y-3">
@@ -277,7 +263,25 @@ export function SearchClient() {
   );
 }
 
-function SearchSuggestions() {
+function SearchSuggestions({ hasDocuments }: { hasDocuments: boolean }) {
+  if (!hasDocuments) {
+    return (
+      <div className="mt-2">
+        <p className="text-graphite-700">
+          Henüz yayımlanmış ilan yok. İlk ilanlar editör onayından geçtikçe burada aranabilir
+          olacak.{' '}
+          <Link
+            href={routes.postListing()}
+            className="font-semibold text-copper-700 hover:underline"
+          >
+            İlan verin
+          </Link>
+          .
+        </p>
+        <BrowseLinks />
+      </div>
+    );
+  }
   return (
     <div className="mt-2">
       <h2 className="text-sm font-semibold uppercase tracking-wide text-graphite-500">
@@ -302,9 +306,9 @@ function SearchSuggestions() {
 
 function BrowseLinks() {
   const links = [
-    { href: routes.calculators(), label: 'Tüm hesaplayıcılar', icon: Calculator },
-    { href: routes.articles(), label: 'Bilgi merkezi', icon: BookOpen },
-    { href: routes.glossary(), label: 'Madencilik sözlüğü', icon: BookA },
+    { href: routes.fair(), label: 'Sanal fuar', icon: Tent },
+    { href: routes.jobs(), label: 'İş ilanları', icon: Briefcase },
+    { href: routes.market(), label: 'Market', icon: Store },
   ];
   return (
     <ul className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -323,8 +327,7 @@ function BrowseLinks() {
   );
 }
 
-function NoResults({ query }: { query: string }) {
-  const mailto = `mailto:${siteConfig.contactEmail}?subject=${encodeURIComponent(`İçerik önerisi: ${query}`)}`;
+function NoResults() {
   return (
     <div className="mt-4 rounded-xl border border-dashed border-graphite-300 bg-white p-6">
       <div className="flex items-start gap-3">
@@ -332,15 +335,18 @@ function NoResults({ query }: { query: string }) {
         <div>
           <h2 className="text-lg font-semibold text-graphite-950">Sonuç bulunamadı</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-graphite-700">
-            <li>Yazımı kontrol edin veya Türkçe karakter kullanmadan deneyin (ör. “kazanim”).</li>
-            <li>Daha genel ya da farklı bir terim deneyin (ör. “verim” yerine “kazanım”).</li>
-            <li>İngilizce karşılığıyla arayın (ör. “stripping ratio”, “recovery”).</li>
+            <li>Yazımı kontrol edin veya Türkçe karakter kullanmadan deneyin (ör. “kirici”).</li>
+            <li>Daha genel bir kelime deneyin (ör. marka ve model yerine “ekskavatör”).</li>
+            <li>Aşağıdaki bölümlere göz atın; ilanlar şehir, kategori ve türe göre süzülebilir.</li>
           </ul>
           <p className="mt-3 text-sm text-graphite-700">
-            Aradığınız konu henüz yoksa{' '}
-            <a href={mailto} className="font-semibold text-copper-700 hover:underline">
-              bize önerin
-            </a>
+            Aradığınızı bulamadıysanız{' '}
+            <Link
+              href={routes.postListing()}
+              className="font-semibold text-copper-700 hover:underline"
+            >
+              “Aranıyor” ilanı veya aday profili gönderebilirsiniz
+            </Link>
             .
           </p>
         </div>

@@ -15,10 +15,10 @@ function resolveSiteUrl(): string {
 
 export const siteConfig = {
   name: 'Maden360',
-  shortDescription: 'Madencilik bilgi ve hesaplama platformu',
-  tagline: 'Madencilik için kaynaklı bilgi, test edilmiş hesaplamalar',
+  shortDescription: 'Madencilik sektör ağı',
+  tagline: 'Madenciliğin fuarı, iş ilanları ve marketi',
   description:
-    'Maden mühendisleri, teknikerler, öğrenciler ve saha ekipleri için kaynaklı teknik rehberler, madencilik sözlüğü ve formülleri açıklanmış hesaplama araçları.',
+    'Madencilik sektörü için sanal fuar, iş ilanları ve market: tedarikçi ve hizmet firmalarının standları, işçi ve iş arayanlar, ekipman, yedek parça, hizmet, cevher ve saha ilanları. İlanlar editör onayıyla yayımlanır.',
   url: resolveSiteUrl(),
   /** SITE_URL ayarlanmadan üretim derlemesi alınırsa uyarı vermek için kullanılır. */
   isUrlConfigured: Boolean(process.env.SITE_URL?.trim()),
@@ -42,7 +42,7 @@ export const siteConfig = {
   /** Web3Forms gibi erişim anahtarı isteyen hizmetler için (gizli değildir, tarayıcıya gider). */
   formAccessKey: process.env.NEXT_PUBLIC_FORM_ACCESS_KEY?.trim() ?? '',
   /** Ana sayfada ve aramada önerilen sorgular. */
-  popularSearches: ['dekapaj oranı', 'metal kazanımı', 'tonaj hesabı', 'kabarma', 'maden grupları'],
+  popularSearches: ['ekskavatör', 'daimi nezaretçi', 'kırıcı', 'rödövans', 'sondaj'],
 } as const;
 
 export type SiteConfig = typeof siteConfig;

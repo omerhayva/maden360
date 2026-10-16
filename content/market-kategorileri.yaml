@@ -7,7 +7,8 @@
 #   cevher  → cevher ve ürün; ilanda "ore" bloğu (mineral, tenör dayanağı) ZORUNLU
 #   saha    → saha ve ruhsat; ilanda "license" bloğu (grup, ruhsat türü, teklif) ZORUNLU
 # notice: kategori sayfasında ve bu kategorideki her ilanda gösterilen yasal/güvenlik notu.
-#   Mevzuata dayanan cümleler sources ile kaynağa bağlanır (content/kaynaklar.yaml).
+#   Mevzuata dayanan cümleler references ile resmî metne bağlanır (başlık, resmî adres, madde,
+#   son kontrol tarihi). checkedAt 6 aydan eskiyse doğrulama uyarı verir.
 
 - slug: is-makineleri
   name: İş makineleri
@@ -70,10 +71,11 @@
   notice:
     title: Patlatma hizmetleri ve patlayıcı madde ilanları
     text: Patlatma, mevzuatta tanımlanan yetki ve sorumluluklar çerçevesinde, patlayıcı madde kullanılması koşullarını yerine getirmek üzere yeterlik belgesine sahip ateşleyicilerce yürütülür. Maden360'ta patlayıcı madde, kapsül, fünye, infilaklı fitil ve benzeri malzemelerin alım-satım ilanları kabul edilmez; yalnızca yetkili firmaların hizmet ilanları yayımlanır.
-    sources:
-      - id: maden-isg-yonetmeligi-2013
-        locator: Madde 4 (b)
-        note: Ateşleyici tanımı.
+    references:
+      - title: Maden İşyerlerinde İş Sağlığı ve Güvenliği Yönetmeliği (Resmî Gazete 19.09.2013, Sayı 28770)
+        url: https://www.resmigazete.gov.tr/eskiler/2013/09/20130919-3.htm
+        locator: Madde 4 (b), ateşleyici tanımı
+        checkedAt: 2026-10-15
 
 - slug: cevher-urun
   name: Cevher ve ürün
@@ -94,7 +96,8 @@
   notice:
     title: Ruhsat devri ve rödövans mevzuata tabidir
     text: Maden Yönetmeliği'ne göre ruhsat devri; Bakanlık onayının alınması, tüm teknik belgelerin sunulması, mali yükümlülüklerin yerine getirilmesi ve devrin maden siciline şerh edilmesiyle tamamlanır; işletme izni ruhsattan bağımsız olarak devredilemez. Ruhsat sahipleri ile üçüncü kişiler arasındaki rödövans sözleşmeleri Genel Müdürlüğün iznine tabidir ve kamu kurum ve kuruluşları ile iştirakleri dışında yer altı kömür sahalarında rödövans sözleşmesi yapılamaz. Bir ilan, devrin veya sözleşmenin mümkün olduğu anlamına gelmez; işlemden önce ruhsatın maden sicilindeki kaydını ve hukuki durumunu doğrulayın, hukuki destek alın.
-    sources:
-      - id: maden-yonetmeligi-2022
+    references:
+      - title: Maden Yönetmeliği (Resmî Gazete 11.12.2022, Sayı 32040)
+        url: https://www.resmigazete.gov.tr/eskiler/2022/12/20221211-1.htm
         locator: Madde 79 (1) ve (10); Madde 97; Madde 101 (1) ve (4)
-        note: Ruhsat devri, işletme izninin devredilemezliği, maden sicilinin açıklığı ve rödövans sözleşmeleri.
+        checkedAt: 2026-10-16

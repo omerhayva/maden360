@@ -1,8 +1,6 @@
 # Meslekler / pozisyonlar (iş ilanları ve aday profilleri için).
 #
 # group: muhendis | teknik | saha | isg | idari
-# term : sözlükte karşılığı olan pozisyonlarda terim slug'ı (content/sozluk/<slug>.md).
-#        İlan sayfasında "Bu görev nedir?" bağlantısı olarak gösterilir.
 
 # Mühendislik
 - slug: maden-muhendisi
@@ -29,11 +27,9 @@
 - slug: daimi-nezaretci
   name: Daimî Nezaretçi
   group: muhendis
-  term: daimi-nezaretci
 - slug: teknik-eleman
   name: Teknik Eleman
   group: muhendis
-  term: teknik-eleman
 
 # Teknik personel
 - slug: maden-teknikeri
@@ -62,7 +58,6 @@
 - slug: atesleyici
   name: Ateşleyici
   group: saha
-  term: atesleyici
 - slug: yeralti-maden-iscisi
   name: Yeraltı Maden İşçisi
   group: saha

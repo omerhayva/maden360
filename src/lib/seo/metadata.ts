@@ -14,7 +14,7 @@ export interface PageMetaInput {
   /** Site adı eklenmeden sayfa başlığı */
   title: string;
   description: string;
-  /** Kanonik yol, ör. "/bilgi/dekapaj-orani-nedir" */
+  /** Kanonik yol, ör. "/market/ornek-krom-cevheri" */
   path: string;
   type?: 'website' | 'article';
   publishedTime?: string;

@@ -1,35 +1,36 @@
-# Maden360 — Türkiye Madencilik Bilgi ve Hesaplama Platformu
+# Maden360 — Madencilik Sektör Ağı
 
-Maden mühendisleri, teknikerler, cevher hazırlama çalışanları, öğrenciler ve saha ekipleri için
-**kaynaklı teknik rehberler**, **madencilik sözlüğü** ve **formülleri açıklanmış, test edilmiş
-hesaplayıcılar** sunan statik bir web platformu. Haber sitesi değildir; dijital bir başvuru kaynağıdır.
+Türkiye madencilik sektörü için **sanal fuar**, **iş ilanları** ve **market** sunan statik bir web
+platformu. Tedarikçi ve hizmet firmaları stand açar; işverenler ve iş arayanlar ilan verir; ekipman,
+yedek parça, hizmet, cevher ve saha ilanları yayımlanır. Üyelik yoktur: başvurular formla alınır ve
+editör onayıyla yayımlanır.
 
 > Çalışma adı "Maden360"tır. Ad, alan adı ve iletişim adresi `src/config/site.ts` dosyasından
 > tek noktada değiştirilir.
 
 ## Özellikler
 
-- **4 hesaplayıcı:** tonaj–hacim–yoğunluk, dekapaj oranı, kütle verimi ve metal kazanımı, vardiya
-  üretim performansı. Türkçe sayı biçimi (`2,65`), birim dönüşümü, hatalı girdi ve sıfıra bölme
-  koruması, adım adım hesap, yorum, paylaşılabilir bağlantı ve yazdırma.
-- **Bilgi merkezi:** 11 kaynaklı makale; numaralı atıflar, inceleme ve düzeltme geçmişi, mevzuat
-  içeriklerinde yürürlük ve değişiklik bilgisi.
-- **Sözlük:** 41 terim; mevzuattaki resmî tanımlar birebir alıntılanır, İngilizce karşılıklar verilir.
-- **Sektör rehberi, konular ve arama:** Türkçe karakter ve eklere duyarlı, tarayıcı içinde çalışan arama.
-- **Sektör ağı:** Sanal Fuar (11 salonda tedarikçi ve hizmet firması standları), İş İlanları (işçi
-  arayanlar ve iletişim bilgisi yayımlanmayan aday profilleri) ve Market (ekipman, yedek parça, hizmet,
-  cevher, saha/rödövans ilanları). Üyelik yok; başvurular formla alınır, editör onayıyla yayımlanır,
-  süresi dolunca kendiliğinden kalkar (bkz. [docs/ilanlar-ve-fuar.md](docs/ilanlar-ve-fuar.md)).
-- **Yayın iş akışı:** taslak → inceleme → yayın; içerik kuralları otomatik doğrulanır.
-- **SEO ve erişilebilirlik:** özgün başlık/açıklama/kanonik URL, yapılandırılmış veri, site haritası;
-  klavye ve ekran okuyucu desteği, WCAG 2.2 AA kontrast.
+- **Sanal Fuar:** 11 salonda tedarikçi ve hizmet firmalarının standları: ürünler, hizmetler, markalar,
+  hizmet bölgesi ve iletişim bilgileri.
+- **İş İlanları:** işçi arayan işverenlerin ilanları ve iletişim bilgisi yayımlanmayan aday profilleri;
+  işverenlerin talepleri editörler aracılığıyla adaya iletilir.
+- **Market:** satılık, kiralık ve aranan ekipman, yedek parça, hizmet, cevher ve ürün, saha ve rödövans
+  ilanları. Ruhsat, rödövans, cevher ve patlatma hizmeti kategorilerinde resmî metne dayanan yasal notlar
+  gösterilir.
+- **Moderasyonlu yayın:** başvuru formu → editör kontrolü → yayın. Her ilanın yayın süresi vardır,
+  süresi dolan ilan kendiliğinden kalkar; yayın kuralları otomatik doğrulanır
+  (bkz. [docs/ilanlar-ve-fuar.md](docs/ilanlar-ve-fuar.md)).
+- **Arama:** fuar, iş ve market ilanlarında Türkçe karakter ve eklere duyarlı, tarayıcı içinde çalışan
+  arama.
+- **SEO ve erişilebilirlik:** özgün başlık/açıklama/kanonik URL, yapılandırılmış veri (JobPosting,
+  Organization), site haritası; klavye ve ekran okuyucu desteği, WCAG 2.2 AA kontrast.
 
-> **Önemli:** Depodaki tüm makale, terim ve hesaplayıcı metinleri yapay zekâ desteğiyle hazırlanmış
-> taslaklardır ve `status: review` durumundadır. Bu nedenle üretim derlemesinde (`npm run build`)
-> yalnızca güven sayfaları yayımlanır. İçerikler teknik incelemeden geçtikçe yayına alınır
-> (bkz. [docs/icerik-is-akisi.md](docs/icerik-is-akisi.md)). Fuar, iş ve market bölümlerindeki
-> 18 dosya da yalnızca önizlemede görünen **örnek içeriktir** (`example: true`); ilan formları, ilan
-> kuralları ve KVKK aydınlatma metni yayımlanınca açılır.
+> **Önemli:** Fuar, iş ve market bölümlerindeki 18 dosya yalnızca önizlemede görünen **örnek
+> içeriktir** (`example: true`). Üretim derlemesinde (`npm run build`) örnek ilanlar yer almaz. İlan
+> formları, ilan kuralları ve KVKK aydınlatma metni yayımlanınca açılır.
+>
+> Bilgi Merkezi, Sözlük ve Hesaplamalar bölümleri 16 Ekim 2026'da kaldırıldı. Gerekçe ve geri getirme
+> yolu: [docs/urun-plani.md §12](docs/urun-plani.md#12-kapsam-güncellemesi-bilgi-merkezi-sözlük-ve-hesaplamalar-kaldırıldı).
 
 ## Hızlı başlangıç (Windows PowerShell)
 
@@ -40,7 +41,7 @@ node -v                     # v22.12.0 veya üzeri olmalı
 git clone https://github.com/omerhayva/maden360.git
 cd maden360
 npm install
-npm run dev                 # http://localhost:3000 — taslaklar dahil tüm içerik görünür
+npm run dev                 # http://localhost:3000 — örnek ve taslak ilanlar dahil tüm içerik görünür
 ```
 
 Komutlar macOS ve Linux'ta da aynıdır.
@@ -50,14 +51,14 @@ Komutlar macOS ve Linux'ta da aynıdır.
 | Komut | Ne yapar? |
 |---|---|
 | `npm run dev` | Geliştirme sunucusu (tüm içerik, uyarı bandıyla) |
-| `npm run build` | Üretim derlemesi → `out/` (yalnızca `published` içerik) |
-| `npm run build:onizleme` | Önizleme derlemesi (taslaklar dahil, arama motorlarına kapalı) |
+| `npm run build` | Üretim derlemesi → `out/` (yalnızca yayımlanmış, süresi dolmamış ilanlar) |
+| `npm run build:onizleme` | Önizleme derlemesi (taslak ve örnek ilanlar dahil, arama motorlarına kapalı) |
 | `npm start` | `out/` klasörünü yerelde sunar (http://localhost:3000) |
-| `npm test` | Birim testleri (hesap motorları, içerik kuralları, arama) |
-| `npm run content:check` | İçerik doğrulama (şema, kaynak, atıf, yayın kuralları) |
+| `npm test` | Birim testleri (içerik ve ilan kuralları, başvuru formları, arama) |
+| `npm run content:check` | İçerik doğrulama (şema, yayın ve ilan kuralları, bağlantılar, yasal not atıfları) |
 | `npm run site:check` | Derleme sonrası kırık bağlantı ve SEO denetimi |
 | `npm run check` | Lint + tip denetimi + testler + içerik doğrulama |
-| `npm run new -- makale "Başlık"` | Şablondan yeni içerik: `makale`, `terim`, `firma`, `is-ilani`, `aday`, `market` |
+| `npm run new -- market "Başlık"` | Şablondan yeni ilan dosyası: `firma`, `is-ilani`, `aday`, `market` |
 | `npm run lint` / `npm run typecheck` / `npm run format` | Kod kalitesi |
 
 Ortam değişkeni ayarlamak için (PowerShell): `$env:SITE_URL="https://www.alanadiniz.com.tr"; npm run build`
@@ -65,37 +66,35 @@ Ortam değişkeni ayarlamak için (PowerShell): `$env:SITE_URL="https://www.alan
 ## Proje yapısı
 
 ```text
-content/        Makaleler, sözlük, hesaplayıcı açıklamaları, sayfalar, kaynak ve kişi kayıtları
-src/app/        Sayfalar ve rotalar (/bilgi, /hesaplamalar, /sozluk, /fuar, /is-ilanlari, /market, /ilan-ver ...)
-src/calculators Hesap motorları (saf TypeScript) ve testleri
+content/        Fuar standları, iş ilanları, aday profilleri, market ilanları, sayfalar;
+                salon, kategori, meslek ve editör kayıtları
+src/app/        Sayfalar ve rotalar (/fuar, /is-ilanlari, /is-arayanlar, /market, /ilan-ver, /ara ...)
 src/components  Arayüz bileşenleri
-src/lib/        İçerik işleme, doğrulama, arama, SEO
-scripts/        Doğrulama, site denetimi, yerel sunucu, içerik oluşturma
+src/lib/        İçerik işleme ve doğrulama, ilan ve başvuru mantığı, arama, SEO
+scripts/        Doğrulama, site denetimi, yerel sunucu, ilan dosyası oluşturma
 docs/           Belgeler
 ```
 
 ## Belgeler
 
-- [Ürün planı](docs/urun-plani.md) — kapsam, URL yapısı, veri modeli (ER diyagramı), fazlar
+- [Ürün planı](docs/urun-plani.md) — kapsam ve kapsam güncellemeleri, URL yapısı, veri modeli, fazlar
 - [Mimari](docs/mimari.md) — teknik yapı, yayın kuralı, arama, çok dilliliğe hazırlık
-- [İçerik iş akışı](docs/icerik-is-akisi.md) — durumlar, roller, kaynak ekleme, yayımlama kontrol listesi
-- [Hesaplayıcı geliştirme](docs/hesaplayici-gelistirme.md) — yeni hesaplayıcı ekleme ve test etme
 - [Sanal Fuar, İş İlanları ve Market](docs/ilanlar-ve-fuar.md) — başvuru akışı, editör onayı, süre dolumu, KVKK ve kaldırma
-- [Yayına alma ve geri alma](docs/yayinlama-ve-geri-alma.md) — Cloudflare Pages, geri alma, yedekleme
-- [Kabul kriterleri](docs/kabul-kriterleri.md) — dokuz kriterin karşılanışı ve doğrulanması
+- [Yayına alma ve geri alma](docs/yayinlama-ve-geri-alma.md) — Cloudflare Pages, GitHub ayarları, geri alma, yedekleme
+- [Kabul kriterleri](docs/kabul-kriterleri.md) — kriterlerin karşılanışı ve doğrulanması
 
 ## Yayın öncesi yapılacaklar
 
-1. `src/config/site.ts` → `contactEmail` alanını gerçek adresle değiştirin.
+1. `src/config/site.ts` → `contactEmail` ve `listingsEmail` alanlarını gerçek adreslerle değiştirin.
 2. Barındırma hizmetinde `SITE_URL` ortam değişkenini gerçek alan adınızla ayarlayın.
-3. `content/kisiler.yaml` dosyasına en az bir teknik inceleyici ekleyin.
-4. İçerikleri inceleyip yayımlayın; ayrıntılar [docs/yayinlama-ve-geri-alma.md](docs/yayinlama-ve-geri-alma.md).
-5. İlan bölümleri için: `listingsEmail` adresini ayarlayın, KVKK aydınlatma metnini doldurup hukuki
-   kontrolden geçirin, ilan kurallarıyla birlikte yayımlayın; isterseniz günlük yeniden derleme kancasını
-   kurun ([docs/ilanlar-ve-fuar.md](docs/ilanlar-ve-fuar.md#yayına-almadan-önce-bir-kez)).
+3. `content/kisiler.yaml` dosyasına en az bir ilan editörü (`canModerate: true`) ekleyin.
+4. KVKK aydınlatma metnini doldurup hukuki kontrolden geçirin ve ilan kurallarıyla birlikte yayımlayın;
+   isterseniz günlük yeniden derleme kancasını kurun
+   ([docs/ilanlar-ve-fuar.md](docs/ilanlar-ve-fuar.md#yayına-almadan-önce-bir-kez)).
+5. Yayına alma adımları: [docs/yayinlama-ve-geri-alma.md](docs/yayinlama-ve-geri-alma.md).
 
 ## Sorumluluk notu
 
-Hesaplama sonuçları ve teknik içerikler bilgilendirme amaçlıdır. Havalandırma, tahkimat, patlatma ve
-iş sağlığı ve güvenliği gibi saha kararları; yetkili mühendis değerlendirmesi, ilgili mevzuat ve
-standartlar esas alınarak verilmelidir.
+Fuar standları ve ilanlar sahiplerinin beyanıdır. Maden360 alım-satıma, kiralamaya, ruhsat devrine ve
+işe alıma taraf değildir; ödeme almaz. Yasal notlar bilgilendirme amaçlıdır ve hukuki danışmanlık
+yerine geçmez; mevzuatın güncel ve resmî metni için Resmî Gazete ve mevzuat.gov.tr esas alınır.

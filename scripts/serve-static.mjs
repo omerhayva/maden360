@@ -4,7 +4,7 @@
  * Kullanım:  npm run build  →  npm start   (varsayılan: http://localhost:3000)
  * Port değiştirmek için (PowerShell):  $env:PORT=4000; npm start
  *
- * Temiz URL'ler (/bilgi/x → out/bilgi/x.html) ve 404 sayfası, Cloudflare Pages
+ * Temiz URL'ler (/market/x → out/market/x.html) ve 404 sayfası, Cloudflare Pages
  * gibi statik barındırma hizmetlerindeki davranışla aynı şekilde çözülür.
  */
 import { createReadStream, existsSync, statSync } from 'node:fs';

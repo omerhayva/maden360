@@ -1,8 +1,14 @@
-# Ürün planı — Türkiye Madencilik Bilgi ve Hesaplama Platformu
+# Ürün planı — Maden360
 
-> Bu belge, proje başlangıcında paylaşılan ürün planının düzenlenmiş hâlidir. Uygulamadaki karşılıkları
-> [mimari.md](mimari.md) ve [kabul-kriterleri.md](kabul-kriterleri.md) belgelerinde açıklanır.
-> Çalışma adı **Maden360**'tır; ad, `src/config/site.ts` dosyasından tek noktada değiştirilebilir.
+> Bu belge, proje başlangıcında paylaşılan ürün planının ("Türkiye Madencilik Bilgi ve Hesaplama
+> Platformu") düzenlenmiş hâlidir. Uygulamadaki karşılıkları [mimari.md](mimari.md) ve
+> [kabul-kriterleri.md](kabul-kriterleri.md) belgelerinde açıklanır. Çalışma adı **Maden360**'tır; ad,
+> `src/config/site.ts` dosyasından tek noktada değiştirilebilir.
+
+> **Güncel kapsam (16 Ekim 2026):** Platform bir **madencilik sektör ağıdır**: Sanal Fuar, İş İlanları
+> ve Market ([§11](#11-kapsam-güncellemesi-sanal-fuar-iş-ilanları-ve-market)). Bilgi Merkezi, Sözlük ve
+> Hesaplamalar kaldırıldı ([§12](#12-kapsam-güncellemesi-bilgi-merkezi-sözlük-ve-hesaplamalar-kaldırıldı)).
+> §1–§10 karar geçmişi olarak korunur; kaldırılan maddeler işaretlenmiştir.
 
 ## 1. Ürün tanımı
 
@@ -21,11 +27,13 @@ Türkiye'deki madencilik profesyonelleri için bir **dijital başvuru ve hesapla
 
 ### v1 (MVP) modülleri
 
-1. **Bilgi merkezi:** Kategorili ve aranabilir makaleler.
-2. **Hesaplama merkezi:** Formülleri açıklanmış ve test edilmiş hesaplayıcılar.
-3. **Sektör rehberi:** Maden türleri, yöntemler, terimler, sözlük.
-4. **Kaynak sistemi:** Her teknik içerikte kaynak, tarih ve doğrulama durumu.
-5. **Arama:** Makale, terim ve hesaplayıcılarda arama.
+1. ~~**Bilgi merkezi:** Kategorili ve aranabilir makaleler.~~ *Kaldırıldı (§12).*
+2. ~~**Hesaplama merkezi:** Formülleri açıklanmış ve test edilmiş hesaplayıcılar.~~ *Kaldırıldı (§12).*
+3. ~~**Sektör rehberi:** Maden türleri, yöntemler, terimler, sözlük.~~ *Kaldırıldı (§12).*
+4. ~~**Kaynak sistemi:** Her teknik içerikte kaynak, tarih ve doğrulama durumu.~~ *Kaldırıldı (§12);
+   mevzuata dayanan yasal notlarda resmî dayanak ve kontrol tarihi gösterilmeye devam eder.*
+5. **Arama:** ~~Makale, terim ve hesaplayıcılarda arama.~~ Fuar standları, iş ilanları ve market
+   ilanlarında arama (§12).
 6. **Mobil uyum.**
 7. **SEO:** Her içerik için özgün başlık, açıklama ve dizinlenebilir URL.
 8. **Yönetim:** İçerik ekleme, düzenleme ve yayımlama iş akışı.
@@ -46,13 +54,13 @@ Türkiye'deki madencilik profesyonelleri için bir **dijital başvuru ve hesapla
 | Adres | İçerik |
 |---|---|
 | `/` | Ana sayfa |
-| `/bilgi`, `/bilgi/[slug]` | Bilgi merkezi ve makaleler |
-| `/konular/[slug]` | Konu (kategori) sayfaları |
-| `/hesaplamalar`, `/hesaplamalar/[slug]` | Hesaplayıcılar |
-| `/rehber` | Sektör rehberi: maden türleri, terimler, meslekler, süreçler, teknik kavramlar |
-| `/sozluk`, `/sozluk/[slug]` | Madencilik sözlüğü |
+| ~~`/bilgi`, `/bilgi/[slug]`~~ | ~~Bilgi merkezi ve makaleler~~ — kaldırıldı (§12) |
+| ~~`/konular/[slug]`~~ | ~~Konu (kategori) sayfaları~~ — kaldırıldı (§12) |
+| ~~`/hesaplamalar`, `/hesaplamalar/[slug]`~~ | ~~Hesaplayıcılar~~ — kaldırıldı (§12) |
+| ~~`/rehber`~~ | ~~Sektör rehberi~~ — kaldırıldı (§12) |
+| ~~`/sozluk`, `/sozluk/[slug]`~~ | ~~Madencilik sözlüğü~~ — kaldırıldı (§12) |
 | `/ara?q=...` | Arama |
-| `/hakkimizda`, `/kaynak-politikasi`, `/duzeltme-politikasi`, `/iletisim` | Güven sayfaları |
+| `/hakkimizda`, `/iletisim` | Güven sayfaları (~~`/kaynak-politikasi`, `/duzeltme-politikasi`~~ kaldırıldı, §12) |
 | `/fuar`, `/fuar/salonlar/[salon]`, `/fuar/[firma]` | Sanal fuar (§11) |
 | `/is-ilanlari`, `/is-ilanlari/[slug]`, `/is-arayanlar`, `/is-arayanlar/[no]` | İş ilanları ve aday profilleri (§11) |
 | `/market`, `/market/kategori/[kategori]`, `/market/[slug]` | Market (§11) |
@@ -62,6 +70,9 @@ Türkiye'deki madencilik profesyonelleri için bir **dijital başvuru ve hesapla
 - Bir yönetim alanı eklenirse `/yonetim` altında olmalı ve kimlik doğrulama ile yetkilendirme gerektirmelidir.
 
 ## 4. Hesaplayıcılar
+
+> *16 Ekim 2026'da kapsamdan çıkarıldı (§12). Aşağıdaki kurallar, hesaplayıcılar ileride yeniden
+> eklenirse geçerlidir.*
 
 **Konu alanları:** Üretim planlama (tonaj–hacim, dekapaj oranı), cevher hazırlama ve zenginleştirme (kütle verimi, besleme ve ürün tenörü, metal kazanımı, konsantre miktarı), nakliyat (kamyon, bant konveyör), vardiya ve üretim performansı.
 
@@ -188,10 +199,11 @@ erDiagram
 
 1. Ana sayfa ve tüm temel sayfalar hatasız açılır.
 2. Yerleşim telefonda ve masaüstünde çalışır.
-3. İlk dört hesaplayıcı beklenen sonuç testlerini geçer.
-4. Geçersiz, eksik ve sıfıra bölme oluşturan girdiler ele alınır.
-5. Makalelerde kaynak ve inceleme bilgisi görünür.
-6. Arama, kategori gezinmesi ve sözlük bağlantıları çalışır.
+3. ~~İlk dört hesaplayıcı beklenen sonuç testlerini geçer.~~ *Kapsam dışı (§12).*
+4. Geçersiz, eksik ve sıfıra bölme oluşturan girdiler ele alınır. *(§12'den sonra: başvuru formları.)*
+5. ~~Makalelerde kaynak ve inceleme bilgisi görünür.~~ *Kapsam dışı (§12); ilanlarda yayın ve onay
+   bilgisi, yasal notlarda resmî dayanak görünür.*
+6. Arama, kategori gezinmesi ~~ve sözlük bağlantıları~~ çalışır. *(Sözlük kaldırıldı, §12.)*
 7. Her içeriğin başlığı, açıklaması ve kanonik URL'si vardır.
 8. Gizli bir yönetim alanı varsa kimlik doğrulamayla korunur.
 9. Yayına alma ve geri alma adımları belgelenmiştir.
@@ -279,3 +291,62 @@ erDiagram
         string group
     }
 ```
+
+## 12. Kapsam güncellemesi: Bilgi Merkezi, Sözlük ve Hesaplamalar kaldırıldı
+
+**Tarih:** 16 Ekim 2026 · **Karar:** Ürün sahibi bilgi kaynaklarının (Bilgi Merkezi ve kaynak
+sistemi), sözlüğün ve hesaplamaların kaldırılmasını istedi. Platform, §11'de eklenen üç bölüme odaklanan
+bir **madencilik sektör ağı** olarak devam eder: Sanal Fuar, İş İlanları ve Market.
+
+| Kaldırılan | Ayrıntı |
+|---|---|
+| Bilgi Merkezi ve kaynak sistemi | `/bilgi` (11 makale), `/konular`, `/rehber`; kaynak (18), konu ve etiket kayıtları; atıf, teknik inceleme, düzeltme geçmişi ve mevzuat bilgi kutuları |
+| Sözlük | `/sozluk` (41 terim); iş ilanı ve market sayfalarındaki terim bağlantıları |
+| Hesaplamalar | `/hesaplamalar` (4 hesaplayıcı), hesap motorları ve testleri, formül (KaTeX) desteği |
+| Politika sayfaları | `/kaynak-politikasi`, `/duzeltme-politikasi`: yalnızca makaleler için geçerliydi; ilanların düzeltme ve kaldırma kuralları ilan kurallarında yer alır |
+
+**Değişmeyenler:** v1 sınırları (üyelik, ödeme ve abonelik yok; gerçek zamanlı fiyat yok; madende
+kontrol veya güvenlik kararı veren yazılım yok), tasarım ilkeleri (§7), statik ve ücretsiz barındırma
+(§8), `/en` için URL kuralları (§3) ve ilan modeli (§11).
+
+**Veri modeli:** ARTICLE, SOURCE, TAG, CATEGORY, CALCULATOR ve TERM varlıkları kaldırıldı. Market
+kategorisi notlarının dayanağı, ayrı bir kaynak kaydı yerine notun içinde tutulur (`references`:
+başlık, resmî adres, madde, son kontrol tarihi). Doğrulama gelecek tarihli kontrolü hata, 180 günden
+eski kontrolü uyarı olarak raporlar. Meslek kayıtlarından sözlük bağlantısı (`term`), kişi
+kayıtlarından inceleme yetkisi (`canReview`) çıkarıldı; kişiler yalnızca ilan editörüdür
+(`canModerate`).
+
+```mermaid
+erDiagram
+    MARKET_CATEGORY ||--o{ MARKET_LISTING : "içerir"
+    MARKET_CATEGORY ||--o| NOTICE : "yasal not"
+    NOTICE ||--o{ REFERENCE : "dayanak"
+
+    REFERENCE {
+        string title "Maden Yönetmeliği (RG 11.12.2022, 32040)"
+        string url "resmî metin (http/https)"
+        string locator "Madde 79 (1) ve (10)"
+        date checked_at "180 günden eskiyse uyarı"
+    }
+```
+
+**İçerik kuralları:** §5'teki ilkeler (kaynak önceliği, yapay zekâ metninin doğrulanmadan
+yayımlanmaması, standart metinlerinin kopyalanmaması) bundan sonra yasal notlar ve sayfa metinleri
+için geçerlidir.
+
+**Kabul kriterlerine etkisi** ([kabul-kriterleri.md](kabul-kriterleri.md)): #3 kapsam dışı kaldı; #4
+başvuru formlarındaki girdi doğrulamasına uyarlandı; #5 kapsam dışı kaldı (yerine ilanlarda yayın ve
+onay bilgisi, yasal notlarda resmî dayanak); #6'da arama ve kategori/salon gezinmesi kaldı, sözlük
+bağlantıları çıkarıldı. Diğer kriterler değişmedi.
+
+**Geri getirme:** Kaldırılan dosyaların tamamı Git geçmişindedir; son hâlleri `d20be33` commit'indedir.
+Kaldırma işleminin tamamını geri almak en güvenli yoldur:
+
+```powershell
+git log --oneline -1 -- content/makaleler    # kaldırma commit'ini gösterir
+git revert <commit-kimliği>
+```
+
+Tek bir bölümü geri getirmek için dosyalar `git checkout d20be33 -- <yol>` ile alınabilir (ör.
+`content/hesaplamalar`, `src/calculators`); bu durumda içerik şemaları, doğrulama, menü ve arama
+kodunun da o bölüm için yeniden eklenmesi gerekir.

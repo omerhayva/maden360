@@ -7,7 +7,7 @@ import { pageMetadata } from '@/lib/seo/metadata';
 
 export const metadata = pageMetadata({
   title: 'Arama',
-  description: 'Hesaplayıcılarda, bilgi merkezindeki makalelerde ve madencilik sözlüğünde arayın.',
+  description: 'Fuar standlarında, iş ilanlarında ve market ilanlarında arayın.',
   path: routes.search(),
   // Arama sonuç sayfaları arama motorlarında dizine eklenmez.
   noindex: true,
@@ -27,7 +27,7 @@ export default function SearchPage() {
     <>
       <PageHeader
         title="Arama"
-        description="Hesaplayıcılarda, makalelerde ve sözlükte arayın. Türkçe karakter kullanmadan da arama yapabilirsiniz."
+        description="Fuar standlarında, iş ilanlarında ve market ilanlarında arayın. Türkçe karakter kullanmadan da arama yapabilirsiniz."
         breadcrumbs={[{ name: 'Arama', href: routes.search() }]}
       />
       <Container className="py-8">

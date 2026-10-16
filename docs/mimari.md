@@ -10,13 +10,14 @@ Bu sayede Cloudflare Pages, Netlify veya GitHub Pages gibi ücretsiz statik bar�
 ```mermaid
 flowchart LR
     subgraph Depo["Git deposu"]
-        C["content/<br/>Markdown + YAML"]
-        K["src/calculators/<br/>hesap motorları + testler"]
+        C["content/<br/>ilanlar, sayfalar, kayıtlar<br/>(Markdown + YAML)"]
+        L["src/lib/<br/>içerik, ilan ve başvuru mantığı"]
         A["src/app, src/components<br/>sayfalar ve arayüz"]
     end
-    C --> V["İçerik doğrulama<br/>(zod şemaları + kurallar)"]
-    K --> T["Vitest testleri"]
+    C --> V["İçerik doğrulama<br/>(zod şemaları + ilan kuralları)"]
+    L --> T["Vitest testleri"]
     V --> B["next build<br/>(statik üretim)"]
+    L --> B
     A --> B
     B --> O["out/<br/>HTML, JS, arama-dizini.json,<br/>sitemap.xml, robots.txt"]
     O --> H["Statik barındırma<br/>(Cloudflare Pages vb.)"]
@@ -27,74 +28,63 @@ flowchart LR
 | Çatı | Next.js 16 (App Router), React 19 | Statik dışa aktarma |
 | Dil | TypeScript 6 (strict) | |
 | Stil | Tailwind CSS 4 + Typography | Tasarım belirteçleri `src/app/globals.css` |
-| İçerik | Markdown + YAML ön bilgi | unified/remark/rehype, KaTeX formüller |
+| İçerik | Markdown + YAML ön bilgi | unified/remark/rehype (GFM tabloları); ham HTML kapalı |
 | Doğrulama | zod 4 | Hatalı içerik derlemeyi durdurur |
 | Arama | MiniSearch (tarayıcıda) | Türkçeye uyarlanmış dizinleme |
-| Test | Vitest | Hesap motorları, içerik kuralları, arama |
+| Test | Vitest | İçerik ve ilan kuralları, başvuru formları, sayı okuma, arama |
 | Yazı tipi | Inter (fontsource, kendi sunucumuzdan) | Dış yazı tipi servisi yok |
 
 ## Klasör yapısı
 
 ```text
 content/                  İçerik (editörlerin çalıştığı yer)
-  makaleler/*.md          Bilgi merkezi makaleleri
-  sozluk/*.md             Sözlük terimleri
-  hesaplamalar/*.md       Hesaplayıcı açıklama sayfaları
-  sayfalar/*.md           Hakkımızda, politikalar, iletişim, ilan kuralları, KVKK metni
   fuar/*.md               Sanal fuar standları (firma vitrinleri)
   is-ilanlari/*.md        İş ilanları (işçi arayanlar)
   is-arayanlar/*.md       Aday profilleri (kişisel veri içermez; dosya adı = başvuru no)
   market/*.md             Market ilanları (ekipman, parça, hizmet, cevher, saha)
+  sayfalar/*.md           Hakkımızda, iletişim, ilan kuralları, KVKK aydınlatma metni
   fuar-salonlari.yaml     Sanal fuar salonları
-  market-kategorileri.yaml Market kategorileri ve yasal notları
+  market-kategorileri.yaml Market kategorileri ve yasal notları (resmî dayanaklarıyla)
   meslekler.yaml          Meslek / pozisyon listesi
-  konular.yaml            Konular (kategoriler)
-  etiketler.yaml          Etiketler
-  kaynaklar.yaml          Kaynak kayıtları
-  kisiler.yaml            Yazarlar ve teknik inceleyiciler
-  rehber.yaml             Sektör rehberi bölümleri
-  _sablonlar/             Yeni içerik şablonları
+  kisiler.yaml            İlan editörleri
+  _sablonlar/             Yeni ilan şablonları
 src/
   app/                    Sayfalar (rotalar), site haritası, robots, arama dizini
-  calculators/            Hesap motorları (saf TypeScript) ve testleri
-    core/                 Ortak tipler, sayı ayrıştırma, birimler, girdi okuma
   components/             Arayüz bileşenleri
+    listings/             İlan kartları, süzme, ilan sayfası parçaları
+    forms/                Erişilebilir başvuru formu
   config/site.ts          Site adı, adres, iletişim (tek yapılandırma noktası)
   i18n/                   URL yapısı ve menüler (İngilizceye hazır)
   lib/content/            İçerik şemaları, yükleme, Markdown işleme, doğrulama
-  lib/search/             Arama motoru ve dizin üretimi
-  lib/seo/                Meta veriler ve yapılandırılmış veri (JSON-LD)
   lib/listings/           İlan seçenekleri, tarih/süre, iletişim bilgisi denetimi, kart verisi
   lib/submissions/        Başvuru formu tanımları, doğrulama, taslak dosya üretimi, gönderim
-  components/listings/    İlan kartları, süzme, ilan sayfası parçaları
-  components/forms/       Erişilebilir başvuru formu
-scripts/                  Doğrulama, site denetimi, yerel sunucu, içerik oluşturma
+  lib/search/             Arama motoru ve dizin üretimi
+  lib/seo/                Meta veriler ve yapılandırılmış veri (JSON-LD)
+  lib/number.ts           Türkçe ve uluslararası sayı yazımlarını okuma
+scripts/                  Doğrulama, site denetimi, yerel sunucu, ilan dosyası oluşturma
 docs/                     Belgeler
 ```
 
 ## Veri modeli ve dosya karşılıkları
 
-Ürün planındaki veri modeli ([urun-plani.md](urun-plani.md#6-veri-modeli)) v1'de veritabanı yerine
-Git'teki dosyalarla karşılanır:
+Ürün planındaki veri modeli ([urun-plani.md](urun-plani.md#11-kapsam-güncellemesi-sanal-fuar-iş-ilanları-ve-market))
+v1'de veritabanı yerine Git'teki dosyalarla karşılanır:
 
 | Plandaki varlık | v1 karşılığı |
 |---|---|
-| CATEGORY | `content/konular.yaml` |
-| ARTICLE | `content/makaleler/<slug>.md` (ön bilgi + gövde) |
-| ARTICLE_SOURCE (claim_note) | Makale ön bilgisindeki `sources: [{ id, note, locator }]` |
-| SOURCE | `content/kaynaklar.yaml` |
-| TAG / ARTICLE_TAG | `content/etiketler.yaml` / ön bilgideki `tags` |
-| CALCULATOR | Hesap motoru `src/calculators/<slug>.ts` (formül, girdi ve birim şeması, varsayımlar, `version` = test sürümü) + açıklama `content/hesaplamalar/<slug>.md` |
-| CALCULATOR_SOURCE | Hesaplayıcı açıklamasındaki `sources` |
-| (ek) TERM | `content/sozluk/<slug>.md` |
-| (ek) PERSON | `content/kisiler.yaml` (yazar ve inceleyiciler) |
-| revisions | Git geçmişi + içerikteki `corrections` (düzeltme geçmişi) |
-| (ek) HALL / STAND | `content/fuar-salonlari.yaml` / `content/fuar/<firma>.md` |
-| (ek) POSITION / JOB / CANDIDATE | `content/meslekler.yaml` / `content/is-ilanlari/*.md` / `content/is-arayanlar/<başvuru-no>.md` |
-| (ek) MARKET_CATEGORY / MARKET_LISTING | `content/market-kategorileri.yaml` / `content/market/*.md` |
+| HALL / STAND | `content/fuar-salonlari.yaml` / `content/fuar/<firma>.md` |
+| POSITION / JOB / CANDIDATE | `content/meslekler.yaml` / `content/is-ilanlari/*.md` / `content/is-arayanlar/<başvuru-no>.md` |
+| MARKET_CATEGORY / MARKET_LISTING | `content/market-kategorileri.yaml` / `content/market/*.md` |
+| NOTICE / REFERENCE | Kategori kaydındaki `notice` ve `notice.references` (resmî metin, madde, son kontrol tarihi) |
+| PERSON | `content/kisiler.yaml` (ilan editörleri; `canModerate`) |
+| PAGE | `content/sayfalar/<slug>.md` |
+| revisions | Git geçmişi |
 
-İleride veritabanına geçilirse (`users`, `roles`, `revisions`, `calculator_tests`, `translations`,
-`organizations`) bu dosyalar doğrudan tablolara aktarılabilir; zod şemaları tablo yapısının taslağıdır.
+Bilgi Merkezi, Sözlük ve Hesaplamalar'a ait varlıklar (ARTICLE, SOURCE, TAG, CATEGORY, CALCULATOR, TERM)
+16 Ekim 2026'da kaldırıldı ([urun-plani.md §12](urun-plani.md#12-kapsam-güncellemesi-bilgi-merkezi-sözlük-ve-hesaplamalar-kaldırıldı)).
+
+İleride veritabanına geçilirse (`users`, `roles`, `revisions`, `translations`, `organizations`) bu
+dosyalar doğrudan tablolara aktarılabilir; zod şemaları tablo yapısının taslağıdır.
 
 ## Yayın kuralı (görünürlük)
 
@@ -112,40 +102,32 @@ ve KVKK sayfaları (`/[sayfa]` rotası) yalnızca yayımlandıklarında üretili
 sayfa yayımlanınca açılır (`areSubmissionsOpen`).
 
 Statik dışa aktarma her dinamik rotanın en az bir sayfa üretmesini ister. Bir bölümde henüz yayımlanmış
-içerik yoksa `src/lib/static-params.ts` 404 gösteren bir yer tutucu sayfa üretir; ilk içerik
-yayımlandığında kendiliğinden kaybolur.
-
-## Hesap motorları
-
-Her hesaplayıcı bir `CalculatorDefinition` nesnesidir (`src/calculators/core/types.ts`): girdi alanları,
-birimler, formüller (KaTeX), varsayımlar, sınırlar, örnek ve saf bir `compute(values)` fonksiyonu.
-`compute` metin girdileri alır, Türkçe sayı biçimlerini ayrıştırır (`2,65` / `1.250.000`), birimleri
-temel birime çevirir, alan ve alanlar arası kuralları uygular ve ya sonuç ya da hata listesi döndürür;
-asla istisna fırlatmaz. Aynı kod tarayıcıda ve testlerde çalışır. Ayrıntılar:
-[hesaplayici-gelistirme.md](hesaplayici-gelistirme.md).
+ilan yoksa `src/lib/static-params.ts` 404 gösteren bir yer tutucu sayfa üretir; ilk ilan yayımlandığında
+kendiliğinden kaybolur.
 
 ## Arama
 
-Derleme sırasında `/arama-dizini.json` üretilir (yalnızca görünür içerikler). Arama sayfası bu dosyayı
-bir kez indirip MiniSearch ile tarayıcıda arar:
+Derleme sırasında `/arama-dizini.json` üretilir: yalnızca görünür fuar standları, iş ilanları ve market
+ilanları (aday profilleri kişisel veri içerdiği için dizine girmez). Arama sayfası bu dosyayı bir kez
+indirip MiniSearch ile tarayıcıda arar; süresi dolan ilanları sonuçlardan çıkarır:
 
-- Türkçe karakter katlama: "kömür" = "komur", "İşletme" = "isletme".
+- Türkçe karakter katlama: "kırıcı" = "kirici", "İşletme" = "isletme".
 - Sondan eklemeli yapıya uyum: kelimeler hem tam hem ilk 5 harfiyle (F5 kökü) dizinlenir;
-  "kazanımların" sorgusu "kazanım" içeren belgeleri bulur.
+  "ekskavatörler" sorgusu "ekskavatör" içeren ilanları bulur.
 - Kademeli arama: önce tam/önek eşleşme, sonuç yoksa yazım hatası toleransı, yine yoksa
   herhangi bir kelimeyle eşleşme.
 
 ## Çok dilliliğe hazırlık
 
 Tüm bağlantılar `src/i18n/routes.ts` üzerinden üretilir. İngilizce eklendiğinde aynı içerik
-`/en/knowledge/...` gibi kendi segment adlarıyla yayımlanacak; Türkçe URL'ler değişmeyecek. İçerik
-ön bilgisindeki `language` ve `translationKey` alanları çevirileri eşleştirmek için ayrılmıştır.
+`/en/expo/...`, `/en/jobs/...` gibi kendi segment adlarıyla yayımlanacak; Türkçe URL'ler değişmeyecek.
+Çevirileri eşleştiren alanlar (ör. `translationKey`) İngilizce eklendiğinde şemalara eklenecek.
 
 ## SEO
 
 - Her sayfada özgün `<title>`, meta açıklama, kanonik URL ve Open Graph etiketleri (`src/lib/seo/metadata.ts`).
-- Yapılandırılmış veri: WebSite + Organization, TechArticle, DefinedTerm, WebApplication, BreadcrumbList;
-  yayımlanmış iş ilanlarında JobPosting, fuar standlarında Organization.
+- Yapılandırılmış veri: WebSite + Organization, BreadcrumbList; yayımlanmış iş ilanlarında JobPosting,
+  fuar standlarında Organization (örnek ve süresi dolmuş ilanlarda üretilmez).
 - Aday profilleri ve iletişim talebi sayfası `noindex`'tir; aday profilleri site haritasına ve arama
   dizinine girmez.
 - `sitemap.xml`, `robots.txt`, `manifest.webmanifest` derlemede üretilir.
@@ -156,9 +138,9 @@ Tüm bağlantılar `src/i18n/routes.ts` üzerinden üretilir. İngilizce eklendi
 - Tüm sayfalar derleme sırasında HTML olarak üretilir; içerik, JavaScript yüklenmeden okunabilir.
 - Görsel servis, video, dış yazı tipi veya izleme betiği yoktur. Inter yazı tipi siteyle birlikte sunulur
   ve yalnızca gereken karakter alt kümeleri (Latin + Latin genişletilmiş) indirilir.
-- Sayfa başına JavaScript'in büyük kısmı (~165 KB gzip) Next.js ve React çatısının temel yüküdür; sitenin
-  kendi kodu ~10 KB gzip'tir. KaTeX formülleri sunucuda işlenir, tarayıcıya KaTeX kütüphanesi gönderilmez.
-- Arama dizini (~25 KB gzip) yalnızca arama sayfasında, ilk aramada indirilir.
+- Sayfa başına JavaScript (gzip): ana sayfa ~179 KB, fuar ve market ~189 KB, başvuru formu ~192 KB. Büyük
+  kısmı Next.js ve React çatısının temel yüküdür; süzme ve form kodu yalnızca ilgili sayfalarda yüklenir.
+- Arama dizini yalnızca arama sayfasında indirilir ve yalnızca yayımlanmış ilanları içerir.
 
 ## Güvenlik notları
 

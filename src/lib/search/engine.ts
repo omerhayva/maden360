@@ -4,14 +4,14 @@ import { foldTurkish } from '@/lib/text';
 /**
  * Yerel (tarayıcı içi) arama motoru.
  *
- * Türkçe sondan eklemeli bir dil olduğu için "kazanım", "kazanımı",
- * "kazanımın" gibi biçimlerin birbirini bulması gerekir. Basit ve etkili bir
+ * Türkçe sondan eklemeli bir dil olduğu için "ekskavatör", "ekskavatörü",
+ * "ekskavatörler" gibi biçimlerin birbirini bulması gerekir. Basit ve etkili bir
  * yöntem olarak her kelime hem tam hâliyle hem de ilk 5 harfiyle (F5 kökü)
  * dizine eklenir; aramada uzun kelimeler 5 harfe kısaltılıp önek araması yapılır.
  * Ayrıca Türkçe karakterler katlanır: "kömür" = "komur", "İşletme" = "isletme".
  */
 
-export type SearchDocType = 'hesaplama' | 'makale' | 'terim' | 'stand' | 'is-ilani' | 'market';
+export type SearchDocType = 'stand' | 'is-ilani' | 'market';
 
 export interface SearchDocument {
   id: string;
@@ -20,7 +20,7 @@ export interface SearchDocument {
   url: string;
   summary: string;
   category?: string;
-  /** Anahtar kelimeler, eş anlamlılar, İngilizce karşılıklar, etiketler */
+  /** Anahtar kelimeler, markalar, şehirler, belgeler */
   keywords: string;
   headings: string;
   body: string;
@@ -32,18 +32,12 @@ export type SearchHit = SearchResult &
   Pick<SearchDocument, 'type' | 'title' | 'url' | 'summary' | 'category' | 'expiresAt'>;
 
 export const typeLabels: Record<SearchDocType, string> = {
-  hesaplama: 'Hesaplayıcı',
-  makale: 'Makale',
-  terim: 'Sözlük',
   stand: 'Fuar standı',
   'is-ilani': 'İş ilanı',
   market: 'Market ilanı',
 };
 
 export const SEARCH_DOC_TYPES = Object.keys(typeLabels) as SearchDocType[];
-
-/** İlan türleri teknik içerikle eşit puanda biraz geride sıralanır. */
-const LISTING_TYPES = new Set<SearchDocType>(['stand', 'is-ilani', 'market']);
 
 const STOPWORDS = new Set([
   've',
@@ -125,14 +119,6 @@ export function createSearchIndex(documents: SearchDocument[]): MiniSearch<Searc
       prefix: true,
       fuzzy: (term) => (term.length >= STEM_LENGTH ? 0.2 : false),
       combineWith: 'AND',
-      // Hesaplayıcılar platformun ana ürünü olduğu için hafifçe öne çıkarılır;
-      // ilanlar teknik içerikle eşit puanda geride kalır.
-      boostDocument: (_id, _term, stored) =>
-        stored?.type === 'hesaplama'
-          ? 1.15
-          : LISTING_TYPES.has(stored?.type as SearchDocType)
-            ? 0.9
-            : 1,
     },
   });
   index.addAll(documents);
@@ -148,7 +134,7 @@ export interface SearchOutcome {
 /**
  * Kademeli arama:
  *  1. Tüm kelimeler, tam veya önek eşleşmesiyle (en isabetli sonuçlar),
- *  2. sonuç yoksa yazım hatası toleransıyla (ör. "havalandrma"),
+ *  2. sonuç yoksa yazım hatası toleransıyla (ör. "ekskvatör"),
  *  3. yine sonuç yoksa kelimelerden herhangi biriyle (gevşetilmiş arama).
  */
 export function runSearch(index: MiniSearch<SearchDocument>, query: string): SearchOutcome {

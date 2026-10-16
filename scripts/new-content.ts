@@ -1,15 +1,13 @@
 /**
- * Şablondan yeni içerik dosyası oluşturur.
+ * Şablondan yeni ilan dosyası oluşturur (başvuru formundan gelen bilgileri girmek için).
  *
  * Kullanım (PowerShell, macOS ve Linux'ta aynı):
- *   npm run new -- makale "Dekapaj planlamasında sık yapılan hatalar"
- *   npm run new -- terim "Sınır tenör"
  *   npm run new -- firma "Örnek Sondaj Ltd. Şti."          → content/fuar/
  *   npm run new -- is-ilani "Maden Mühendisi (Planlama)"   → content/is-ilanlari/
  *   npm run new -- aday "Deneyimli ekskavatör operatörü"   → content/is-arayanlar/
  *   npm run new -- market "Satılık mobil kırıcı"           → content/market/
  *
- * Makale ve terim "draft", ilanlar "review" (editör onayı bekliyor) durumunda
+ * İlanlar "review" (editör onayı bekliyor) durumunda, yeni bir başvuru numarasıyla
  * oluşturulur. Slug başlıktan üretilir; aday profillerinde dosya adı başvuru
  * numarasıdır (kişisel bilgi URL'ye girmesin).
  */
@@ -23,15 +21,13 @@ import { slugify } from '../src/lib/text';
 interface TypeConfig {
   template: string;
   dir: string;
-  ref?: (typeof REF_PREFIXES)[keyof typeof REF_PREFIXES];
-  days?: number;
+  ref: (typeof REF_PREFIXES)[keyof typeof REF_PREFIXES];
+  days: number;
   /** Dosya adı başlık yerine başvuru numarasından üretilir */
   slugFromRef?: boolean;
 }
 
 const TYPES: Record<string, TypeConfig> = {
-  makale: { template: 'makale.md', dir: 'makaleler' },
-  terim: { template: 'terim.md', dir: 'sozluk' },
   firma: {
     template: 'fuar-standi.md',
     dir: 'fuar',
@@ -70,7 +66,7 @@ if (!config || !title) {
 }
 
 const today = todayInTurkey();
-const ref = config.ref ? createRef(config.ref, today) : '';
+const ref = createRef(config.ref, today);
 const slug = config.slugFromRef
   ? ref.toLowerCase()
   : slugify(title).slice(0, 70).replace(/-+$/, '');
@@ -92,13 +88,11 @@ const content = template
   .replaceAll('{{title}}', title.replace(/"/g, '\\"'))
   .replaceAll('{{date}}', today)
   .replaceAll('{{ref}}', ref)
-  .replaceAll('{{expires}}', config.days ? addDays(today, config.days) : today);
+  .replaceAll('{{expires}}', addDays(today, config.days));
 
 fs.mkdirSync(path.dirname(target), { recursive: true });
 fs.writeFileSync(target, content, 'utf8');
 console.log(`Oluşturuldu: ${path.relative(process.cwd(), target)}`);
 console.log(
-  config.ref
-    ? `Başvuru numarası: ${ref}. Sonraki adımlar: bilgileri başvurudan doldurun → npm run content:check → onaylayınca status: published, moderatedBy, moderatedAt`
-    : 'Sonraki adımlar: içeriği yazın → kaynakları ekleyin → npm run content:check → durum: review',
+  `Başvuru numarası: ${ref}. Sonraki adımlar: bilgileri başvurudan doldurun → npm run content:check → onaylayınca status: published, moderatedBy, moderatedAt`,
 );

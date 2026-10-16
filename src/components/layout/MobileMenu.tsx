@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, Plus, Search, X } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
-import { mainNav, sectorNav, trustNav, type NavItem } from '@/i18n/navigation';
+import { mainNav, trustNav } from '@/i18n/navigation';
 import { routes } from '@/i18n/routes';
 import { isActivePath } from './NavLinks';
 
@@ -66,7 +66,7 @@ export function MobileMenu() {
             className="md:hidden"
           >
             <label htmlFor="mobile-search" className="sr-only">
-              Hesaplayıcı, makale veya terim ara
+              Firma, iş ilanı veya ürün ara
             </label>
             <div className="relative">
               <Search
@@ -78,15 +78,32 @@ export function MobileMenu() {
                 name="q"
                 type="search"
                 enterKeyHint="search"
-                placeholder="Hesaplayıcı, makale, terim ara"
+                placeholder="Firma, iş ilanı, ürün ara"
                 className="min-h-12 w-full rounded-md border border-graphite-700 bg-graphite-900 pl-10 pr-3 text-base text-white placeholder:text-graphite-400"
               />
             </div>
           </Form>
 
-          <nav aria-label="Mobil ana menü" className="mt-4 space-y-5">
-            <NavGroup title="Bilgi ve araçlar" items={mainNav} pathname={pathname} />
-            <NavGroup title="Sektör ağı" items={sectorNav} pathname={pathname} />
+          <nav aria-label="Mobil ana menü" className="mt-4">
+            <ul className="divide-y divide-graphite-800">
+              {mainNav.map((item) => {
+                const active = isActivePath(pathname, item.href);
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      aria-current={active ? 'page' : undefined}
+                      className={`flex min-h-14 flex-col justify-center py-2 ${active ? 'text-copper-400' : 'text-white'}`}
+                    >
+                      <span className="text-base font-semibold">{item.label}</span>
+                      {item.description && (
+                        <span className="text-sm text-graphite-400">{item.description}</span>
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </nav>
 
           <Link
@@ -113,41 +130,6 @@ export function MobileMenu() {
           </nav>
         </div>
       </div>
-    </div>
-  );
-}
-
-function NavGroup({
-  title,
-  items,
-  pathname,
-}: {
-  title: string;
-  items: NavItem[];
-  pathname: string;
-}) {
-  return (
-    <div>
-      <p className="text-xs font-semibold uppercase tracking-wider text-graphite-400">{title}</p>
-      <ul className="mt-1 divide-y divide-graphite-800">
-        {items.map((item) => {
-          const active = isActivePath(pathname, item.href);
-          return (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                aria-current={active ? 'page' : undefined}
-                className={`flex min-h-14 flex-col justify-center py-2 ${active ? 'text-copper-400' : 'text-white'}`}
-              >
-                <span className="text-base font-semibold">{item.label}</span>
-                {item.description && (
-                  <span className="text-sm text-graphite-400">{item.description}</span>
-                )}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
     </div>
   );
 }

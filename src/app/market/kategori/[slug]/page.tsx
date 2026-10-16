@@ -15,7 +15,6 @@ import {
   getMarketCategories,
   getMarketCategory,
   getMarketListingsByCategory,
-  resolveSources,
 } from '@/lib/content';
 import { isPreviewMode } from '@/lib/content/visibility';
 import { marketTypeLabels, type MarketType } from '@/lib/listings/options';
@@ -86,7 +85,7 @@ export default async function MarketCategoryPage({ params }: Props) {
           <NoticeBox
             title={category.notice.title}
             text={category.notice.text}
-            sources={resolveSources(category.notice)}
+            references={category.notice.references}
           />
         )}
         <section aria-labelledby="kategori-ilanlari">

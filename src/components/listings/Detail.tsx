@@ -13,8 +13,7 @@ import type { ReactNode } from 'react';
 import { Callout } from '@/components/ui/Callout';
 import { siteConfig } from '@/config/site';
 import { routes } from '@/i18n/routes';
-import type { ResolvedSource } from '@/lib/content';
-import type { ContentStatus } from '@/lib/content/schemas';
+import type { ContentStatus, Reference } from '@/lib/content/schemas';
 import { listingStatusLabels } from '@/lib/content/visibility';
 import { formatDate } from '@/lib/format';
 import { telHref } from '@/lib/listings/contact';
@@ -86,11 +85,11 @@ export function ChipList({ items, label }: { items: string[]; label: string }) {
 export function NoticeBox({
   title,
   text,
-  sources,
+  references,
 }: {
   title: string;
   text: string;
-  sources: ResolvedSource[];
+  references: Reference[];
 }) {
   return (
     <aside
@@ -102,25 +101,20 @@ export function NoticeBox({
         {title}
       </p>
       <p className="mt-2 text-sm leading-6">{text}</p>
-      {sources.length > 0 && (
+      {references.length > 0 && (
         <ul className="mt-3 space-y-1 border-t border-amber-200 pt-3 text-xs leading-5">
-          {sources.map(({ source, ref }) => (
-            <li key={source.id}>
+          {references.map((reference) => (
+            <li key={reference.url + (reference.locator ?? '')}>
               <span className="font-semibold">Dayanak:</span>{' '}
-              {source.url ? (
-                <a
-                  href={source.url}
-                  className="underline hover:no-underline"
-                  rel="noopener noreferrer"
-                >
-                  {source.title}
-                </a>
-              ) : (
-                source.title
-              )}
-              {source.identifier ? ` (${source.identifier})` : ''}
-              {ref.locator ? ` — ${ref.locator}` : ''}
-              {source.accessedAt ? `. Erişim: ${formatDate(source.accessedAt)}.` : '.'}
+              <a
+                href={reference.url}
+                className="underline hover:no-underline"
+                rel="noopener noreferrer"
+              >
+                {reference.title}
+              </a>
+              {reference.locator ? ` — ${reference.locator}` : ''}. Son kontrol:{' '}
+              {formatDate(reference.checkedAt)}.
             </li>
           ))}
         </ul>

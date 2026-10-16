@@ -1,29 +1,20 @@
-# Yazarlar ve teknik inceleyiciler.
+# İlan editörleri.
 #
 # kind: kisi (gerçek kişi) | ekip (yayın ekibi / kurumsal imza)
-# canReview: true → bu kişi içerikleri teknik olarak inceleyip yayına onay verebilir.
 # canModerate: true → fuar standı, iş ilanı, aday profili ve market ilanlarını kontrol edip
-#   yayımlayabilir (ilan onayı teknik inceleme değildir; ekip imzasıyla da yapılabilir).
-#
-# KURAL: Yapay zekâ desteğiyle hazırlanan (aiAssisted: true) bir içerik, ancak
-# kind: kisi ve canReview: true olan bir inceleyici tarafından onaylanırsa yayımlanabilir.
+#   yayımlayabilir. İlanlardaki moderatedBy alanına bu kimlik yazılır.
 
 - id: maden360-editorluk
   name: Maden360 Editörlüğü
   kind: ekip
   title: Yayın ekibi
-  bio: İçerik taslaklarını hazırlar, kaynakları derler ve teknik incelemeye gönderir; ilan ve stand başvurularını kontrol edip yayımlar.
-  canReview: false
+  bio: İlan ve stand başvurularını ilan kurallarına göre kontrol edip yayımlar.
   canModerate: true
 
-# Teknik inceleyici örneği — gerçek bilgilerle doldurup başındaki # işaretlerini kaldırın:
+# Editör örneği — gerçek bilgilerle doldurup başındaki # işaretlerini kaldırın:
 #
 # - id: ad-soyad
 #   name: Ad Soyad
 #   kind: kisi
-#   title: Maden Mühendisi
-#   affiliation: Kurum veya şirket
-#   bio: Uzmanlık alanı ve deneyimi (ör. açık ocak planlama, 12 yıl).
-#   url: https://www.linkedin.com/in/ornek
-#   canReview: true
-#   canModerate: false
+#   title: İlan editörü
+#   canModerate: true

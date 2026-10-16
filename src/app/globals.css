@@ -160,26 +160,6 @@
     background: var(--color-stone-100);
   }
 
-  /* KaTeX formülleri dar ekranlarda kendi içinde kayar */
-  .katex-display {
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding: 0.5rem 0;
-    max-width: 100%;
-  }
-
-  .katex {
-    font-size: 1.08em;
-  }
-
-  /* Hedeflenen kaynak (atıfa tıklanınca) vurgulanır */
-  li:target {
-    background: var(--color-copper-50);
-    outline: 2px solid var(--color-copper-300);
-    outline-offset: 4px;
-    border-radius: 0.25rem;
-  }
-
   /* Süresi tarayıcıda dolan ilanlarda iletişim ve başvuru kutuları gizlenir (ExpiryNotice) */
   [data-ilan-suresi-doldu] .ilan-iletisim {
     display: none;

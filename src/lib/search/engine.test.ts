@@ -5,14 +5,16 @@ import {
   indexTerm,
   queryTerm,
   runSearch,
+  SEARCH_DOC_TYPES,
+  withoutExpired,
   type SearchDocument,
 } from './engine';
 
 const doc = (
   partial: Partial<SearchDocument> & Pick<SearchDocument, 'id' | 'title'>,
 ): SearchDocument => ({
-  type: 'makale',
-  url: `/${partial.id}`,
+  type: 'market',
+  url: `/${partial.id.replace(':', '/')}`,
   summary: '',
   keywords: '',
   headings: '',
@@ -22,27 +24,32 @@ const doc = (
 
 const documents: SearchDocument[] = [
   doc({
-    id: 'hesaplama:kutle',
-    type: 'hesaplama',
-    title: 'Kütle Verimi ve Metal Kazanımı Hesaplayıcı',
-    keywords: 'recovery flotasyon',
+    id: 'market:cene',
+    title: 'Kırıcı Çene Plakaları',
+    keywords: 'yedek parça jaw crusher mangan',
   }),
   doc({
-    id: 'hesaplama:dekapaj',
-    type: 'hesaplama',
-    title: 'Dekapaj Oranı Hesaplayıcı',
-    keywords: 'stripping ratio örtü kazısı',
+    id: 'market:ekskavator',
+    title: 'Satılık 30 Ton Paletli Ekskavatör',
+    keywords: 'iş makinesi excavator',
   }),
   doc({
-    id: 'makale:komur',
-    title: 'Linyit ve Taşkömürü Üretimi',
-    body: 'Kömür ocaklarında havalandırma önemlidir.',
+    id: 'is:nezaretci',
+    type: 'is-ilani',
+    title: 'Daimi Nezaretçi (Taş Ocağı)',
+    body: 'Kömür ve taş ocağı işletmelerinde deneyimli maden mühendisi aranıyor.',
   }),
-  doc({ id: 'terim:grizu', type: 'terim', title: 'Grizu', summary: 'Metanın havayla karışımı.' }),
   doc({
-    id: 'makale:isletme',
-    title: 'İşletme Ruhsatı Süreci',
-    body: 'MAPEG başvuruları e-Maden üzerinden yapılır.',
+    id: 'market:saha',
+    title: 'IV-C Grubu Saha Rödövansa Verilecek',
+    keywords: 'royalty ruhsat',
+    body: 'İşletme ruhsatlı saha için rödövans teklifleri değerlendirilecektir.',
+  }),
+  doc({
+    id: 'stand:sondaj',
+    type: 'stand',
+    title: 'Örnek Karot Sondaj',
+    summary: 'Karotlu sondaj ve maden arama hizmetleri.',
   }),
 ];
 
@@ -51,45 +58,45 @@ const ids = (query: string) => runSearch(index, query).hits.map((hit) => hit.id)
 
 describe('Türkçe arama', () => {
   it('terimleri katlar ve F5 köküyle genişletir', () => {
-    expect(indexTerm('Kazanımı')).toEqual(['kazanimi', 'kazan']);
+    expect(indexTerm('Ekskavatörü')).toEqual(['ekskavatoru', 'ekska']);
     expect(indexTerm('ve')).toBeNull();
-    expect(queryTerm('KAZANIMLARI')).toBe('kazan');
-    expect(queryTerm('oran')).toBe('oran');
+    expect(queryTerm('EKSKAVATÖRLER')).toBe('ekska');
+    expect(queryTerm('kova')).toBe('kova');
   });
 
   it('Türkçe karakter kullanılmadan da bulur', () => {
-    expect(ids('kazanim')).toContain('hesaplama:kutle');
-    expect(ids('komur')).toContain('makale:komur');
-    expect(ids('isletme')).toContain('makale:isletme');
+    expect(ids('kirici')).toContain('market:cene');
+    expect(ids('komur')).toContain('is:nezaretci');
+    expect(ids('isletme')).toContain('market:saha');
   });
 
   it('çekimli biçimleri bulur', () => {
-    expect(ids('dekapajın oranı')[0]).toBe('hesaplama:dekapaj');
-    expect(ids('kömürün')).toContain('makale:komur');
+    expect(ids('kırıcının plakası')[0]).toBe('market:cene');
+    expect(ids('ekskavatörler')).toContain('market:ekskavator');
+    expect(ids('rödövansı')).toContain('market:saha');
   });
 
   it('anahtar kelime ve İngilizce karşılıklarla bulur', () => {
-    expect(ids('stripping ratio')[0]).toBe('hesaplama:dekapaj');
-    expect(ids('recovery')).toContain('hesaplama:kutle');
+    expect(ids('jaw crusher')[0]).toBe('market:cene');
+    expect(ids('excavator')).toContain('market:ekskavator');
   });
 
   it('tam eşleşme varken bulanık eşleşmeyle ilgisiz sonuç eklemez', () => {
-    const docs = [
-      doc({ id: 'a', title: 'Metal kazanımı' }),
-      doc({ id: 'b', title: 'Kalan vardiya sayısı' }),
-    ];
-    const local = createSearchIndex(docs);
-    expect(runSearch(local, 'kazanim').hits.map((hit) => hit.id)).toEqual(['a']);
+    const local = createSearchIndex([
+      doc({ id: 'market:a', title: 'Kiralık loder' }),
+      doc({ id: 'is:b', type: 'is-ilani', title: 'Vardiya lideri' }),
+    ]);
+    expect(runSearch(local, 'loder').hits.map((hit) => hit.id)).toEqual(['market:a']);
   });
 
   it('küçük yazım hatalarını tolere eder', () => {
-    expect(ids('havalandrma')).toContain('makale:komur');
+    expect(ids('ekskvatör')).toContain('market:ekskavator');
   });
 
   it('tüm kelimeler eşleşmezse gevşetilmiş aramaya geçer', () => {
-    const outcome = runSearch(index, 'grizu bilmemne');
+    const outcome = runSearch(index, 'sondaj bilmemne');
     expect(outcome.relaxed).toBe(true);
-    expect(outcome.hits[0]?.id).toBe('terim:grizu');
+    expect(outcome.hits[0]?.id).toBe('stand:sondaj');
   });
 
   it('sonuç yoksa boş döner', () => {
@@ -99,51 +106,25 @@ describe('Türkçe arama', () => {
 
   it('yalnızca dolgu kelimeleri içeren sorguları ayırt eder', () => {
     expect(hasSearchableTerms('nedir ve')).toBe(false);
-    expect(hasSearchableTerms('tenör nedir')).toBe(true);
+    expect(hasSearchableTerms('kırıcı nedir')).toBe(true);
   });
 });
 
 describe('ilanlar aramada', () => {
-  it('süresi dolan ilanlar sonuçlardan çıkarılır, ilanlar teknik içeriğin önüne geçmez', async () => {
-    const { createSearchIndex, runSearch, withoutExpired } = await import('./engine');
-    const index = createSearchIndex([
-      {
-        id: 'makale:x',
-        type: 'makale',
-        title: 'Ekskavatör verimliliği',
-        url: '/bilgi/x',
-        summary: 'Ekskavatör',
-        keywords: '',
-        headings: '',
-        body: '',
-      },
-      {
-        id: 'market:a',
-        type: 'market',
-        title: 'Ekskavatör verimliliği',
-        url: '/market/a',
-        summary: 'Ekskavatör',
-        keywords: '',
-        headings: '',
-        body: '',
-        expiresAt: '2026-10-20',
-      },
-      {
-        id: 'market:b',
-        type: 'market',
-        title: 'Satılık ekskavatör',
-        url: '/market/b',
-        summary: '',
-        keywords: '',
-        headings: '',
-        body: '',
-        expiresAt: '2026-10-01',
-      },
+  it('yalnızca fuar standı, iş ilanı ve market ilanı türleri vardır', () => {
+    expect(SEARCH_DOC_TYPES).toEqual(['stand', 'is-ilani', 'market']);
+  });
+
+  it('süresi dolan ilanlar sonuçlardan çıkarılır; bitiş günü dahildir', () => {
+    const local = createSearchIndex([
+      doc({ id: 'market:a', title: 'Satılık ekskavatör', expiresAt: '2026-10-20' }),
+      doc({ id: 'market:b', title: 'Kiralık ekskavatör', expiresAt: '2026-10-01' }),
+      doc({ id: 'market:c', title: 'Ekskavatör kovası', expiresAt: '2026-10-16' }),
+      doc({ id: 'stand:d', type: 'stand', title: 'Ekskavatör servisi' }),
     ]);
-    const { hits } = runSearch(index, 'ekskavatör');
-    expect(hits[0]?.type).toBe('makale');
-    const live = withoutExpired(hits, '2026-10-16').map((hit) => hit.id);
-    expect(live).toContain('market:a');
-    expect(live).not.toContain('market:b');
+    const live = withoutExpired(runSearch(local, 'ekskavatör').hits, '2026-10-16').map(
+      (hit) => hit.id,
+    );
+    expect(live.sort()).toEqual(['market:a', 'market:c', 'stand:d']);
   });
 });

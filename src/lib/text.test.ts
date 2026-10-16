@@ -1,13 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { formatDate, formatNumber, formatPartialDate } from './format';
-import {
-  foldTurkish,
-  initialLetter,
-  letterAnchor,
-  slugify,
-  truncate,
-  turkishCollator,
-} from './text';
+import { daysBetween, formatDate, formatNumber } from './format';
+import { foldTurkish, slugify, truncate, turkishCollator } from './text';
 
 describe('Türkçe metin yardımcıları', () => {
   it('foldTurkish: İ/ı ve aksanlar doğru katlanır', () => {
@@ -17,18 +10,9 @@ describe('Türkçe metin yardımcıları', () => {
   });
 
   it('slugify: ASCII ve tireli slug üretir', () => {
-    expect(slugify('Dekapaj Oranı Nedir?')).toBe('dekapaj-orani-nedir');
+    expect(slugify('Satılık Mobil Kırıcı?')).toBe('satilik-mobil-kirici');
     expect(slugify('  Açık Ocak & Yeraltı  ')).toBe('acik-ocak-yeralti');
     expect(slugify('Ş-Ğ-Ü')).toBe('s-g-u');
-  });
-
-  it('initialLetter: Türk alfabesine göre harf başlığı', () => {
-    expect(initialLetter('ıslak kırma')).toBe('I');
-    expect(initialLetter('istif')).toBe('İ');
-    expect(initialLetter('şev')).toBe('Ş');
-    expect(initialLetter('3D model')).toBe('#');
-    expect(letterAnchor('Ş')).toBe('harf-s-cedilla');
-    expect(letterAnchor('A')).toBe('harf-a');
   });
 
   it('turkishCollator: Türkçe alfabetik sıralama', () => {
@@ -55,7 +39,8 @@ describe('Türkçe biçimlendirme', () => {
 
   it('tarihler', () => {
     expect(formatDate('2026-10-15')).toBe('15 Ekim 2026');
-    expect(formatPartialDate('2016')).toBe('2016');
-    expect(formatPartialDate('2025-07')).toBe('Temmuz 2025');
+    expect(formatDate('gecersiz')).toBe('gecersiz');
+    expect(daysBetween('2026-10-16', '2026-12-15')).toBe(60);
+    expect(daysBetween('2026-03-28', '2026-03-30')).toBe(2);
   });
 });

@@ -1,4 +1,4 @@
-import { parseDecimal } from '@/calculators/core/number';
+import { parseDecimal } from '@/lib/number';
 import { PROVINCES, REGION_WILDCARDS } from '@/lib/listings/options';
 import { foldTurkish } from '@/lib/text';
 
@@ -24,7 +24,7 @@ export function listValue(values: FormValues, id: string): string[] {
 }
 
 /**
- * Formdaki sayıları Türkçe yazıma göre okur. Hesaplayıcılardan farklı olarak tek
+ * Formdaki sayıları Türkçe yazıma göre okur. parseDecimal'dan farklı olarak tek
  * noktadan sonra tam üç rakam geliyorsa nokta binlik ayırıcı sayılır:
  * "45.000" → 45000, "2.450,50" → 2450,5, "2,5" → 2,5, "1.250.000" → 1250000.
  */

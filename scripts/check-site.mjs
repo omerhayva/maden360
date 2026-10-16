@@ -39,7 +39,7 @@ const htmlFiles = allFiles.filter(
   (file) => file.endsWith('.html') && !file.includes(`${sep}_next${sep}`),
 );
 
-/** out/ içindeki dosyadan sayfa yolunu çıkarır: out/bilgi/x.html → /bilgi/x */
+/** out/ içindeki dosyadan sayfa yolunu çıkarır: out/market/x.html → /market/x */
 function pagePath(file) {
   const rel = relative(root, file).split(sep).join('/');
   if (rel === 'index.html') return '/';

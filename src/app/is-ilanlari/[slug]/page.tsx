@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { BookA, Briefcase, ExternalLink, Mail, MapPin, Phone } from 'lucide-react';
+import { Briefcase, ExternalLink, Mail, MapPin, Phone } from 'lucide-react';
 import { Prose } from '@/components/content/Prose';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
@@ -16,7 +16,7 @@ import {
 import { ExampleBadge, ListingStatusBadge } from '@/components/listings/ListingBadges';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { routes } from '@/i18n/routes';
-import { getJob, getJobs, getPosition, getStand, getTerm } from '@/lib/content';
+import { getJob, getJobs, getPosition, getStand } from '@/lib/content';
 import { formatDate } from '@/lib/format';
 import { telHref } from '@/lib/listings/contact';
 import { isExpired, todayInTurkey } from '@/lib/listings/dates';
@@ -55,7 +55,6 @@ export default async function JobPage({ params }: Props) {
   if (!job) notFound();
 
   const position = getPosition(job.position);
-  const term = position?.term ? getTerm(position.term) : undefined;
   const stand = getStand(job.employer.stand);
   const expiredAtBuild = isExpired(job.expiresAt, todayInTurkey());
   const subject = `Başvuru: ${job.title}${job.ref ? ` (${job.ref})` : ''}`;
@@ -186,18 +185,6 @@ export default async function JobPage({ params }: Props) {
                 <p className="mt-3 text-sm leading-6 text-graphite-700">{job.apply.note}</p>
               )}
             </SideCard>
-            {term && (
-              <Link
-                href={term.url}
-                className="flex min-h-12 items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm hover:border-copper-300"
-              >
-                <BookA aria-hidden="true" className="h-5 w-5 shrink-0 text-copper-600" />
-                <span>
-                  <span className="block font-semibold text-graphite-950">{term.term} nedir?</span>
-                  <span className="block text-graphite-600">Sözlükte mevzuattaki tanımı</span>
-                </span>
-              </Link>
-            )}
             <SafetyNotice variant="job" />
           </aside>
         </div>

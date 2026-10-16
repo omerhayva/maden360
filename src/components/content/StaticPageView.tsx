@@ -18,7 +18,7 @@ export function staticPageMetadata(key: StaticPageKey): Metadata {
   });
 }
 
-/** Hakkımızda, kaynak politikası, düzeltme politikası ve iletişim sayfaları */
+/** Hakkımızda ve iletişim sayfaları */
 export function StaticPageView({ pageKey }: { pageKey: StaticPageKey }) {
   const page = getPage(staticPageFiles[pageKey]);
   const path = routes[pageKey]();

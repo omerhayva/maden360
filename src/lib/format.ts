@@ -54,25 +54,6 @@ export function formatDate(isoDate: string): string {
   return dateFormatter.format(date);
 }
 
-/** "2016" | "2016-05" | "2016-05-20" biçimindeki kaynak tarihlerini okunur hale getirir. */
-export function formatPartialDate(value: string): string {
-  if (/^\d{4}$/.test(value)) return value;
-  if (/^\d{4}-\d{2}$/.test(value)) {
-    const date = new Date(`${value}-01T00:00:00Z`);
-    return new Intl.DateTimeFormat('tr-TR', {
-      month: 'long',
-      year: 'numeric',
-      timeZone: 'UTC',
-    }).format(date);
-  }
-  return formatDate(value);
-}
-
-/** Bugünün tarihi (UTC) YYYY-AA-GG biçiminde. */
-export function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
 /** İki ISO tarih arasındaki gün farkı (b - a). */
 export function daysBetween(a: string, b: string): number {
   const ms = new Date(`${b}T00:00:00Z`).getTime() - new Date(`${a}T00:00:00Z`).getTime();

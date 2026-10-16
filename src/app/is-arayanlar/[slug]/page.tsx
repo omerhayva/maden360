@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { BookA, UserSearch } from 'lucide-react';
+import { UserSearch } from 'lucide-react';
 import { Prose } from '@/components/content/Prose';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
@@ -15,7 +14,7 @@ import {
 } from '@/components/listings/Detail';
 import { ExampleBadge, ListingStatusBadge } from '@/components/listings/ListingBadges';
 import { routes } from '@/i18n/routes';
-import { getCandidate, getCandidates, getPosition, getTerm } from '@/lib/content';
+import { getCandidate, getCandidates, getPosition } from '@/lib/content';
 import { isExpired, todayInTurkey } from '@/lib/listings/dates';
 import { availabilityLabels, employmentTypeLabels, siteTypeLabels } from '@/lib/listings/options';
 import { pageMetadata } from '@/lib/seo/metadata';
@@ -45,7 +44,6 @@ export default async function CandidatePage({ params }: Props) {
   const candidate = getCandidate((await params).slug);
   if (!candidate) notFound();
   const position = getPosition(candidate.position);
-  const term = position?.term ? getTerm(position.term) : undefined;
   const expiredAtBuild = isExpired(candidate.expiresAt, todayInTurkey());
 
   return (
@@ -145,18 +143,6 @@ export default async function CandidatePage({ params }: Props) {
                 description="Adayın adı ve iletişim bilgileri gizlidir. Talebinizi editörlerimiz adaya iletir; aday uygun görürse sizinle iletişime geçer."
               />
             </SideCard>
-            {term && (
-              <Link
-                href={term.url}
-                className="flex min-h-12 items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm hover:border-copper-300"
-              >
-                <BookA aria-hidden="true" className="h-5 w-5 shrink-0 text-copper-600" />
-                <span>
-                  <span className="block font-semibold text-graphite-950">{term.term} nedir?</span>
-                  <span className="block text-graphite-600">Sözlükte mevzuattaki tanımı</span>
-                </span>
-              </Link>
-            )}
           </aside>
         </div>
       </Container>

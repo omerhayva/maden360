@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { Briefcase, CalendarClock, Clock, MapPin, UserSearch } from 'lucide-react';
-import { cardBase, cardFrame, stretchedLink } from '@/components/content/Cards';
+import { cardBase, cardFrame, stretchedLink } from '@/components/ui/card';
 import { CategoryIcon } from '@/components/ui/CategoryIcon';
 import type { CategoryIcon as CategoryIconName } from '@/lib/content/schemas';
 import type { ContentStatus } from '@/lib/content/schemas';

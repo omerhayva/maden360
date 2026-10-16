@@ -8,7 +8,6 @@
  *
  * GitHub Actions'ta çalışırken hatalar PR üzerinde dosya bazında açıklama olarak görünür.
  */
-import { calculatorSlugs } from '../src/calculators/registry';
 import { loadContentStore } from '../src/lib/content/repository';
 import { validateStore, type Issue } from '../src/lib/content/validate';
 import { todayInTurkey } from '../src/lib/listings/dates';
@@ -37,7 +36,7 @@ const issues: Issue[] = [
     file: error.file,
     message: error.message.replace(`${error.file}: `, ''),
   })),
-  ...validateStore(store, { today, calculatorSlugs }),
+  ...validateStore(store, { today }),
 ];
 
 function countByStatus(items: { status: string }[]) {
@@ -48,10 +47,7 @@ function countByStatus(items: { status: string }[]) {
 }
 
 console.log(bold(`\nİçerik doğrulaması — ${today}`));
-console.log(`  Makale       : ${countByStatus(store.articles)}`);
-console.log(`  Sözlük terimi: ${countByStatus(store.terms)}`);
-console.log(`  Hesaplayıcı  : ${countByStatus(store.calculators)}`);
-console.log(`  Sayfa        : ${store.pages.length}`);
+console.log(`  Sayfa        : ${countByStatus(store.pages)}`);
 
 function countListings(items: { status: string; example?: boolean }[]) {
   const examples = items.filter((item) => item.example).length;
@@ -63,7 +59,7 @@ console.log(`  Aday profili : ${countListings(store.candidates)}`);
 console.log(`  Market ilanı : ${countListings(store.marketListings)}`);
 console.log(
   dim(
-    `  Kaynak ${store.sources.length} · Kişi ${store.people.length} · Konu ${store.categories.length} · Etiket ${store.tags.length} · Salon ${store.halls.length} · Market kategorisi ${store.marketCategories.length} · Meslek ${store.positions.length}`,
+    `  Editör ${store.people.length} · Salon ${store.halls.length} · Market kategorisi ${store.marketCategories.length} · Meslek ${store.positions.length}`,
   ),
 );
 

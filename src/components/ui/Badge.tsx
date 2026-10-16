@@ -1,6 +1,4 @@
 import type { ReactNode } from 'react';
-import type { ContentStatus } from '@/lib/content/schemas';
-import { statusLabels } from '@/lib/content/visibility';
 
 const tones = {
   neutral: 'bg-stone-100 text-graphite-700 ring-stone-300',
@@ -21,14 +19,4 @@ export function Badge({ children, tone = 'neutral' }: { children: ReactNode; ton
       {children}
     </span>
   );
-}
-
-const statusTone: Record<ContentStatus, BadgeTone> = {
-  draft: 'slate',
-  review: 'amber',
-  published: 'green',
-};
-
-export function StatusBadge({ status }: { status: ContentStatus }) {
-  return <Badge tone={statusTone[status]}>{statusLabels[status]}</Badge>;
 }

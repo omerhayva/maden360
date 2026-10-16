@@ -31,7 +31,7 @@ export function SearchForm({
     <Form action={routes.search()} role="search" aria-label={formLabel} className="w-full">
       <div className="relative flex w-full items-center">
         <label htmlFor={id} className="sr-only">
-          Hesaplayıcı, makale veya terim ara
+          Firma, iş ilanı veya ürün ara
         </label>
         <Search
           aria-hidden="true"
@@ -47,7 +47,7 @@ export function SearchForm({
           autoFocus={autoFocus}
           autoComplete="off"
           enterKeyHint="search"
-          placeholder={isHero ? 'Örn. dekapaj oranı, grizu' : 'Hesaplayıcı, makale, terim ara'}
+          placeholder={isHero ? 'Örn. ekskavatör, kırıcı' : 'Firma, iş ilanı, ürün ara'}
           className={
             isHeader
               ? 'min-h-10 w-full rounded-md border border-graphite-700 bg-graphite-900 pl-9 pr-3 text-[0.95rem] text-white placeholder:text-graphite-400 focus:border-copper-400 focus:outline-none focus-visible:outline-copper-400'

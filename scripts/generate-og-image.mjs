@@ -9,8 +9,8 @@ import sharp from 'sharp';
 
 const NAME_MAIN = 'Maden';
 const NAME_ACCENT = '360';
-const TITLE_LINES = ['Madencilik için kaynaklı bilgi,', 'test edilmiş hesaplamalar'];
-const SUBTITLE = 'Hesaplayıcılar · Teknik rehberler · Madencilik sözlüğü';
+const TITLE_LINES = ['Madenciliğin fuarı,', 'iş ilanları ve marketi'];
+const SUBTITLE = 'Sanal fuar · İş ilanları · Market · Editör onaylı ilanlar';
 
 const font = "'Segoe UI', 'DejaVu Sans', 'Helvetica Neue', Arial, sans-serif";
 

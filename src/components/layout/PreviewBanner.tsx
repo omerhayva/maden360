@@ -13,7 +13,7 @@ export function PreviewBanner() {
       <p className="mx-auto flex max-w-7xl items-start gap-2 px-4 py-2 text-sm sm:items-center sm:px-6 lg:px-8">
         <Eye aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 sm:mt-0" />
         <span>
-          <strong>Önizleme ortamı:</strong> taslak ve teknik incelemedeki içerikler de gösteriliyor.
+          <strong>Önizleme ortamı:</strong> taslak, incelemedeki ve örnek ilanlar da gösteriliyor.
           Bu ortam arama motorlarına kapalıdır.
         </span>
       </p>
