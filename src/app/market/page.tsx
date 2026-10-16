@@ -80,6 +80,7 @@ export default function MarketPage() {
   return (
     <>
       <PageHeader
+        photo="market"
         eyebrow="Ekipman · Yedek parça · Hizmet · Cevher · Saha"
         title={title}
         description={description}
@@ -125,7 +126,10 @@ export default function MarketPage() {
         </section>
 
         <section aria-labelledby="ilanlar">
-          <h2 id="ilanlar" className="mb-5 text-2xl font-bold tracking-tight text-graphite-950">
+          <h2
+            id="ilanlar"
+            className="heading-accent mb-5 text-2xl font-bold tracking-tight text-graphite-950"
+          >
             Tüm ilanlar
           </h2>
           <Suspense fallback={<StaticListingGrid items={items} empty={empty} />}>

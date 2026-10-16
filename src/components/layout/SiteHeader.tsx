@@ -46,6 +46,11 @@ export function SiteHeader() {
         />
         <MobileMenu />
       </div>
+      {/* Bakır ince çizgi (dekoratif) */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 -bottom-px h-px bg-linear-to-r from-transparent via-copper-500/70 to-transparent"
+      />
     </header>
   );
 }

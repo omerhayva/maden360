@@ -8,7 +8,7 @@ Site statik olarak üretildiği için `out/` klasörünü sunabilen her hizmette
 - [ ] `src/config/site.ts` içindeki `contactEmail` ve `listingsEmail` gerçek adreslerle değiştirildi
   (şu an `iletisim@maden360.example` ve `ilan@maden360.example`).
 - [ ] Alan adı alındı; barındırma hizmetinde `SITE_URL` ortam değişkeni bu adresle ayarlandı.
-- [ ] Gerekirse site adı (`name`) ve paylaşım görseli güncellendi (`node scripts/generate-og-image.mjs`).
+- [ ] Gerekirse site adı (`name`) ve paylaşım görseli güncellendi (`npm run generate:brand`).
 - [ ] En az bir ilan editörü (`canModerate: true`) `content/kisiler.yaml` dosyasına eklendi.
 - [ ] `content/sayfalar/kvkk.md` dolduruldu, hukuki kontrolden geçti ve `content/sayfalar/ilan-kurallari.md`
   ile birlikte yayımlandı (başvuru formları bu iki sayfa yayımlanınca açılır).

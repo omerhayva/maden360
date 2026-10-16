@@ -1,8 +1,9 @@
-# Arayüz rehberi: düğmeler, bağlantılar ve form alanları
+# Arayüz rehberi: renkler, fotoğraflar, düğmeler ve form alanları
 
-Sitedeki tüm düğmeler, düğme görünümlü bağlantılar, çipler, form alanları ve bağlantı kutucukları tek
-bir sınıf üreticiden gelir. Amaç: her sayfada aynı görünüm ve davranış, dokunmatik ekranda rahat
-kullanım, klavye ve ekran okuyucu erişimi.
+Sitenin renkleri tek bir palette, fotoğrafları tek bir hazırlama düzeninde tanımlıdır; tüm düğmeler,
+düğme görünümlü bağlantılar, çipler, form alanları ve bağlantı kutucukları da tek bir sınıf
+üreticiden gelir. Amaç: her sayfada aynı görünüm ve davranış, dokunmatik ekranda rahat kullanım,
+klavye ve ekran okuyucu erişimi, fotoğraf üzerinde bile okunur yazılar.
 
 | Dosya | İçerik |
 |---|---|
@@ -14,6 +15,103 @@ kullanım, klavye ve ekran okuyucu erişimi.
 | `src/components/listings/MobileActionBar.tsx` | İlan sayfalarında mobil eylem çubuğu |
 | `src/app/globals.css` | `ui-hover` ve `ui-active` durum varyantları, mobil eylem çubuğu kuralları |
 | `src/components/ui/styles.test.ts` | Sınıf çakışması, dokunma alanı ve elle yazılmış düğme stili denetimleri |
+| `src/app/globals.css` → `@theme` | Renk paleti (grafit, bakır, taş/kum ölçekleri), `heading-accent`, `contour-bg` |
+| `src/components/ui/palette.test.ts` | Paletin kontrast çiftleri ve elle yazılmış marka renkleri |
+| `src/config/photos.ts` | Fotoğraf listesi, odak noktaları, genişlikler, tonlama ayarları |
+| `src/components/ui/Photo.tsx` | `<picture>` ile AVIF/WebP dekoratif fotoğraf |
+| `src/components/layout/PageHeader.tsx` | Açık başlık veya `photo` verilirse fotoğraflı koyu başlık |
+| `scripts/prepare-images.ts` | `npm run generate:images`: kaynakları tonlar, `public/gorseller/` altına yazar |
+| `scripts/generate-brand-assets.mjs` | `npm run generate:brand`: logo simgeleri ve paylaşım görseli |
+| `assets/gorseller/` | Fotoğraf kaynakları ve [değiştirme rehberi](../assets/gorseller/README.md) |
+| `src/config/photos.test.ts` | Üretilen dosyalar, tonlama ve fotoğraf üzerindeki yazıların en kötü durum kontrastı |
+
+## Renk paleti
+
+Tek tema vardır; tema seçici ve karanlık mod yoktur. 16 Ekim 2026'da renkler daha canlı ve zengin
+olacak şekilde yenilendi: grafit hafif çelik mavisi alt tonlu ve daha derin, bakır daha doygun, taş
+ölçeği soğuk gri yerine sıcak kum tonu. Ölçekler OKLCH renk uzayında tasarlandı ve
+`src/app/globals.css` → `@theme` içindedir; Tailwind sınıfları (`bg-copper-600`, `text-graphite-700`
+…) bu değerleri kullanır.
+
+| Belirteç | Önceki | Yeni | Kullanım |
+|---|---|---|---|
+| `graphite-950` | `#14171a` | `#0c111a` | Üst bilgi, altbilgi, koyu bölümler, tarayıcı tema rengi |
+| `graphite-900` | `#1c2025` | `#161d27` | Koyu kartlar |
+| `graphite-500` | `#646d79` | `#656e7b` | Küçük bilgi metni (açık zeminde kullanılabilecek en açık gri) |
+| `copper-400` | `#df8446` | `#f08c46` | Koyu zeminde vurgu (logodaki "360", etkin menü çizgisi) |
+| `copper-500` | `#c96a2b` | `#db6b19` | Odak çerçevesi, logo zemini |
+| `copper-600` | `#a9541f` | `#b64e00` | Birincil düğme |
+| `copper-700` | `#87421b` | `#933d08` | Bağlantılar, açık zeminde vurgu metni |
+| `stone-100` | `#f5f5f4` | `#f6f2ec` | Sayfa zemini (sıcak kum) |
+| `stone-200` | `#e7e5e4` | `#e8e3da` | Kenarlıklar |
+
+Kontrast (WCAG 2.2 AA): beyaz / `copper-600` 5,2:1 · `copper-700` / beyaz 7,2:1, / `stone-100` 6,5:1
+· `copper-400` / `graphite-950` 7,7:1 · `graphite-500` / `stone-100` 4,6:1 · odak çerçevesi
+`copper-500`: beyaz 3,4:1, `stone-100` 3,1:1, `graphite-950` 5,5:1. `palette.test.ts` 25 renk
+çiftini, ölçeklerin açıktan koyuya sıralı olduğunu ve kontur deseninin çizgisi üzerindeki metinleri
+denetler.
+
+Renk değerini elle yazmak gerektiğinde (logo SVG'si, simgeler, `manifest`, tema rengi, kritik hata
+ekranı, marka görseli betiği) paletteki değeri kullanın; test, paletin dışındaki değeri yakalar.
+Logo veya palet değişirse `npm run generate:brand` simgeleri ve paylaşım görselini yeniden üretir.
+
+### Vurgu öğeleri
+
+- **Bölüm başlığı çizgisi** (`heading-accent`): sayfa düzeyindeki bölüm başlıklarının üstünde kısa
+  bakır çizgi. `SectionHeading` bunu kendiliğinden ekler; el yazımı bölüm başlıklarında
+  (`Tüm ilanlar`, `Açık pozisyonlar`…) sınıfı ekleyin. İlan ayrıntı sayfalarındaki içerik alt
+  başlıklarında (İş tanımı, Ürünler…) kullanılmaz.
+- **Bakır ince çizgi**: üst bilginin altında ve altbilginin üstünde, kenarlara doğru kaybolan çizgi.
+- **Kontur deseni** (`contour-bg`): "Güven ilkelerimiz" bölümü ve altbilgide eş yükselti çizgileri.
+- **Simge kutuları** (`iconTile`): grafit geçişli zemin üzerinde bakır simge.
+- Hareket eklenmedi: geçişler, gölgeler ve desenler durağandır.
+
+## Fotoğraflı başlıklar
+
+| Yer | Fotoğraf (`photos` anahtarı) |
+|---|---|
+| Ana sayfa girişi | `ana-sayfa` |
+| Ana sayfadaki üç bölüm kartının üst şeridi | `fuar`, `is-ilanlari`, `market` |
+| Sanal Fuar ve salon sayfaları | `fuar` |
+| İş İlanları | `is-ilanlari` |
+| Aday Profilleri | `is-arayanlar` |
+| Market ve kategori sayfaları | `market` |
+| İlan ver ve başvuru formu sayfaları | `ilan-ver` |
+| Sosyal medya paylaşım görseli (`public/og-image.jpg`) | `ana-sayfa` |
+
+Arama, kurumsal sayfalar (Hakkımızda, İletişim…), ilan ayrıntı sayfaları ve iletişim talebi açık
+başlıkta kalır: bu sayfalarda içerik ön plandadır.
+
+**Nasıl çalışır?**
+
+1. Kaynaklar `assets/gorseller/<anahtar>.jpg` (en az 1376 px genişlik). Mevcut altı fotoğraf yapay
+   zekâ ile üretildi; gerçek bir yeri, firmayı veya kişiyi göstermez.
+2. `npm run generate:images` her kaynak için: parlaklığı %1–%99 aralığına yayar → koyu
+   fotoğrafların orta tonlarını gamma eğrisiyle aydınlatır (üs en az 0,65; siyah ve beyaz yerinde
+   kalır) → 640, 960 ve 1376 px'e küçültür → tonlar (parlaklık → renk eşlemesi: gölgeler grafit,
+   açık tonlar bakır; özgün rengin %25'i korunur) → AVIF ve WebP olarak `public/gorseller/` altına
+   yazar. Üretilen dosyalar depoya eklenir; site derlemesi betiği çalıştırmaz.
+3. `Photo` bileşeni `<picture>` ile AVIF (destekleyen tarayıcılar) ve WebP sunar; `sizes` ile
+   tarayıcı ekrana uygun dosyayı seçer. Fotoğraflar dekoratiftir (`alt=""`). Başlık fotoğrafı
+   sayfanın en büyük öğesi olduğundan öncelikle (`fetchpriority="high"`), kart şeritleri tembel
+   yüklenir ve en fazla 960 px dosya kullanır.
+4. Fotoğrafın üstünde koyu katman (`photoScrimClasses`) vardır: 1280 px altında her yerde %75
+   grafit; 1280 px ve üstünde soldan sağa %90 → %75 (genişliğin %65'inde) → %25. Metin sütunu en
+   fazla 48rem olduğundan geniş ekranda fotoğraf sağ tarafta açılır.
+
+**Fotoğraf üzerindeki yazılar** yalnızca beyaz, `graphite-100`, `graphite-200` ve `copper-300`
+olabilir; `graphite-300` ve daha koyusu en kötü durumda 4,5:1'i sağlamaz. `photos.test.ts`, metnin
+hemen arkasında hem tonlamanın üretebileceği en açık pikselin hem de 36 dosyanın her birindeki
+gerçek en açık pikselin olduğunu varsayarak kontrastı hesaplar. Ölçülen en kötü değerler: beyaz
+9,2:1, `graphite-100` 7,8:1, `graphite-200` 6,5:1, `copper-300` 5,0:1. Düğmeler kendi dolgulu
+zeminlerinde durur; fotoğraflı başlıktaki ikincil düğme `variant="inverse"`, sekmeler ve "formlar
+yakında açılacak" notu koyu zemine göre tasarlanmıştır (`SectionNav`).
+
+**Boyutlar:** 1376 px AVIF 41–79 KB. Ana sayfa (giriş + üç kart şeridi): telefonda (3× ekran)
+170 KB, dizüstünde 114 KB; bölüm sayfaları tek fotoğraf, ≈ 80 KB. Sayfalara JavaScript eklenmedi.
+
+**Fotoğraf değiştirmek veya yeni sayfaya eklemek:**
+[assets/gorseller/README.md](../assets/gorseller/README.md).
 
 ## Araştırılan açık kaynak tasarım sistemleri
 
@@ -198,7 +296,12 @@ değil koyu zeminle de ayrışır. Koyu zeminde `tone: 'inverse'` kullanılır.
 - [ ] Bağlantı ile düğme doğru seçildi (götürüyor mu, yapıyor mu?).
 - [ ] Dokunmatik ekranda ≥ 44 px; 390 px genişlikte yatay taşma yok.
 - [ ] Klavyeyle ulaşılıyor ve odak görünüyor.
-- [ ] `npm run check` geçti (`styles.test.ts` dahil).
+- [ ] Renkler paletten (`graphite`, `copper`, `stone`); elle renk değeri yazılmadı.
+- [ ] Fotoğraflı başlığa konan öğeler koyu zemin için (beyaz, `graphite-100/200`, `copper-300`
+      yazı; `inverse` düğme).
+- [ ] Yeni veya değişen fotoğraf için `npm run generate:images` çalıştırıldı, kaynak ve
+      `public/gorseller/` birlikte commit edildi.
+- [ ] `npm run check` geçti (`styles.test.ts`, `palette.test.ts`, `photos.test.ts` dahil).
 
 ## Doğrulama (16 Ekim 2026)
 
@@ -212,3 +315,15 @@ değil koyu zeminle de ayrışır. Koyu zeminde `tone: 'inverse'` kullanılır.
   formlar dahil 14 sayfa × 2 genişlik; ihlal yok.
 - Başsız test tarayıcısında fare bulunmadığından (`hover: none`), üzerine gelme durumu CSS kuralı
   üzerinden doğrulandı (`@media (hover: hover)` içinde, devre dışı düğmeler hariç).
+
+### Tema ve fotoğraf güncellemesi (16 Ekim 2026)
+
+- Testler: 10 dosyada 388 test (`palette.test.ts` 30, `photos.test.ts` 65, `styles.test.ts` 178).
+- Tarayıcı: önizleme derlemesinde 14 sayfa, üretim derlemesinde 5 sayfa, 390 ve 1366 px; yatay
+  taşma 0 px.
+- axe-core: önizlemede 15 sayfa × 2 genişlik, üretimde (kapalı formlar, boş listeler) 11 sayfa × 2
+  genişlik; ihlal yok. axe, fotoğraf veya desen üzerindeki metnin kontrastını ölçemez ("incomplete"
+  sayar); bu durum `photos.test.ts` ve `palette.test.ts` ile denetlenir.
+- İndirilen görseller (ağ kaydı): ana sayfa telefonda 4 AVIF dosyası, 170 KB; dizüstünde 114 KB;
+  Sanal Fuar 1 dosya, 80 KB; arama sayfası 0.
+- Sayfa başına JavaScript değişmedi (ana sayfa 181,4 KB, liste sayfaları 191,6 KB gzip).

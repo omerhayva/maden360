@@ -13,7 +13,11 @@ flowchart LR
         C["content/<br/>ilanlar, sayfalar, kayıtlar<br/>(Markdown + YAML)"]
         L["src/lib/<br/>içerik, ilan ve başvuru mantığı"]
         A["src/app, src/components<br/>sayfalar ve arayüz"]
+        G["assets/gorseller/<br/>fotoğraf kaynakları"]
     end
+    G --> P["npm run generate:images<br/>(tonlama, AVIF + WebP)"]
+    P --> PG["public/gorseller/<br/>(depoya eklenir)"]
+    PG --> B
     C --> V["İçerik doğrulama<br/>(zod şemaları + ilan kuralları)"]
     L --> T["Vitest testleri"]
     V --> B["next build<br/>(statik üretim)"]
@@ -27,16 +31,18 @@ flowchart LR
 |---|---|---|
 | Çatı | Next.js 16 (App Router), React 19 | Statik dışa aktarma |
 | Dil | TypeScript 6 (strict) | |
-| Stil | Tailwind CSS 4 + Typography | Tasarım belirteçleri `src/app/globals.css`; düğme, form alanı ve çip sınıfları `src/components/ui/styles.ts` ([arayuz-rehberi.md](arayuz-rehberi.md)) |
+| Stil | Tailwind CSS 4 + Typography | Renk paleti ve tasarım belirteçleri `src/app/globals.css`; düğme, form alanı ve çip sınıfları `src/components/ui/styles.ts` ([arayuz-rehberi.md](arayuz-rehberi.md)) |
+| Görseller | sharp (yalnızca geliştirme aracı) | Fotoğraflar derlemeden önce site renklerine göre tonlanır ve AVIF/WebP'ye çevrilir (`npm run generate:images`); site derlemesi görsel işlemez ([arayuz-rehberi.md → Fotoğraflı başlıklar](arayuz-rehberi.md#fotoğraflı-başlıklar)) |
 | İçerik | Markdown + YAML ön bilgi | unified/remark/rehype (GFM tabloları); ham HTML kapalı |
 | Doğrulama | zod 4 | Hatalı içerik derlemeyi durdurur |
 | Arama | MiniSearch (tarayıcıda) | Türkçeye uyarlanmış dizinleme |
-| Test | Vitest | İçerik ve ilan kuralları, başvuru formları, sayı okuma, arama, arayüz sınıfları |
+| Test | Vitest | İçerik ve ilan kuralları, başvuru formları, sayı okuma, arama, arayüz sınıfları, renk kontrastı, fotoğraflar |
 | Yazı tipi | Inter (fontsource, kendi sunucumuzdan) | Dış yazı tipi servisi yok |
 
 ## Klasör yapısı
 
 ```text
+assets/gorseller/         Fotoğraf kaynakları ve değiştirme rehberi (README.md)
 content/                  İçerik (editörlerin çalıştığı yer)
   fuar/*.md               Sanal fuar standları (firma vitrinleri)
   is-ilanlari/*.md        İş ilanları (işçi arayanlar)
@@ -55,6 +61,7 @@ src/
     listings/             İlan kartları, süzme, ilan sayfası parçaları, mobil eylem çubuğu
     forms/                Erişilebilir başvuru formu
   config/site.ts          Site adı, adres, iletişim (tek yapılandırma noktası)
+  config/photos.ts        Fotoğraf listesi, odak noktaları, tonlama ayarları
   i18n/                   URL yapısı ve menüler (İngilizceye hazır)
   lib/content/            İçerik şemaları, yükleme, Markdown işleme, doğrulama
   lib/listings/           İlan seçenekleri, tarih/süre, iletişim bilgisi denetimi, kart verisi
@@ -62,7 +69,10 @@ src/
   lib/search/             Arama motoru ve dizin üretimi
   lib/seo/                Meta veriler ve yapılandırılmış veri (JSON-LD)
   lib/number.ts           Türkçe ve uluslararası sayı yazımlarını okuma
-scripts/                  Doğrulama, site denetimi, yerel sunucu, ilan dosyası oluşturma
+public/gorseller/         Hazırlanmış fotoğraflar (generate:images üretir; elle düzenlenmez)
+scripts/                  Doğrulama, site denetimi, yerel sunucu, ilan dosyası oluşturma, görsel
+                          hazırlama (prepare-images.ts), logo simgeleri ve paylaşım görseli
+                          (generate-brand-assets.mjs)
 docs/                     Belgeler
 ```
 
@@ -137,9 +147,13 @@ Tüm bağlantılar `src/i18n/routes.ts` üzerinden üretilir. İngilizce eklendi
 ## Performans
 
 - Tüm sayfalar derleme sırasında HTML olarak üretilir; içerik, JavaScript yüklenmeden okunabilir.
-- Görsel servis, video, dış yazı tipi veya izleme betiği yoktur. Inter yazı tipi siteyle birlikte sunulur
+- Görsel servisi, video, dış yazı tipi veya izleme betiği yoktur. Inter yazı tipi siteyle birlikte sunulur
   ve yalnızca gereken karakter alt kümeleri (Latin + Latin genişletilmiş) indirilir.
-- Sayfa başına JavaScript (gzip): ana sayfa ~181 KB, fuar ve market ~191 KB, başvuru formu ~194 KB. Büyük
+- Fotoğraflar önceden hazırlanmış AVIF (yedeği WebP) dosyalarıdır ve tarayıcı ekrana uygun genişliği
+  seçer: ana sayfa telefonda ~170 KB, dizüstünde ~114 KB; bölüm sayfaları tek fotoğraf, ~80 KB; arama,
+  kurumsal ve ilan ayrıntı sayfalarında fotoğraf yoktur. Başlık fotoğrafı öncelikli, ana sayfadaki kart
+  şeritleri tembel yüklenir.
+- Sayfa başına JavaScript (gzip): ana sayfa ~181 KB, fuar ve market ~192 KB, başvuru formu ~194 KB. Büyük
   kısmı Next.js ve React çatısının temel yüküdür; süzme ve form kodu yalnızca ilgili sayfalarda yüklenir.
   Ortak düğme sistemi bağımlılık eklemeden yazıldı (sayfa başına ~2–3 KB).
 - Arama dizini yalnızca arama sayfasında indirilir ve yalnızca yayımlanmış ilanları içerir.

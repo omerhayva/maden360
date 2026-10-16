@@ -169,7 +169,14 @@ erDiagram
 
 ## 7. Tasarım ilkeleri
 
-- **Renkler:** Koyu grafit, bakır/turuncu vurgu, açık taş tonu ve beyaz.
+- **Renkler:** Koyu grafit, bakır/turuncu vurgu, açık taş tonu ve beyaz. 16 Ekim 2026'da kullanıcı
+  kararıyla tek tema korunarak renkler canlandırıldı: çelik mavisi alt tonlu derin grafit, daha doygun
+  bakır, sıcak kum tonlu zemin. Tema seçici ve karanlık mod yoktur.
+- **Fotoğraflar (16 Ekim 2026):** Ana sayfa girişinde ve bölüm başlıklarında (Sanal Fuar, İş İlanları,
+  Aday Profilleri, Market, İlan ver) sitenin renklerine göre tonlanmış maden fotoğrafları; yazılar
+  koyu katman üzerinde durur ve okunurlukları testle denetlenir. Fotoğraflar önceden hazırlanmış
+  AVIF/WebP dosyalarıdır (görsel servisi yok) ve kendi çekimlerle değiştirilebilir
+  ([assets/gorseller/README.md](../assets/gorseller/README.md)).
 - **Görünüm:** Modern mühendislik yayını; arama ve gezinme üstte.
 - **Okunabilirlik önce gelir:** Gereksiz animasyon, video arka plan ve pahalı görsel servisleri yok.
 - **Mobil:** Büyük dokunma alanları, tek sütunlu formlar, okunur tablolar, yatay taşma yok.

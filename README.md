@@ -28,6 +28,10 @@ editör onayıyla yayımlanır.
   hazırlanan düğme, form alanı, çip ve kutucuk bileşenleri; dokunmatik ekranda ≥ 44 px dokunma alanı,
   basılı/odak/yükleniyor durumları, mobilde sabit başvuru çubuğu
   (bkz. [docs/arayuz-rehberi.md](docs/arayuz-rehberi.md)).
+- **Tema ve fotoğraflar:** grafit, canlı bakır ve sıcak kum tonlarından oluşan tek tema; ana sayfa ve
+  bölüm başlıklarında sitenin renklerine göre tonlanmış maden fotoğrafları. Fotoğraf üzerindeki
+  yazıların okunurluğu testlerle güvence altındadır; fotoğraflar kendi çekimlerinizle tek komutla
+  değiştirilebilir (bkz. [assets/gorseller/README.md](assets/gorseller/README.md)).
 
 > **Önemli:** Fuar, iş ve market bölümlerindeki 18 dosya yalnızca önizlemede görünen **örnek
 > içeriktir** (`example: true`). Üretim derlemesinde (`npm run build`) örnek ilanlar yer almaz. İlan
@@ -63,6 +67,8 @@ Komutlar macOS ve Linux'ta da aynıdır.
 | `npm run site:check` | Derleme sonrası kırık bağlantı ve SEO denetimi |
 | `npm run check` | Lint + tip denetimi + testler + içerik doğrulama |
 | `npm run new -- market "Başlık"` | Şablondan yeni ilan dosyası: `firma`, `is-ilani`, `aday`, `market` |
+| `npm run generate:images` | Fotoğrafları tonlayıp `public/gorseller/` altına AVIF/WebP olarak yazar (`-- market` ile tek görsel) |
+| `npm run generate:brand` | Logo simgelerini ve sosyal medya paylaşım görselini yeniden üretir |
 | `npm run lint` / `npm run typecheck` / `npm run format` | Kod kalitesi |
 
 Ortam değişkeni ayarlamak için (PowerShell): `$env:SITE_URL="https://www.alanadiniz.com.tr"; npm run build`

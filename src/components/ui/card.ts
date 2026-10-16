@@ -46,4 +46,4 @@ export const tileLink = tileClasses();
 
 /** Kutucuktaki koyu simge yuvası */
 export const iconTile =
-  'flex shrink-0 items-center justify-center rounded-lg bg-graphite-900 text-copper-400';
+  'flex shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-graphite-800 to-graphite-950 text-copper-400 ring-1 ring-inset ring-white/10';

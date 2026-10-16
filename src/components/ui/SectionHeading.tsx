@@ -20,7 +20,7 @@ export function SectionHeading({
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <Tag id={id} className="text-2xl font-bold tracking-tight text-graphite-950">
+        <Tag id={id} className="heading-accent text-2xl font-bold tracking-tight text-graphite-950">
           {title}
         </Tag>
         {description && <p className="mt-1 max-w-2xl text-graphite-600">{description}</p>}

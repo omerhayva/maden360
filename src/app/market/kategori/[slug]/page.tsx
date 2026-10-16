@@ -73,6 +73,7 @@ export default async function MarketCategoryPage({ params }: Props) {
   return (
     <>
       <PageHeader
+        photo="market"
         eyebrow="Market kategorisi"
         title={category.name}
         description={category.description}
@@ -98,7 +99,7 @@ export default async function MarketCategoryPage({ params }: Props) {
         <section aria-labelledby="kategori-ilanlari">
           <h2
             id="kategori-ilanlari"
-            className="mb-5 text-2xl font-bold tracking-tight text-graphite-950"
+            className="heading-accent mb-5 text-2xl font-bold tracking-tight text-graphite-950"
           >
             İlanlar
           </h2>

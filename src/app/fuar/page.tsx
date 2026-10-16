@@ -70,6 +70,7 @@ export default function FairPage() {
   return (
     <>
       <PageHeader
+        photo="fuar"
         eyebrow="Tedarikçiler ve hizmet firmaları"
         title={title}
         description={description}
@@ -79,7 +80,7 @@ export default function FairPage() {
           <HeaderActions
             primary={{ href: routes.postListing('fuar-standi'), label: 'Stand açın' }}
             secondary={
-              <ButtonLink href="#salonlar" variant="secondary" iconEnd={ArrowDown}>
+              <ButtonLink href="#salonlar" variant="inverse" iconEnd={ArrowDown}>
                 Salonları gezin
               </ButtonLink>
             }
@@ -132,7 +133,10 @@ export default function FairPage() {
         </section>
 
         <section aria-labelledby="standlar">
-          <h2 id="standlar" className="mb-5 text-2xl font-bold tracking-tight text-graphite-950">
+          <h2
+            id="standlar"
+            className="heading-accent mb-5 text-2xl font-bold tracking-tight text-graphite-950"
+          >
             Tüm standlar
           </h2>
           <Suspense fallback={<StaticListingGrid items={items} empty={empty} />}>

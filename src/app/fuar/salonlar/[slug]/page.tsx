@@ -66,6 +66,7 @@ export default async function HallPage({ params }: Props) {
   return (
     <>
       <PageHeader
+        photo="fuar"
         eyebrow={`Sanal Fuar · Salon ${hall.code}`}
         title={hall.name}
         description={hall.description}
@@ -84,7 +85,7 @@ export default async function HallPage({ params }: Props) {
         <section aria-labelledby="salon-standlari">
           <h2
             id="salon-standlari"
-            className="mb-5 text-2xl font-bold tracking-tight text-graphite-950"
+            className="heading-accent mb-5 text-2xl font-bold tracking-tight text-graphite-950"
           >
             Salondaki standlar
           </h2>

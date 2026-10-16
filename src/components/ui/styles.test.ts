@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { isInternalHref } from '@/lib/href';
-import { cardBase, cardFrame, tileClasses } from './card';
+import { cardBase, cardFrame, iconTile, tileClasses } from './card';
 import {
   BUTTON_SIZES,
   BUTTON_VARIANTS,
@@ -13,6 +13,8 @@ import {
   FIELD_SIZES,
   iconButtonClasses,
   inputClasses,
+  photoFillClasses,
+  photoScrimClasses,
   textLinkClasses,
 } from './styles';
 
@@ -36,7 +38,15 @@ const FAMILIES: [RegExp, string][] = [
   [/^text-(xs|sm|base|lg|\d?xl|\[[\d.]+(rem|px|em)\])$/, 'font-size'],
   [/^text-(left|center|right|justify|start|end)$/, 'text-align'],
   [/^text-/, 'color'],
+  [/^bg-(linear|radial|conic)(-|$)/, 'background-image'],
   [/^bg-/, 'background-color'],
+  [/^from-\d+%$/, 'gradient-from-position'],
+  [/^via-\d+%$/, 'gradient-via-position'],
+  [/^to-\d+%$/, 'gradient-to-position'],
+  [/^from-/, 'gradient-from'],
+  [/^via-/, 'gradient-via'],
+  [/^to-/, 'gradient-to'],
+  [/^z-/, 'z-index'],
   [/^border(-\d+)?$/, 'border-width'],
   [/^border-/, 'border-color'],
   [/^rounded/, 'border-radius'],
@@ -60,6 +70,7 @@ const FAMILIES: [RegExp, string][] = [
   [/^opacity-/, 'opacity'],
   [/^cursor-/, 'cursor'],
   [/^ring(-\d+)?$/, 'ring-width'],
+  [/^ring-inset$/, 'ring-inset'],
   [/^ring-/, 'ring-color'],
   [/^inset-ring(-\d+)?$/, 'inset-ring-width'],
   [/^inset-ring-/, 'inset-ring-color'],
@@ -124,6 +135,8 @@ describe('çakışma denetleyicisi', () => {
     expect(conflicts('text-sm text-base')).toHaveLength(1);
     expect(conflicts('bg-white bg-stone-50')).toHaveLength(1);
     expect(conflicts('[--btn-edge:red] [--btn-edge:blue]')).toHaveLength(1);
+    expect(conflicts('bg-linear-to-r bg-linear-to-b')).toHaveLength(1);
+    expect(conflicts('via-copper-500 via-copper-600')).toHaveLength(1);
   });
 
   it('farklı özellikleri ve farklı durumları çakışma saymaz', () => {
@@ -134,6 +147,8 @@ describe('çakışma denetleyicisi', () => {
       conflicts('ring-3 ring-copper-500/25 outline-2 outline-transparent outline-offset-0'),
     ).toEqual([]);
     expect(conflicts('before:-top-px before:-bottom-[3px]')).toEqual([]);
+    // Zemin rengi ile renk geçişi ayrı özelliklerdir; geçişin rengi ile konumu da öyle
+    expect(conflicts('bg-graphite-950/75 bg-linear-to-r via-graphite-950/75 via-60%')).toEqual([]);
   });
 });
 
@@ -270,6 +285,9 @@ describe('metin bağlantıları ve kartlar', () => {
     ['tile white/start', tileClasses({ align: 'start' })],
     ['tile stone/start', tileClasses({ surface: 'stone', align: 'start' })],
     ['tile white/start/lg', tileClasses({ align: 'start', size: 'lg' })],
+    ['iconTile', iconTile],
+    ['fotoğraf katmanı', photoScrimClasses],
+    ['fotoğraf', photoFillClasses],
   ])('%s: çakışan sınıf yok', (_name, classes) => {
     expect(conflicts(classes)).toEqual([]);
   });

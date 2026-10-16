@@ -53,6 +53,7 @@ export default function PostListingPage() {
   return (
     <>
       <PageHeader
+        photo="ilan-ver"
         title={title}
         description={description}
         breadcrumbs={[{ name: title, href: routes.postListing() }]}
@@ -61,7 +62,10 @@ export default function PostListingPage() {
       </PageHeader>
       <Container className="space-y-12 py-10">
         <section aria-labelledby="basvuru-turleri">
-          <h2 id="basvuru-turleri" className="text-2xl font-bold tracking-tight text-graphite-950">
+          <h2
+            id="basvuru-turleri"
+            className="heading-accent text-2xl font-bold tracking-tight text-graphite-950"
+          >
             Ne yayımlamak istiyorsunuz?
           </h2>
           <ul className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -121,7 +125,7 @@ export default function PostListingPage() {
           aria-labelledby="nasil-calisir"
           className="rounded-xl bg-graphite-950 p-6 text-white sm:p-8"
         >
-          <h2 id="nasil-calisir" className="text-2xl font-bold tracking-tight">
+          <h2 id="nasil-calisir" className="heading-accent text-2xl font-bold tracking-tight">
             Nasıl çalışır?
           </h2>
           <ol className="mt-6 grid gap-6 md:grid-cols-4">

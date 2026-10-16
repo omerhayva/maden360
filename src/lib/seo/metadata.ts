@@ -4,7 +4,7 @@ import { isPreviewMode } from '@/lib/content/visibility';
 import { truncate } from '@/lib/text';
 
 export const OG_IMAGE = {
-  url: '/og-image.png',
+  url: '/og-image.jpg',
   width: 1200,
   height: 630,
   alt: `${siteConfig.name} — ${siteConfig.tagline}`,

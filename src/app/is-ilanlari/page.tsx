@@ -87,6 +87,7 @@ export default function JobsPage() {
   return (
     <>
       <PageHeader
+        photo="is-ilanlari"
         title={title}
         description={description}
         breadcrumbs={[{ name: title, href: routes.jobs() }]}
@@ -98,7 +99,7 @@ export default function JobsPage() {
             secondary={
               <ButtonLink
                 href={routes.postListing('aday-profili')}
-                variant="secondary"
+                variant="inverse"
                 icon={UserSearch}
               >
                 İş arıyorum: profil oluştur
@@ -113,7 +114,7 @@ export default function JobsPage() {
         <section aria-labelledby="acik-pozisyonlar">
           <h2
             id="acik-pozisyonlar"
-            className="mb-5 text-2xl font-bold tracking-tight text-graphite-950"
+            className="heading-accent mb-5 text-2xl font-bold tracking-tight text-graphite-950"
           >
             Açık pozisyonlar
           </h2>

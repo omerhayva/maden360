@@ -42,6 +42,7 @@ export default async function SubmissionPage({ params }: Props) {
   return (
     <>
       <PageHeader
+        photo="ilan-ver"
         title={definition.title}
         description={definition.description}
         breadcrumbs={[

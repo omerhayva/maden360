@@ -191,6 +191,24 @@ export function inputClasses({
   );
 }
 
+/* ---------------------------------- Fotoğraflı zeminler ---------------------------------- */
+
+/**
+ * Fotoğrafın üzerindeki koyu katman (ana sayfa girişi ve bölüm başlıkları); metin bu katmanın
+ * üzerinde durur. Kapsayıcıda `relative isolate` olmalı, fotoğraf da `-z-10` ile arkada durur.
+ * - xl altı (telefon, tablet, küçük dizüstü): her yerde %75 grafit.
+ * - xl ve üstü: soldan sağa %90 → %75 (genişliğin %65'inde) → %25. Metin sütunu en fazla 48rem
+ *   olduğundan 1280 px'te genişliğin %62,5'ine kadar uzanır; orada katman hâlâ ≈ %76'dır.
+ * Fotoğraf üzerindeki metinler beyaz, graphite-100/200 ve copper-300 renklerindendir.
+ * photos.test.ts, tonlanmış fotoğrafın en açık olası pikselinde bile bu metinlerin 4,5:1
+ * kontrastı sağladığını buradaki değerlerle denetler; değerleri değiştirirseniz test uyarır.
+ */
+export const photoScrimClasses =
+  'absolute inset-0 -z-10 bg-graphite-950/75 xl:bg-transparent xl:bg-linear-to-r xl:from-graphite-950/90 xl:via-graphite-950/75 xl:via-65% xl:to-graphite-950/25';
+
+/** Fotoğrafın kendisi (kapsayıcıyı kaplar, katmanın arkasında durur) */
+export const photoFillClasses = 'absolute inset-0 -z-10 size-full object-cover';
+
 /* ---------------------------------- Metin bağlantıları ---------------------------------- */
 
 /**

@@ -3,11 +3,16 @@
 
 /*
  * Tasarım belirteçleri (design tokens)
- * Renk düzeni: koyu grafit (yapı), bakır/turuncu (vurgu), açık taş (zemin), beyaz (kartlar).
- * Kontrast notları (WCAG 2.2 AA, normal metin ≥ 4.5:1):
- *   copper-700 (#87421b) beyaz üzerinde ≈ 8,1:1  → bağlantılar
- *   copper-600 (#a9541f) üzerinde beyaz metin ≈ 5,3:1 → birincil buton
- *   copper-400 (#df8446) graphite-950 üzerinde ≈ 6,9:1 → koyu zeminde vurgu
+ * Renk düzeni: derin grafit (yapı, koyu bölümler), canlı bakır (vurgu), sıcak kum/taş (zemin),
+ * beyaz (kartlar). Ölçekler OKLCH'de tasarlandı: grafit hafif çelik mavisi, taş hafif kum tonlu.
+ * Kontrast notları (WCAG 2.2 AA; normal metin ≥ 4,5:1, odak çerçevesi ≥ 3:1):
+ *   copper-600 (#b64e00) üzerinde beyaz metin ≈ 5,2:1   → birincil düğme
+ *   copper-700 (#933d08) beyaz üzerinde ≈ 7,2:1, stone-100 üzerinde ≈ 6,5:1 → bağlantılar
+ *   copper-400 (#f08c46) graphite-950 üzerinde ≈ 7,7:1  → koyu zeminde vurgu
+ *   graphite-500 (#656e7b) stone-100 üzerinde ≈ 4,6:1   → küçük bilgi metni (daha açığı kullanılmaz)
+ *   copper-500 (#db6b19) odak çerçevesi: beyaz ≈ 3,4:1, stone-100 ≈ 3,1:1, graphite-950 ≈ 5,5:1
+ * Tüm çiftler src/components/ui/palette.test.ts ile denetlenir. Fotoğraflı başlıklardaki koyu
+ * katman ve metin renkleri için bkz. src/config/photos.ts ve photos.test.ts.
  */
 @theme {
   --font-sans:
@@ -15,28 +20,42 @@
     Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 
-  --color-graphite-50: #f6f7f8;
-  --color-graphite-100: #eceef0;
-  --color-graphite-200: #d5d9de;
-  --color-graphite-300: #b0b7c0;
-  --color-graphite-400: #848d99;
-  --color-graphite-500: #646d79;
-  --color-graphite-600: #4d5560;
-  --color-graphite-700: #3c434c;
-  --color-graphite-800: #2a2f36;
-  --color-graphite-900: #1c2025;
-  --color-graphite-950: #14171a;
+  --color-graphite-50: #f5f7f9;
+  --color-graphite-100: #eaedf1;
+  --color-graphite-200: #d5d9e0;
+  --color-graphite-300: #b3b9c3;
+  --color-graphite-400: #89919d;
+  --color-graphite-500: #656e7b;
+  --color-graphite-600: #4d5663;
+  --color-graphite-700: #39424f;
+  --color-graphite-800: #252d39;
+  --color-graphite-900: #161d27;
+  --color-graphite-950: #0c111a;
 
-  --color-copper-50: #fdf6f0;
-  --color-copper-100: #fae9da;
-  --color-copper-200: #f4cfb0;
-  --color-copper-300: #ecae7e;
-  --color-copper-400: #df8446;
-  --color-copper-500: #c96a2b;
-  --color-copper-600: #a9541f;
-  --color-copper-700: #87421b;
-  --color-copper-800: #6c361a;
-  --color-copper-900: #592e18;
+  --color-copper-50: #fef5ed;
+  --color-copper-100: #fde9d7;
+  --color-copper-200: #fdd1ae;
+  --color-copper-300: #f9b07a;
+  --color-copper-400: #f08c46;
+  --color-copper-500: #db6b19;
+  --color-copper-600: #b64e00;
+  --color-copper-700: #933d08;
+  --color-copper-800: #75300b;
+  --color-copper-900: #5d270d;
+  --color-copper-950: #3c1808;
+
+  /* Tailwind'in "stone" ölçeği yerine sıcak kum tonları (sayfa zemini, kenarlıklar) */
+  --color-stone-50: #fcfaf7;
+  --color-stone-100: #f6f2ec;
+  --color-stone-200: #e8e3da;
+  --color-stone-300: #d8d0c6;
+  --color-stone-400: #aca397;
+  --color-stone-500: #887e74;
+  --color-stone-600: #6a6259;
+  --color-stone-700: #534b44;
+  --color-stone-800: #3a342f;
+  --color-stone-900: #25211d;
+  --color-stone-950: #14110e;
 }
 
 /*
@@ -185,9 +204,20 @@
     }
   }
 
-  /* Kontur çizgisi deseni (hero) */
+  /* Sayfa düzeyindeki bölüm başlıklarının üstündeki kısa bakır çizgi (dekoratif) */
+  .heading-accent::before {
+    content: '';
+    display: block;
+    width: 2.5rem;
+    height: 0.25rem;
+    margin-bottom: 0.75rem;
+    border-radius: 9999px;
+    background-image: linear-gradient(to right, var(--color-copper-500), var(--color-copper-700));
+  }
+
+  /* Eş yükselti (kontur) çizgisi deseni: koyu bölümler ve altbilgi */
   .contour-bg {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300' fill='none' stroke='%23343a42' stroke-width='1.2'%3E%3Cpath d='M-20 220 C 80 180 140 250 240 210 S 420 140 520 190 S 640 230 660 200'/%3E%3Cpath d='M-20 190 C 90 150 150 215 250 180 S 410 110 520 160 S 640 200 660 170'/%3E%3Cpath d='M-20 160 C 100 120 160 180 260 150 S 400 80 520 130 S 640 170 660 140'/%3E%3Cpath d='M-20 130 C 110 95 170 150 270 120 S 395 55 520 100 S 640 140 660 110'/%3E%3Cpath d='M-20 100 C 120 70 180 120 280 92 S 390 32 520 72 S 640 110 660 82'/%3E%3Cpath d='M-20 70 C 130 45 190 92 290 65 S 385 12 520 46 S 640 82 660 56'/%3E%3Cpath d='M-20 260 C 70 215 130 285 230 245 S 430 175 520 225 S 640 265 660 235'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300' fill='none' stroke='%231e2733' stroke-width='1.2'%3E%3Cpath d='M-20 220 C 80 180 140 250 240 210 S 420 140 520 190 S 640 230 660 200'/%3E%3Cpath d='M-20 190 C 90 150 150 215 250 180 S 410 110 520 160 S 640 200 660 170'/%3E%3Cpath d='M-20 160 C 100 120 160 180 260 150 S 400 80 520 130 S 640 170 660 140'/%3E%3Cpath d='M-20 130 C 110 95 170 150 270 120 S 395 55 520 100 S 640 140 660 110'/%3E%3Cpath d='M-20 100 C 120 70 180 120 280 92 S 390 32 520 72 S 640 110 660 82'/%3E%3Cpath d='M-20 70 C 130 45 190 92 290 65 S 385 12 520 46 S 640 82 660 56'/%3E%3Cpath d='M-20 260 C 70 215 130 285 230 245 S 430 175 520 225 S 640 265 660 235'/%3E%3C/svg%3E");
     background-size: 600px 300px;
   }
 }
@@ -199,6 +229,17 @@
 
   body {
     background: white;
+  }
+
+  /* Fotoğraflı başlıklar: tarayıcılar arka planı basmadığından kâğıda koyu yazıyla basılır */
+  .photo-header > :is(picture, [aria-hidden='true']) {
+    display: none !important;
+  }
+
+  .photo-header,
+  .photo-header * {
+    color: black !important;
+    background: none !important;
   }
 
   a[href^='http']::after {

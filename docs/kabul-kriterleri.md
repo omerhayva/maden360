@@ -50,7 +50,11 @@ gönderimde çalışır; ayrıca önizleme derlemesi (taslaklar dahil) de üreti
   düğme odakta kalır (`aria-disabled`) ve durum ekran okuyucuya duyurulur; Windows yüksek kontrast
   modunda düğme kenarlıkları ve form alanı odakları görünür kalır. Ayrıntılar:
   [arayuz-rehberi.md](arayuz-rehberi.md).
-- Renk kontrastları WCAG 2.2 AA'yı karşılar (renk belirteçlerindeki notlara bakın).
+- Renk kontrastları WCAG 2.2 AA'yı karşılar: palet çiftleri `palette.test.ts`, fotoğraflı başlıklardaki
+  yazılar en kötü durum hesabıyla (metnin arkasında fotoğrafın en açık pikseli) `photos.test.ts`
+  tarafından denetlenir ([arayuz-rehberi.md → Fotoğraflı başlıklar](arayuz-rehberi.md#fotoğraflı-başlıklar)).
+- Tema ve fotoğraf güncellemesinden (16 Ekim 2026) sonra önizlemede 15, üretim derlemesinde 11 sayfa
+  masaüstü ve mobil genişlikte axe-core ile denetlenmiş ve ihlal bulunmamıştır.
 - Kapsam güncellemesinden sonra 26 sayfa (ana sayfa, fuar, iş, aday, market, dört başvuru formu hata
   durumuyla, arama, kurumsal ve politika sayfaları, 404) masaüstü ve mobil genişlikte axe-core ile
   denetlenmiş ve ihlal bulunmamıştır.

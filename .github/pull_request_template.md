@@ -22,6 +22,8 @@
 - [ ] Düğme, form alanı, çip ve kutucuklar ortak bileşenlerle yazıldı ([arayüz rehberi](../docs/arayuz-rehberi.md)); ekranda tek birincil düğme var.
 - [ ] Düğme etiketleri eylemi anlatıyor; simge düğmelerinde `label` verildi; bağlantı/düğme doğru seçildi.
 - [ ] 390 px genişlikte yatay taşma yok; dokunmatik ekranda düğmeler ≥ 44 px; klavyeyle ulaşılıyor ve odak görünüyor.
+- [ ] Renkler paletten; fotoğraflı başlığa konan öğeler koyu zemin için (beyaz, `graphite-100/200`, `copper-300` yazı; `inverse` düğme).
+- [ ] Fotoğraf eklendi veya değiştiyse kullanım hakkı var, `npm run generate:images` çalıştırıldı ve kaynak ile `public/gorseller/` birlikte eklendi ([rehber](../assets/gorseller/README.md)).
 
 ## Kontroller
 

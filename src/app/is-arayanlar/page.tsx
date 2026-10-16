@@ -74,6 +74,7 @@ export default function CandidatesPage() {
   return (
     <>
       <PageHeader
+        photo="is-arayanlar"
         title={title}
         description={description}
         breadcrumbs={[{ name: title, href: routes.candidates() }]}
@@ -83,11 +84,7 @@ export default function CandidatesPage() {
           <HeaderActions
             primary={{ href: routes.postListing('aday-profili'), label: 'Aday profili oluştur' }}
             secondary={
-              <ButtonLink
-                href={routes.postListing('is-ilani')}
-                variant="secondary"
-                icon={Briefcase}
-              >
+              <ButtonLink href={routes.postListing('is-ilani')} variant="inverse" icon={Briefcase}>
                 İşçi arıyorum: ilan ver
               </ButtonLink>
             }
@@ -106,7 +103,10 @@ export default function CandidatesPage() {
           </span>
         </p>
         <section aria-labelledby="adaylar">
-          <h2 id="adaylar" className="mb-5 text-2xl font-bold tracking-tight text-graphite-950">
+          <h2
+            id="adaylar"
+            className="heading-accent mb-5 text-2xl font-bold tracking-tight text-graphite-950"
+          >
             İş arayanlar
           </h2>
           <Suspense fallback={<StaticListingGrid items={items} empty={empty} />}>

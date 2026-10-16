@@ -20,8 +20,8 @@ export default function GlobalError({
         style={{
           fontFamily: 'system-ui, sans-serif',
           padding: '3rem 1.5rem',
-          color: '#14171a',
-          background: '#f5f5f4',
+          color: '#0c111a',
+          background: '#f6f2ec',
         }}
       >
         <h1 style={{ fontSize: '1.75rem' }}>Bir şeyler ters gitti</h1>
@@ -34,13 +34,13 @@ export default function GlobalError({
             marginTop: '1rem',
             minHeight: 48,
             padding: '0.625rem 1.25rem',
-            background: '#a9541f',
+            background: '#b64e00',
             color: 'white',
             font: 'inherit',
             fontWeight: 600,
             border: '1px solid transparent',
             borderRadius: 6,
-            boxShadow: '0 2px 0 0 #6c361a',
+            boxShadow: '0 2px 0 0 #75300b',
             cursor: 'pointer',
           }}
         >

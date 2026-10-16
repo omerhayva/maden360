@@ -13,8 +13,10 @@ import { SearchForm } from '@/components/search/SearchForm';
 import { ButtonLink } from '@/components/ui/Button';
 import { iconTile, tileClasses } from '@/components/ui/card';
 import { CategoryIcon } from '@/components/ui/CategoryIcon';
+import { Photo } from '@/components/ui/Photo';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-import { chipClasses } from '@/components/ui/styles';
+import { chipClasses, photoFillClasses, photoScrimClasses } from '@/components/ui/styles';
+import type { PhotoKey } from '@/config/photos';
 import { ArrowLink } from '@/components/ui/TextLink';
 import { siteConfig } from '@/config/site';
 import { optionalPageFiles, routes } from '@/i18n/routes';
@@ -83,6 +85,7 @@ export default function HomePage() {
   const sectionCards = [
     {
       icon: Tent,
+      photo: 'fuar' as const satisfies PhotoKey,
       title: 'Sanal Fuar',
       href: routes.fair(),
       linkLabel: 'Fuarı gezin',
@@ -95,6 +98,7 @@ export default function HomePage() {
     },
     {
       icon: Briefcase,
+      photo: 'is-ilanlari' as const satisfies PhotoKey,
       title: 'İş İlanları',
       href: routes.jobs(),
       linkLabel: 'İlanlara göz atın',
@@ -108,6 +112,7 @@ export default function HomePage() {
     },
     {
       icon: Store,
+      photo: 'market' as const satisfies PhotoKey,
       title: 'Market',
       href: routes.market(),
       linkLabel: "Market'e gidin",
@@ -124,16 +129,18 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="contour-bg relative overflow-hidden bg-graphite-900 text-white">
-        <Container className="relative py-14 sm:py-20">
-          <p className="text-sm font-semibold uppercase tracking-wider text-copper-400">
+      {/* Giriş: fotoğraf + koyu katman (metin renkleri photos.test.ts ile denetlenir) */}
+      <section className="photo-header relative isolate overflow-hidden bg-graphite-950 text-white">
+        <Photo name="ana-sayfa" priority className={photoFillClasses} />
+        <div aria-hidden="true" className={photoScrimClasses} />
+        <Container className="py-16 sm:py-24 lg:py-28">
+          <p className="text-sm font-semibold uppercase tracking-wider text-copper-300">
             Türkiye madencilik sektör ağı
           </p>
-          <h1 className="mt-3 max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+          <h1 className="mt-3 max-w-3xl text-4xl font-bold leading-tight tracking-tight text-balance sm:text-5xl lg:text-6xl">
             {siteConfig.tagline}
           </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-graphite-200">
+          <p className="mt-5 max-w-2xl text-lg leading-8 text-graphite-100">
             Tedarikçi ve hizmet firmalarının standları, işçi ve iş arayanlar; ekipman, yedek parça,
             hizmet, cevher ve saha ilanları tek yerde. Üyelik gerekmez; her başvuru editör onayından
             geçer.
@@ -142,7 +149,7 @@ export default function HomePage() {
             <SearchForm variant="hero" id="hero-search" />
             {hasListings && (
               <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
-                <span className="text-graphite-300">Sık arananlar:</span>
+                <span className="text-graphite-200">Sık arananlar:</span>
                 {siteConfig.popularSearches.map((term) => (
                   <Link
                     key={term}
@@ -180,12 +187,25 @@ export default function HomePage() {
             {sectionCards.map(({ icon: Icon, ...card }) => (
               <li
                 key={card.href}
-                className="flex flex-col rounded-xl border border-stone-200 bg-white p-5 shadow-sm"
+                className="flex flex-col overflow-hidden rounded-xl border border-stone-200 bg-white shadow-sm"
               >
-                <div className="flex items-center gap-3">
-                  <span className={`${iconTile} h-11 w-11`}>
-                    <Icon aria-hidden="true" className="h-5 w-5" />
+                {/* Dekoratif fotoğraf şeridi; kart küçük olduğu için en fazla 960 px dosya */}
+                <div className="relative isolate h-32 bg-graphite-900 sm:h-36">
+                  <Photo
+                    name={card.photo}
+                    sizes="(min-width: 1280px) 395px, (min-width: 1024px) 30vw, 100vw"
+                    maxWidth={960}
+                    className={photoFillClasses}
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 -z-10 bg-linear-to-t from-graphite-950/75 via-graphite-950/20 to-transparent"
+                  />
+                  <span className={`${iconTile} absolute bottom-4 left-5 h-12 w-12 shadow-lg`}>
+                    <Icon aria-hidden="true" className="h-6 w-6" />
                   </span>
+                </div>
+                <div className="flex flex-1 flex-col p-5">
                   <h3 className="text-lg font-semibold text-graphite-950">
                     <Link
                       href={card.href}
@@ -194,28 +214,28 @@ export default function HomePage() {
                       {card.title}
                     </Link>
                   </h3>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-graphite-600">{card.description}</p>
-                <p className="mt-3 text-sm font-semibold text-copper-700">{card.count}</p>
-                {card.latest.length > 0 && (
-                  <ul className="mt-3 divide-y divide-stone-200 overflow-hidden rounded-lg border border-stone-200 bg-stone-50">
-                    {card.latest.map((item) => (
-                      <li key={item.href}>
-                        <Link
-                          href={item.href}
-                          className="flex min-h-11 items-center justify-between gap-3 px-3 py-2 text-sm transition-colors duration-100 ui-hover:bg-copper-50 ui-active:bg-copper-100"
-                        >
-                          <span className="line-clamp-1 font-medium text-graphite-900">
-                            {item.title}
-                          </span>
-                          <span className="shrink-0 text-xs text-graphite-500">{item.meta}</span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                <div className="mt-auto pt-3">
-                  <ArrowLink href={card.href}>{card.linkLabel}</ArrowLink>
+                  <p className="mt-2 text-sm leading-6 text-graphite-600">{card.description}</p>
+                  <p className="mt-3 text-sm font-semibold text-copper-700">{card.count}</p>
+                  {card.latest.length > 0 && (
+                    <ul className="mt-3 divide-y divide-stone-200 overflow-hidden rounded-lg border border-stone-200 bg-stone-50">
+                      {card.latest.map((item) => (
+                        <li key={item.href}>
+                          <Link
+                            href={item.href}
+                            className="flex min-h-11 items-center justify-between gap-3 px-3 py-2 text-sm transition-colors duration-100 ui-hover:bg-copper-50 ui-active:bg-copper-100"
+                          >
+                            <span className="line-clamp-1 font-medium text-graphite-900">
+                              {item.title}
+                            </span>
+                            <span className="shrink-0 text-xs text-graphite-500">{item.meta}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <div className="mt-auto pt-3">
+                    <ArrowLink href={card.href}>{card.linkLabel}</ArrowLink>
+                  </div>
                 </div>
               </li>
             ))}
@@ -303,15 +323,27 @@ export default function HomePage() {
       </Container>
 
       {/* Güven ilkeleri */}
-      <section aria-labelledby="ilkeler" className="bg-graphite-950 text-white">
-        <Container className="py-14">
-          <h2 id="ilkeler" className="text-2xl font-bold tracking-tight">
+      <section
+        aria-labelledby="ilkeler"
+        className="contour-bg relative isolate overflow-hidden bg-graphite-950 text-white"
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-40 -right-24 -z-10 h-[30rem] w-[30rem] rounded-full bg-copper-500/15 blur-3xl"
+        />
+        <Container className="py-16">
+          <h2 id="ilkeler" className="heading-accent text-2xl font-bold tracking-tight">
             Güven ilkelerimiz
           </h2>
           <ul className="mt-8 grid gap-6 md:grid-cols-3">
             {principles.map(({ icon: Icon, title, text }) => (
-              <li key={title} className="rounded-xl border border-graphite-800 bg-graphite-900 p-6">
-                <Icon aria-hidden="true" className="h-6 w-6 text-copper-400" />
+              <li
+                key={title}
+                className="rounded-xl border border-graphite-800 bg-graphite-900/85 p-6 shadow-lg shadow-black/20"
+              >
+                <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-copper-500/10 text-copper-300 ring-1 ring-inset ring-copper-400/25">
+                  <Icon aria-hidden="true" className="h-6 w-6" />
+                </span>
                 <h3 className="mt-4 text-lg font-semibold">{title}</h3>
                 <p className="mt-2 text-sm leading-6 text-graphite-300">{text}</p>
               </li>
@@ -342,7 +374,7 @@ export default function HomePage() {
               <li key={step.title} className="rounded-xl border border-stone-200 bg-stone-50 p-5">
                 <span
                   aria-hidden="true"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-copper-600 font-bold text-white"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-br from-copper-600 to-copper-800 font-bold text-white shadow-sm shadow-copper-900/30"
                 >
                   {index + 1}
                 </span>

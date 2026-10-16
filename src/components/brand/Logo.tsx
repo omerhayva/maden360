@@ -4,16 +4,16 @@ import { siteConfig } from '@/config/site';
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false" className={className}>
-      <rect width="32" height="32" rx="7" fill="#c96a2b" />
+      <rect width="32" height="32" rx="7" fill="#db6b19" />
       <path
         d="M5 21.5 11.5 13l5 6 4-4.5 6.5 7"
         fill="none"
-        stroke="#14171a"
+        stroke="#0c111a"
         strokeWidth="2.6"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path d="M5 25.5h22" stroke="#14171a" strokeWidth="2.2" strokeLinecap="round" opacity="0.8" />
+      <path d="M5 25.5h22" stroke="#0c111a" strokeWidth="2.2" strokeLinecap="round" opacity="0.8" />
     </svg>
   );
 }

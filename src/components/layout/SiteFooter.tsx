@@ -20,7 +20,11 @@ export function SiteFooter() {
     ...(privacyPublished ? [{ href: routes.privacy(), label: 'KVKK aydınlatma metni' }] : []),
   ];
   return (
-    <footer className="no-print mt-16 bg-graphite-950 text-graphite-300">
+    <footer className="no-print contour-bg relative mt-16 bg-graphite-950 text-graphite-300">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-copper-500/50 to-transparent"
+      />
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.6fr_1fr_1fr] lg:px-8">
         <div>
           <Link href={routes.home()} className="inline-flex items-center gap-2.5 text-white">
