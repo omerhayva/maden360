@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Briefcase, ExternalLink, Mail, MapPin, Phone } from 'lucide-react';
+import { Briefcase, ExternalLink, Mail, MapPin, Phone, Send } from 'lucide-react';
 import { Prose } from '@/components/content/Prose';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
@@ -14,6 +14,8 @@ import {
   SideCard,
 } from '@/components/listings/Detail';
 import { ExampleBadge, ListingStatusBadge } from '@/components/listings/ListingBadges';
+import { MobileActionBar } from '@/components/listings/MobileActionBar';
+import { ButtonLink } from '@/components/ui/Button';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { routes } from '@/i18n/routes';
 import { getJob, getJobs, getPosition, getStand } from '@/lib/content';
@@ -47,9 +49,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-const buttonClass =
-  'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-copper-600 px-4 font-semibold text-white hover:bg-copper-700';
-
 export default async function JobPage({ params }: Props) {
   const job = getJob((await params).slug);
   if (!job) notFound();
@@ -79,7 +78,10 @@ export default async function JobPage({ params }: Props) {
             </h1>
             <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-graphite-700">
               {stand ? (
-                <Link href={stand.url} className="font-semibold text-copper-700 hover:underline">
+                <Link
+                  href={stand.url}
+                  className="font-semibold text-copper-700 underline-offset-4 ui-hover:text-copper-800 ui-hover:underline"
+                >
                   {job.employer.name}
                 </Link>
               ) : (
@@ -154,29 +156,31 @@ export default async function JobPage({ params }: Props) {
           <aside className="mt-10 space-y-5 lg:mt-0" aria-label="Başvuru">
             <SideCard title="Nasıl başvurulur?" id="basvuru">
               {job.apply.method === 'eposta' && (
-                <a
+                <ButtonLink
                   href={`mailto:${job.apply.value}?subject=${encodeURIComponent(subject)}`}
-                  className={buttonClass}
+                  size="lg"
+                  width="full"
+                  icon={Mail}
                 >
-                  <Mail aria-hidden="true" className="h-4 w-4" />
                   E-postayla başvur
-                </a>
+                </ButtonLink>
               )}
               {job.apply.method === 'url' && (
-                <a
+                <ButtonLink
                   href={job.apply.value}
                   rel="nofollow ugc noopener noreferrer"
-                  className={buttonClass}
+                  size="lg"
+                  width="full"
+                  iconEnd={ExternalLink}
                 >
                   Başvuru sayfasına git
-                  <ExternalLink aria-hidden="true" className="h-4 w-4" />
-                </a>
+                </ButtonLink>
               )}
               {job.apply.method === 'telefon' && (
-                <a href={telHref(job.apply.value)} className={buttonClass}>
-                  <Phone aria-hidden="true" className="h-4 w-4" />
+                <ButtonLink href={telHref(job.apply.value)} size="lg" width="full" icon={Phone}>
+                  <span className="sr-only">Telefonla başvur: </span>
                   {job.apply.value}
-                </a>
+                </ButtonLink>
               )}
               {job.apply.method === 'eposta' && (
                 <p className="mt-2 break-all text-sm text-graphite-700">{job.apply.value}</p>
@@ -189,6 +193,8 @@ export default async function JobPage({ params }: Props) {
           </aside>
         </div>
       </Container>
+
+      <MobileActionBar href="#basvuru" label="Başvur" icon={Send} />
 
       {job.status === 'published' && !job.example && !expiredAtBuild && (
         <JsonLd data={jobPostingSchema(job, position?.name ?? job.position)} />

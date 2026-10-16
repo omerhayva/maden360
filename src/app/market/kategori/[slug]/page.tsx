@@ -2,13 +2,16 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { Mail, Plus } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { NoticeBox, SafetyNotice } from '@/components/listings/Detail';
 import { ListingBrowser, StaticListingGrid } from '@/components/listings/ListingBrowser';
 import { HeaderActions } from '@/components/listings/SectionNav';
+import { ButtonLink } from '@/components/ui/Button';
 import { CategoryIcon } from '@/components/ui/CategoryIcon';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { chipClasses } from '@/components/ui/styles';
 import { routes } from '@/i18n/routes';
 import {
   areSubmissionsOpen,
@@ -46,20 +49,24 @@ export default async function MarketCategoryPage({ params }: Props) {
   const open = areSubmissionsOpen();
   const others = getMarketCategories().filter((other) => other.slug !== category.slug);
   const empty = (
-    <EmptyState title="Bu kategoride şu an ilan yok">
-      {open ? (
-        <>
-          <Link
-            href={routes.postListing('market-ilani')}
-            className="font-semibold text-copper-700 hover:underline"
-          >
+    <EmptyState
+      title="Bu kategoride şu an ilan yok"
+      icon={<CategoryIcon icon={category.icon} />}
+      actions={
+        open ? (
+          <ButtonLink href={routes.postListing('market-ilani')} variant="secondary" icon={Plus}>
             İlan verin
-          </Link>{' '}
-          veya diğer kategorilere göz atın.
-        </>
-      ) : (
-        'Market ilanı başvuruları yakında açılacak.'
-      )}
+          </ButtonLink>
+        ) : (
+          <ButtonLink href={routes.contact()} variant="secondary" icon={Mail}>
+            Bize ulaşın
+          </ButtonLink>
+        )
+      }
+    >
+      {open
+        ? 'Bu kategoride ilk ilanı siz verebilir veya aşağıdaki diğer kategorilere göz atabilirsiniz.'
+        : 'Market ilanı başvuruları yakında açılacak. Aşağıdaki diğer kategorilere göz atabilirsiniz.'}
     </EmptyState>
   );
 
@@ -124,11 +131,8 @@ export default async function MarketCategoryPage({ params }: Props) {
           <ul className="mt-3 flex flex-wrap gap-2">
             {others.map((other) => (
               <li key={other.slug}>
-                <Link
-                  href={routes.marketCategory(other.slug)}
-                  className="inline-flex min-h-10 items-center gap-2 rounded-full border border-stone-300 bg-white px-3 text-sm font-medium text-graphite-800 hover:border-copper-400"
-                >
-                  <CategoryIcon icon={other.icon} className="h-4 w-4 text-copper-600" />
+                <Link href={routes.marketCategory(other.slug)} className={chipClasses()}>
+                  <CategoryIcon icon={other.icon} className="text-copper-600" />
                   {other.name}
                 </Link>
               </li>

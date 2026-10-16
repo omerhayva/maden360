@@ -1,5 +1,7 @@
 import Form from 'next/form';
 import { Search } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { inputClasses } from '@/components/ui/styles';
 import { routes } from '@/i18n/routes';
 
 interface SearchFormProps {
@@ -50,21 +52,18 @@ export function SearchForm({
           placeholder={isHero ? 'Örn. ekskavatör, kırıcı' : 'Firma, iş ilanı, ürün ara'}
           className={
             isHeader
-              ? 'min-h-10 w-full rounded-md border border-graphite-700 bg-graphite-900 pl-9 pr-3 text-[0.95rem] text-white placeholder:text-graphite-400 focus:border-copper-400 focus:outline-none focus-visible:outline-copper-400'
-              : isHero
-                ? 'min-h-14 w-full rounded-lg border border-graphite-300 bg-white pl-11 pr-28 text-base text-graphite-950 shadow-sm placeholder:text-graphite-500 focus:border-copper-500 focus:outline-none sm:text-lg'
-                : 'min-h-12 w-full rounded-lg border border-graphite-300 bg-white pl-9 pr-24 text-base text-graphite-950 placeholder:text-graphite-500 focus:border-copper-500 focus:outline-none'
+              ? inputClasses({ tone: 'dark', size: 'sm', className: 'pl-9 pr-3' })
+              : inputClasses({
+                  size: 'xl',
+                  className: isHero ? 'pl-11 pr-24 sm:text-lg' : 'pl-9 pr-24',
+                })
           }
         />
         {!isHeader && (
-          <button
-            type="submit"
-            className={`absolute right-1.5 inline-flex items-center rounded-md bg-copper-600 px-4 font-semibold text-white hover:bg-copper-700 ${
-              isHero ? 'min-h-11 text-base' : 'min-h-9 text-sm'
-            }`}
-          >
-            Ara
-          </button>
+          // Konum kapsayıcıda: düğmenin kendi "relative" sınıfıyla çakışmasın
+          <div className="absolute right-1.5 top-1.5">
+            <Button type="submit">Ara</Button>
+          </div>
         )}
       </div>
     </Form>

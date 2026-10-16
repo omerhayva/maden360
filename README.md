@@ -24,6 +24,10 @@ editör onayıyla yayımlanır.
   arama.
 - **SEO ve erişilebilirlik:** özgün başlık/açıklama/kanonik URL, yapılandırılmış veri (JobPosting,
   Organization), site haritası; klavye ve ekran okuyucu desteği, WCAG 2.2 AA kontrast.
+- **Ortak arayüz sistemi:** GOV.UK, Primer, shadcn/ui, USWDS ve Radix tasarım sistemleri incelenerek
+  hazırlanan düğme, form alanı, çip ve kutucuk bileşenleri; dokunmatik ekranda ≥ 44 px dokunma alanı,
+  basılı/odak/yükleniyor durumları, mobilde sabit başvuru çubuğu
+  (bkz. [docs/arayuz-rehberi.md](docs/arayuz-rehberi.md)).
 
 > **Önemli:** Fuar, iş ve market bölümlerindeki 18 dosya yalnızca önizlemede görünen **örnek
 > içeriktir** (`example: true`). Üretim derlemesinde (`npm run build`) örnek ilanlar yer almaz. İlan
@@ -79,6 +83,7 @@ docs/           Belgeler
 
 - [Ürün planı](docs/urun-plani.md) — kapsam ve kapsam güncellemeleri, URL yapısı, veri modeli, fazlar
 - [Mimari](docs/mimari.md) — teknik yapı, yayın kuralı, arama, çok dilliliğe hazırlık
+- [Arayüz rehberi](docs/arayuz-rehberi.md) — düğme türleri, boyutlar, durumlar, form alanları; araştırılan tasarım sistemleri
 - [Sanal Fuar, İş İlanları ve Market](docs/ilanlar-ve-fuar.md) — başvuru akışı, editör onayı, süre dolumu, KVKK ve kaldırma
 - [Yayına alma ve geri alma](docs/yayinlama-ve-geri-alma.md) — Cloudflare Pages, GitHub ayarları, geri alma, yedekleme
 - [Kabul kriterleri](docs/kabul-kriterleri.md) — kriterlerin karşılanışı ve doğrulanması

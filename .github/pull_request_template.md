@@ -17,6 +17,12 @@
 - [ ] Yapay zekâ desteğiyle yazılan metin, yayımlanmadan önce kaynağından tek tek doğrulandı.
 - [ ] İlan kuralları veya KVKK aydınlatma metni değiştiyse hukuki kontrol yapıldı.
 
+## Arayüz değişikliklerinde
+
+- [ ] Düğme, form alanı, çip ve kutucuklar ortak bileşenlerle yazıldı ([arayüz rehberi](../docs/arayuz-rehberi.md)); ekranda tek birincil düğme var.
+- [ ] Düğme etiketleri eylemi anlatıyor; simge düğmelerinde `label` verildi; bağlantı/düğme doğru seçildi.
+- [ ] 390 px genişlikte yatay taşma yok; dokunmatik ekranda düğmeler ≥ 44 px; klavyeyle ulaşılıyor ve odak görünüyor.
+
 ## Kontroller
 
 - [ ] `npm run check` yerelde geçti.

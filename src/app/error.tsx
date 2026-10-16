@@ -1,7 +1,8 @@
 'use client';
 
-import Link from 'next/link';
+import { House, RotateCcw } from 'lucide-react';
 import { useEffect } from 'react';
+import { Button, ButtonGroup, ButtonLink } from '@/components/ui/Button';
 
 /**
  * Beklenmeyen istemci hatası ekranı. Hata konsola yazılır; ileride bir hata
@@ -34,21 +35,14 @@ export default function ErrorPage({
         {error.digest && (
           <p className="mt-2 text-sm text-graphite-500">Hata kodu: {error.digest}</p>
         )}
-        <div className="mt-8 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={reset}
-            className="inline-flex min-h-12 items-center rounded-md bg-copper-600 px-5 font-semibold text-white hover:bg-copper-700"
-          >
+        <ButtonGroup className="mt-8">
+          <Button size="lg" icon={RotateCcw} onClick={reset}>
             Tekrar dene
-          </button>
-          <Link
-            href="/"
-            className="inline-flex min-h-12 items-center rounded-md border border-graphite-300 bg-white px-5 font-semibold text-graphite-800 hover:border-copper-400"
-          >
+          </Button>
+          <ButtonLink href="/" variant="secondary" size="lg" icon={House}>
             Ana sayfa
-          </Link>
-        </div>
+          </ButtonLink>
+        </ButtonGroup>
       </div>
     </div>
   );

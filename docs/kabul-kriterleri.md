@@ -7,7 +7,7 @@ kriterler kalan bölümlere uyarlandı ([urun-plani.md §12](urun-plani.md#12-ka
 | # | Kriter | Nasıl karşılanıyor? | Doğrulama |
 |---|---|---|---|
 | 1 | Ana sayfa ve tüm temel sayfalar hatasız açılır | Tüm sayfalar derleme sırasında statik üretilir; derleme hatası olan sayfa yayına çıkamaz. Hata sayfaları: `not-found.tsx`, `error.tsx`, `global-error.tsx` | `npm run build` başarılı; `npm run site:check` tüm HTML sayfalarını tarar |
-| 2 | Yerleşim telefonda ve masaüstünde çalışır | Mobil öncelikli Tailwind düzeni; tek sütunlu formlar; tablolar kendi içinde kayar; ≥ 44 px dokunma alanları | 390 px ve 1366 px genişlikte tarayıcı testleri: yatay taşma 0 px |
+| 2 | Yerleşim telefonda ve masaüstünde çalışır | Mobil öncelikli Tailwind düzeni; tek sütunlu formlar; tablolar kendi içinde kayar; dokunmatik ekranda tüm düğme ve çipler ≥ 44 × 44 px; mobilde katlanan süzgeçler ve ilan sayfalarında sabit başvuru/iletişim çubuğu ([arayuz-rehberi.md](arayuz-rehberi.md)) | 390 px ve 1366 px genişlikte tarayıcı testleri: yatay taşma 0 px; mobilde düğme ve çip ölçümü; `src/components/ui/styles.test.ts` |
 | 3 | ~~İlk dört hesaplayıcı beklenen sonuç testlerini geçer~~ | **Kapsam dışı:** hesaplamalar kaldırıldı | — |
 | 4 | Geçersiz ve eksik girdiler ele alınır | Başvuru formlarında zorunlu alan, biçim (e-posta, telefon, web adresi, tarih) ve aralık denetimi; Türkçe sayı okuma (`2.450,50`, `45.000`) ve okunan değerin gösterimi; kategoriye göre zorunlu bölümler; bot tuzağı. Hesaplama kalmadığı için sıfıra bölme durumu yoktur | `src/lib/submissions/submissions.test.ts`, `src/lib/number.test.ts`; tarayıcı testlerinde boş gönderimde hata özeti ve `aria-invalid` |
 | 5 | ~~Makalelerde kaynak ve inceleme bilgisi görünür~~ | **Kapsam dışı:** makaleler kaldırıldı. Yerine: her ilanda ilan numarası, yayın, editör onayı ve bitiş tarihi; mevzuata dayanan yasal notlarda resmî metin bağlantısı, madde ve son kontrol tarihi | `npm run content:check` yayımlanan ilanda onaylayan editörü ve tarihleri, yasal notlarda geçerli kontrol tarihini zorunlu tutar |
@@ -45,6 +45,11 @@ gönderimde çalışır; ayrıca önizleme derlemesi (taslaklar dahil) de üreti
   veya hatalı gönderimde odak hata özetine taşınır.
 - Arama ve ilan süzgeçlerinin sonuç sayısı ekran okuyuculara `role="status"` bölgesiyle duyurulur.
 - Görünür odak halkası (bakır, 3 px), "İçeriğe geç" bağlantısı, anlamlı başlık hiyerarşisi.
+- Düğmeler: bağlantı/düğme ayrımı; simge düğmelerinde erişilebilir ad; süzgeç sekmelerinde
+  `aria-pressed`, menü ve süzgeç panelinde `aria-expanded` (etiket durumla değişmez); gönderim sürerken
+  düğme odakta kalır (`aria-disabled`) ve durum ekran okuyucuya duyurulur; Windows yüksek kontrast
+  modunda düğme kenarlıkları ve form alanı odakları görünür kalır. Ayrıntılar:
+  [arayuz-rehberi.md](arayuz-rehberi.md).
 - Renk kontrastları WCAG 2.2 AA'yı karşılar (renk belirteçlerindeki notlara bakın).
 - Kapsam güncellemesinden sonra 26 sayfa (ana sayfa, fuar, iş, aday, market, dört başvuru formu hata
   durumuyla, arama, kurumsal ve politika sayfaları, 404) masaüstü ve mobil genişlikte axe-core ile

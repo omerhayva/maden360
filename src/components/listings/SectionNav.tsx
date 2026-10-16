@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { ButtonGroup, ButtonLink } from '@/components/ui/Button';
 import { routes } from '@/i18n/routes';
 
 /** İş ilanları ↔ aday profilleri sekmeleri */
@@ -24,10 +25,10 @@ export function CareerTabs({ active }: { active: 'jobs' | 'candidates' }) {
               <Link
                 href={tab.href}
                 aria-current={current ? 'page' : undefined}
-                className={`flex min-h-12 flex-col justify-center rounded-lg border px-4 py-1.5 ${
+                className={`flex min-h-12 flex-col justify-center rounded-lg border px-4 py-1.5 [-webkit-tap-highlight-color:transparent] transition-colors duration-100 ${
                   current
                     ? 'border-graphite-900 bg-graphite-900 text-white'
-                    : 'border-stone-300 bg-stone-50 text-graphite-800 hover:border-copper-400'
+                    : 'border-stone-300 bg-stone-50 text-graphite-800 ui-hover:border-copper-500 ui-hover:bg-white ui-active:bg-stone-100'
                 }`}
               >
                 <span className="text-sm font-semibold">{tab.label}</span>
@@ -43,7 +44,10 @@ export function CareerTabs({ active }: { active: 'jobs' | 'candidates' }) {
   );
 }
 
-/** Başlık altındaki birincil eylem (ilan ver) ve ikincil bağlantılar */
+/**
+ * Başlık altındaki eylemler: birincil düğme (ilan ver) ve isteğe bağlı ikincil düğme/bağlantı.
+ * Mobilde alt alta ve tam genişlikte dizilir.
+ */
 export function HeaderActions({
   primary,
   secondary,
@@ -53,18 +57,14 @@ export function HeaderActions({
 }) {
   if (!primary && !secondary) return null;
   return (
-    <div className="mt-6 flex flex-wrap items-center gap-3">
+    <ButtonGroup className="mt-6">
       {primary && (
-        <Link
-          href={primary.href}
-          className="inline-flex min-h-11 items-center gap-2 rounded-md bg-copper-600 px-4 font-semibold text-white hover:bg-copper-700"
-        >
-          <Plus aria-hidden="true" className="h-4 w-4" />
+        <ButtonLink href={primary.href} icon={Plus}>
           {primary.label}
-        </Link>
+        </ButtonLink>
       )}
       {secondary}
-    </div>
+    </ButtonGroup>
   );
 }
 

@@ -1,10 +1,11 @@
-import Link from 'next/link';
 import { Suspense } from 'react';
+import { Briefcase, Mail, Plus, UserSearch } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { SafetyNotice } from '@/components/listings/Detail';
 import { ListingBrowser, StaticListingGrid } from '@/components/listings/ListingBrowser';
 import { CareerTabs, HeaderActions, SubmissionsClosedNote } from '@/components/listings/SectionNav';
+import { ButtonLink } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { routes } from '@/i18n/routes';
 import { areSubmissionsOpen, getJobs, getPosition } from '@/lib/content';
@@ -53,28 +54,33 @@ export default function JobsPage() {
     }),
   ];
   const empty = (
-    <EmptyState title="Şu an yayında iş ilanı yok">
-      {open ? (
-        <>
-          İşçi mi arıyorsunuz?{' '}
-          <Link
-            href={routes.postListing('is-ilani')}
-            className="font-semibold text-copper-700 hover:underline"
-          >
-            İlk ilanı siz verin
-          </Link>
-          . İş arıyorsanız{' '}
-          <Link
-            href={routes.postListing('aday-profili')}
-            className="font-semibold text-copper-700 hover:underline"
-          >
-            aday profili oluşturabilirsiniz
-          </Link>
-          .
-        </>
-      ) : (
-        'İlan başvuruları yakında açılacak.'
-      )}
+    <EmptyState
+      title="Şu an yayında iş ilanı yok"
+      icon={<Briefcase aria-hidden="true" />}
+      actions={
+        open ? (
+          <>
+            <ButtonLink href={routes.postListing('is-ilani')} variant="secondary" icon={Plus}>
+              İş ilanı ver
+            </ButtonLink>
+            <ButtonLink
+              href={routes.postListing('aday-profili')}
+              variant="secondary"
+              icon={UserSearch}
+            >
+              Aday profili oluştur
+            </ButtonLink>
+          </>
+        ) : (
+          <ButtonLink href={routes.contact()} variant="secondary" icon={Mail}>
+            Bize ulaşın
+          </ButtonLink>
+        )
+      }
+    >
+      {open
+        ? 'İşçi arıyorsanız ilk ilanı siz verin; iş arıyorsanız aday profili oluşturabilirsiniz.'
+        : 'İlan başvuruları yakında açılacak.'}
     </EmptyState>
   );
 
@@ -90,12 +96,13 @@ export default function JobsPage() {
           <HeaderActions
             primary={{ href: routes.postListing('is-ilani'), label: 'İş ilanı ver' }}
             secondary={
-              <Link
+              <ButtonLink
                 href={routes.postListing('aday-profili')}
-                className="inline-flex min-h-11 items-center font-semibold text-copper-700 hover:underline"
+                variant="secondary"
+                icon={UserSearch}
               >
                 İş arıyorum: profil oluştur
-              </Link>
+              </ButtonLink>
             }
           />
         ) : (

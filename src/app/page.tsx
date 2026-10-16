@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import {
-  ArrowRight,
   Briefcase,
   CalendarClock,
   ClipboardCheck,
@@ -11,8 +10,12 @@ import {
 } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { SearchForm } from '@/components/search/SearchForm';
+import { ButtonLink } from '@/components/ui/Button';
+import { iconTile, tileClasses } from '@/components/ui/card';
 import { CategoryIcon } from '@/components/ui/CategoryIcon';
 import { SectionHeading } from '@/components/ui/SectionHeading';
+import { chipClasses } from '@/components/ui/styles';
+import { ArrowLink } from '@/components/ui/TextLink';
 import { siteConfig } from '@/config/site';
 import { optionalPageFiles, routes } from '@/i18n/routes';
 import {
@@ -144,20 +147,23 @@ export default function HomePage() {
                   <Link
                     key={term}
                     href={routes.search(term)}
-                    className="inline-flex min-h-9 items-center rounded-full border border-graphite-600 px-3 text-graphite-100 hover:border-copper-400 hover:text-white"
+                    className={chipClasses({ tone: 'inverse' })}
                   >
                     {term}
                   </Link>
                 ))}
               </div>
             )}
-            <Link
+            <ButtonLink
               href={routes.postListing()}
-              className="mt-6 inline-flex min-h-12 items-center gap-2 rounded-md border border-graphite-500 px-4 font-semibold text-white hover:border-copper-400 hover:bg-graphite-800"
+              variant="inverse"
+              size="lg"
+              width="full-mobile"
+              icon={Plus}
+              className="mt-6 [&_svg]:text-copper-400"
             >
-              <Plus aria-hidden="true" className="h-4 w-4 text-copper-400" />
               Stand açın veya ilan verin
-            </Link>
+            </ButtonLink>
           </div>
         </Container>
       </section>
@@ -177,11 +183,14 @@ export default function HomePage() {
                 className="flex flex-col rounded-xl border border-stone-200 bg-white p-5 shadow-sm"
               >
                 <div className="flex items-center gap-3">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-graphite-900 text-copper-400">
+                  <span className={`${iconTile} h-11 w-11`}>
                     <Icon aria-hidden="true" className="h-5 w-5" />
                   </span>
                   <h3 className="text-lg font-semibold text-graphite-950">
-                    <Link href={card.href} className="hover:text-copper-800 hover:underline">
+                    <Link
+                      href={card.href}
+                      className="underline-offset-4 ui-hover:text-copper-800 ui-hover:underline"
+                    >
                       {card.title}
                     </Link>
                   </h3>
@@ -189,12 +198,12 @@ export default function HomePage() {
                 <p className="mt-3 text-sm leading-6 text-graphite-600">{card.description}</p>
                 <p className="mt-3 text-sm font-semibold text-copper-700">{card.count}</p>
                 {card.latest.length > 0 && (
-                  <ul className="mt-3 divide-y divide-stone-200 rounded-lg border border-stone-200 bg-stone-50">
+                  <ul className="mt-3 divide-y divide-stone-200 overflow-hidden rounded-lg border border-stone-200 bg-stone-50">
                     {card.latest.map((item) => (
                       <li key={item.href}>
                         <Link
                           href={item.href}
-                          className="flex min-h-11 items-center justify-between gap-3 px-3 py-2 text-sm hover:bg-copper-50"
+                          className="flex min-h-11 items-center justify-between gap-3 px-3 py-2 text-sm transition-colors duration-100 ui-hover:bg-copper-50 ui-active:bg-copper-100"
                         >
                           <span className="line-clamp-1 font-medium text-graphite-900">
                             {item.title}
@@ -205,12 +214,9 @@ export default function HomePage() {
                     ))}
                   </ul>
                 )}
-                <Link
-                  href={card.href}
-                  className="mt-auto inline-flex min-h-11 items-center gap-1 pt-4 text-sm font-semibold text-copper-700 hover:underline"
-                >
-                  {card.linkLabel} <ArrowRight aria-hidden="true" className="h-4 w-4" />
-                </Link>
+                <div className="mt-auto pt-3">
+                  <ArrowLink href={card.href}>{card.linkLabel}</ArrowLink>
+                </div>
               </li>
             ))}
           </ul>
@@ -236,13 +242,13 @@ export default function HomePage() {
                 <li key={category.slug}>
                   <Link
                     href={routes.marketCategory(category.slug)}
-                    className="flex h-full min-h-16 items-center gap-3 rounded-xl border border-stone-200 bg-stone-50 p-4 hover:border-copper-300 hover:bg-white"
+                    className={`${tileClasses({ surface: 'stone' })} min-h-16`}
                   >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-graphite-900 text-copper-400">
+                    <span className={`${iconTile} h-10 w-10`}>
                       <CategoryIcon icon={category.icon} className="h-5 w-5" />
                     </span>
                     <span className="min-w-0">
-                      <span className="block text-sm font-semibold leading-5 text-graphite-950">
+                      <span className="block text-sm font-semibold leading-5 text-graphite-950 group-hover:text-copper-800">
                         {category.name}
                       </span>
                       <span className="block text-xs text-graphite-500">
@@ -272,18 +278,15 @@ export default function HomePage() {
               const count = stands.filter((stand) => stand.halls.includes(hall.slug)).length;
               return (
                 <li key={hall.slug}>
-                  <Link
-                    href={routes.hall(hall.slug)}
-                    className="flex h-full min-h-16 items-center gap-3 rounded-xl border border-stone-200 bg-white p-4 hover:border-copper-300"
-                  >
-                    <span className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-lg bg-graphite-900 text-copper-400">
+                  <Link href={routes.hall(hall.slug)} className={`${tileClasses()} min-h-16`}>
+                    <span className={`${iconTile} h-11 w-11 flex-col`}>
                       <CategoryIcon icon={hall.icon} className="h-4 w-4" />
                       <span className="text-[0.65rem] font-bold leading-none text-graphite-200">
                         {hall.code}
                       </span>
                     </span>
                     <span className="min-w-0">
-                      <span className="block text-sm font-semibold leading-5 text-graphite-950">
+                      <span className="block text-sm font-semibold leading-5 text-graphite-950 group-hover:text-copper-800">
                         <span className="sr-only">Salon {hall.code}: </span>
                         {hall.name}
                       </span>
@@ -314,21 +317,15 @@ export default function HomePage() {
               </li>
             ))}
           </ul>
-          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
             {rulesPublished && (
-              <Link
-                href={routes.listingRules()}
-                className="inline-flex min-h-11 items-center gap-1 font-semibold text-copper-400 hover:underline"
-              >
-                İlan kuralları <ArrowRight aria-hidden="true" className="h-4 w-4" />
-              </Link>
+              <ArrowLink href={routes.listingRules()} tone="inverse">
+                İlan kuralları
+              </ArrowLink>
             )}
-            <Link
-              href={routes.about()}
-              className="inline-flex min-h-11 items-center gap-1 font-semibold text-copper-400 hover:underline"
-            >
-              Hakkımızda <ArrowRight aria-hidden="true" className="h-4 w-4" />
-            </Link>
+            <ArrowLink href={routes.about()} tone="inverse">
+              Hakkımızda
+            </ArrowLink>
           </div>
         </Container>
       </section>
@@ -354,13 +351,15 @@ export default function HomePage() {
               </li>
             ))}
           </ol>
-          <Link
+          <ButtonLink
             href={routes.postListing()}
-            className="mt-6 inline-flex min-h-12 items-center gap-2 rounded-md bg-copper-600 px-5 font-semibold text-white hover:bg-copper-700"
+            size="lg"
+            icon={Plus}
+            width="full-mobile"
+            className="mt-6"
           >
-            <Plus aria-hidden="true" className="h-4 w-4" />
             İlan ver
-          </Link>
+          </ButtonLink>
         </Container>
       </section>
     </>

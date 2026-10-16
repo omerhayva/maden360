@@ -1,8 +1,11 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Search, X } from 'lucide-react';
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { ChevronDown, Search, SlidersHorizontal, X } from 'lucide-react';
+import { useEffect, useId, useMemo, useState, type ReactNode } from 'react';
+import { Button } from '@/components/ui/Button';
+import { Select } from '@/components/ui/Select';
+import { inputClasses } from '@/components/ui/styles';
 import { isExpired, todayInTurkey } from '@/lib/listings/dates';
 import type { Option } from '@/lib/listings/options';
 import { foldTurkish } from '@/lib/text';
@@ -74,6 +77,11 @@ export function ListingBrowser({
   const query = searchParams.get('q') ?? '';
   const [input, setInput] = useState(query);
   const [lastQuery, setLastQuery] = useState(query);
+  // Mobilde açılır listeler "Süzgeçler" düğmesinin arkasında; bağlantıda süzgeç varsa açık başlar
+  const [filtersOpen, setFiltersOpen] = useState(() =>
+    filters.some((filter) => Boolean(searchParams.get(filter.id))),
+  );
+  const filtersId = useId();
   const today = useMemo(() => todayInTurkey(), []);
 
   if (query !== lastQuery) {
@@ -93,6 +101,11 @@ export function ListingBrowser({
     }
     const qs = params.toString();
     router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+  };
+
+  const resetFilters = () => {
+    setInput('');
+    updateUrl({ q: '', ...Object.fromEntries(filters.map((filter) => [filter.id, ''])) });
   };
 
   useEffect(() => {
@@ -115,7 +128,8 @@ export function ListingBrowser({
         matchesFacet(item.facets[filter.id], selected[filter.id] ?? '', filter.wildcards),
       ),
   );
-  const active = Boolean(query.trim()) || filters.some((filter) => selected[filter.id]);
+  const activeFilterCount = filters.filter((filter) => selected[filter.id]).length;
+  const active = Boolean(query.trim()) || activeFilterCount > 0;
 
   if (live.length === 0) return <>{empty}</>;
 
@@ -138,7 +152,7 @@ export function ListingBrowser({
             <div className="relative mt-1.5">
               <Search
                 aria-hidden="true"
-                className="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-graphite-500"
+                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-graphite-500"
               />
               <input
                 id="ilan-arama"
@@ -148,52 +162,73 @@ export function ListingBrowser({
                 placeholder={searchPlaceholder}
                 autoComplete="off"
                 enterKeyHint="search"
-                className="min-h-11 w-full rounded-md border border-graphite-300 bg-white pl-9 pr-3 text-base focus:border-copper-600 focus:outline-none"
+                className={inputClasses({ size: 'md', className: 'pl-9 pr-3' })}
               />
             </div>
           </div>
-          {filters.map((filter) => (
-            <div key={filter.id}>
-              <label
-                htmlFor={`suzgec-${filter.id}`}
-                className="text-sm font-medium text-graphite-900"
+          {filters.length > 0 && (
+            <div className="sm:hidden">
+              <Button
+                variant="secondary"
+                width="full"
+                icon={SlidersHorizontal}
+                iconEnd={ChevronDown}
+                aria-expanded={filtersOpen}
+                aria-controls={filtersId}
+                onClick={() => setFiltersOpen((value) => !value)}
+                className="aria-expanded:[&>svg:last-child]:rotate-180"
               >
-                {filter.label}
-              </label>
-              <select
-                id={`suzgec-${filter.id}`}
-                value={selected[filter.id] ?? ''}
-                onChange={(event) => updateUrl({ [filter.id]: event.target.value })}
-                className="mt-1.5 min-h-11 w-full rounded-md border border-graphite-300 bg-white px-2 text-base text-graphite-900 focus:border-copper-600 focus:outline-none"
-              >
-                <option value="">{filter.allLabel}</option>
-                {filter.options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                <span className="flex-1 text-left">
+                  Süzgeçler
+                  {activeFilterCount > 0 && (
+                    <span className="ml-1.5 rounded-full bg-graphite-900 px-2 py-0.5 text-xs text-white">
+                      {activeFilterCount}
+                      <span className="sr-only"> etkin</span>
+                    </span>
+                  )}
+                </span>
+              </Button>
             </div>
-          ))}
+          )}
+          {/* "contents": açılır listeler ızgaranın doğrudan öğeleri gibi dizilir */}
+          <div id={filtersId} className={filtersOpen ? 'contents' : 'contents max-sm:hidden'}>
+            {filters.map((filter) => (
+              <div key={filter.id}>
+                <label
+                  htmlFor={`suzgec-${filter.id}`}
+                  className="text-sm font-medium text-graphite-900"
+                >
+                  {filter.label}
+                </label>
+                <Select
+                  id={`suzgec-${filter.id}`}
+                  size="md"
+                  value={selected[filter.id] ?? ''}
+                  onChange={(event) => updateUrl({ [filter.id]: event.target.value })}
+                  wrapperClassName="mt-1.5"
+                >
+                  <option value="">{filter.allLabel}</option>
+                  {filter.options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+            ))}
+          </div>
         </div>
       </form>
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+      {/* Sabit yükseklik: "Süzgeçleri temizle" belirip kaybolunca liste kaymaz */}
+      <div className="mt-4 flex min-h-10 flex-wrap items-center justify-between gap-2 pointer-coarse:min-h-11">
         <p role="status" aria-live="polite" className="text-sm text-graphite-700">
           {active ? `${visible.length} ${noun} bulundu` : `${live.length} ${noun}`}
         </p>
         {active && (
-          <button
-            type="button"
-            onClick={() => {
-              setInput('');
-              updateUrl({ q: '', ...Object.fromEntries(filters.map((filter) => [filter.id, ''])) });
-            }}
-            className="inline-flex min-h-10 items-center gap-1 rounded-md px-2 text-sm font-semibold text-copper-700 hover:bg-copper-50"
-          >
-            <X aria-hidden="true" className="h-4 w-4" />
+          <Button variant="ghost" size="sm" icon={X} onClick={resetFilters}>
             Süzgeçleri temizle
-          </button>
+          </Button>
         )}
       </div>
 
@@ -206,9 +241,12 @@ export function ListingBrowser({
           ))}
         </ul>
       ) : (
-        <p className="mt-3 rounded-xl border border-dashed border-graphite-300 bg-white p-6 text-graphite-700">
-          Bu süzgeçlerle eşleşen {noun} yok. Süzgeçleri temizleyip yeniden deneyin.
-        </p>
+        <div className="mt-3 flex flex-col items-start gap-3 rounded-xl border border-dashed border-graphite-300 bg-white p-6 text-graphite-700 sm:flex-row sm:items-center sm:justify-between">
+          <p>Bu süzgeçlerle eşleşen {noun} yok. Süzgeçleri değiştirin veya temizleyin.</p>
+          <Button variant="secondary" size="sm" icon={X} onClick={resetFilters}>
+            Süzgeçleri temizle
+          </Button>
+        </div>
       )}
     </div>
   );

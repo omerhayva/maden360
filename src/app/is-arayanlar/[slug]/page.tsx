@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { UserSearch } from 'lucide-react';
+import { MessageSquareText, UserSearch } from 'lucide-react';
 import { Prose } from '@/components/content/Prose';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
@@ -13,6 +13,7 @@ import {
   SideCard,
 } from '@/components/listings/Detail';
 import { ExampleBadge, ListingStatusBadge } from '@/components/listings/ListingBadges';
+import { MobileActionBar } from '@/components/listings/MobileActionBar';
 import { routes } from '@/i18n/routes';
 import { getCandidate, getCandidates, getPosition } from '@/lib/content';
 import { isExpired, todayInTurkey } from '@/lib/listings/dates';
@@ -146,6 +147,8 @@ export default async function CandidatePage({ params }: Props) {
           </aside>
         </div>
       </Container>
+
+      <MobileActionBar href="#iletisim" label="Adayla iletişime geç" icon={MessageSquareText} />
     </>
   );
 }

@@ -2,12 +2,15 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { Mail, Plus } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { ListingBrowser, StaticListingGrid } from '@/components/listings/ListingBrowser';
 import { HeaderActions } from '@/components/listings/SectionNav';
+import { ButtonLink } from '@/components/ui/Button';
 import { CategoryIcon } from '@/components/ui/CategoryIcon';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { chipClasses } from '@/components/ui/styles';
 import { routes } from '@/i18n/routes';
 import { areSubmissionsOpen, getHall, getHalls, getStandsByHall } from '@/lib/content';
 import { isPreviewMode } from '@/lib/content/visibility';
@@ -39,21 +42,24 @@ export default async function HallPage({ params }: Props) {
   const open = areSubmissionsOpen();
   const others = getHalls().filter((other) => other.slug !== hall.slug);
   const empty = (
-    <EmptyState title="Bu salonda henüz stand yok">
-      {open ? (
-        <>
-          Bu alanda faaliyet gösteriyorsanız{' '}
-          <Link
-            href={routes.postListing('fuar-standi')}
-            className="font-semibold text-copper-700 hover:underline"
-          >
-            stand açın
-          </Link>
-          .
-        </>
-      ) : (
-        'Stand başvuruları yakında açılacak.'
-      )}
+    <EmptyState
+      title="Bu salonda henüz stand yok"
+      icon={<CategoryIcon icon={hall.icon} />}
+      actions={
+        open ? (
+          <ButtonLink href={routes.postListing('fuar-standi')} variant="secondary" icon={Plus}>
+            Stand açın
+          </ButtonLink>
+        ) : (
+          <ButtonLink href={routes.contact()} variant="secondary" icon={Mail}>
+            Bize ulaşın
+          </ButtonLink>
+        )
+      }
+    >
+      {open
+        ? 'Bu alanda faaliyet gösteriyorsanız stand açarak firmanızı tanıtın.'
+        : 'Stand başvuruları yakında açılacak. Aşağıdaki diğer salonlara göz atabilirsiniz.'}
     </EmptyState>
   );
 
@@ -101,11 +107,8 @@ export default async function HallPage({ params }: Props) {
           <ul className="mt-3 flex flex-wrap gap-2">
             {others.map((other) => (
               <li key={other.slug}>
-                <Link
-                  href={routes.hall(other.slug)}
-                  className="inline-flex min-h-10 items-center gap-2 rounded-full border border-stone-300 bg-white px-3 text-sm font-medium text-graphite-800 hover:border-copper-400"
-                >
-                  <CategoryIcon icon={other.icon} className="h-4 w-4 text-copper-600" />
+                <Link href={routes.hall(other.slug)} className={chipClasses()}>
+                  <CategoryIcon icon={other.icon} className="text-copper-600" />
                   {other.code} · {other.name}
                 </Link>
               </li>

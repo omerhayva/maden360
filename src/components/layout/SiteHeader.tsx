@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Plus, Search } from 'lucide-react';
 import { LogoMark, Wordmark } from '@/components/brand/Logo';
 import { SearchForm } from '@/components/search/SearchForm';
+import { ButtonLink, IconLink } from '@/components/ui/Button';
 import { siteConfig } from '@/config/site';
 import { routes } from '@/i18n/routes';
 import { MobileMenu } from './MobileMenu';
@@ -29,21 +30,20 @@ export function SiteHeader() {
           <SearchForm variant="header" id="header-search" />
         </div>
 
-        <Link
-          href={routes.postListing()}
-          className="hidden min-h-10 shrink-0 items-center gap-1.5 rounded-md bg-copper-600 px-3.5 text-sm font-semibold text-white hover:bg-copper-700 lg:inline-flex"
-        >
-          <Plus aria-hidden="true" className="h-4 w-4" />
-          İlan ver
-        </Link>
+        {/* Görünürlük kapsayıcıda: düğmenin kendi "inline-flex" sınıfıyla çakışmasın */}
+        <div className="hidden shrink-0 lg:block">
+          <ButtonLink href={routes.postListing()} size="sm" icon={Plus}>
+            İlan ver
+          </ButtonLink>
+        </div>
 
-        <Link
+        <IconLink
           href={routes.search()}
-          className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-md text-graphite-100 hover:bg-graphite-800 md:hidden"
-        >
-          <Search aria-hidden="true" className="h-5 w-5" />
-          <span className="sr-only">Ara</span>
-        </Link>
+          label="Ara"
+          icon={Search}
+          variant="ghost-inverse"
+          className="ml-auto md:hidden"
+        />
         <MobileMenu />
       </div>
     </header>

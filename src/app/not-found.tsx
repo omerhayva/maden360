@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { SearchForm } from '@/components/search/SearchForm';
+import { tileClasses } from '@/components/ui/card';
 import { mainNav } from '@/i18n/navigation';
 import { routes } from '@/i18n/routes';
 
@@ -29,21 +31,29 @@ export default function NotFound() {
         <ul className="mt-8 grid gap-3 sm:grid-cols-3">
           {mainNav.map((item) => (
             <li key={item.href}>
-              <Link
-                href={item.href}
-                className="flex min-h-14 flex-col justify-center rounded-xl border border-stone-200 bg-white px-4 py-3 hover:border-copper-300"
-              >
-                <span className="font-semibold text-graphite-950">{item.label}</span>
-                {item.description && (
-                  <span className="text-sm text-graphite-600">{item.description}</span>
-                )}
+              <Link href={item.href} className={`${tileClasses()} min-h-16`}>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-semibold text-graphite-950 group-hover:text-copper-800">
+                    {item.label}
+                  </span>
+                  {item.description && (
+                    <span className="block text-sm text-graphite-600">{item.description}</span>
+                  )}
+                </span>
+                <ChevronRight
+                  aria-hidden="true"
+                  className="h-4 w-4 shrink-0 text-graphite-400 group-hover:text-copper-600"
+                />
               </Link>
             </li>
           ))}
         </ul>
         <p className="mt-8 text-sm text-graphite-600">
           Bir bağlantının hatalı olduğunu düşünüyorsanız{' '}
-          <Link href={routes.contact()} className="font-semibold text-copper-700 hover:underline">
+          <Link
+            href={routes.contact()}
+            className="font-semibold text-copper-700 underline underline-offset-4 ui-hover:text-copper-800"
+          >
             bize bildirin
           </Link>
           .

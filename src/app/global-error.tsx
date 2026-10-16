@@ -26,16 +26,22 @@ export default function GlobalError({
       >
         <h1 style={{ fontSize: '1.75rem' }}>Bir şeyler ters gitti</h1>
         <p>Sayfa yüklenemedi. Lütfen tekrar deneyin.</p>
+        {/* Site stilleri yüklenemeyebilir; düğme görünümü (styles.ts → primary) satır içi verilir */}
         <button
           type="button"
           onClick={reset}
           style={{
             marginTop: '1rem',
-            padding: '0.75rem 1.25rem',
+            minHeight: 48,
+            padding: '0.625rem 1.25rem',
             background: '#a9541f',
             color: 'white',
-            border: 0,
+            font: 'inherit',
+            fontWeight: 600,
+            border: '1px solid transparent',
             borderRadius: 6,
+            boxShadow: '0 2px 0 0 #6c361a',
+            cursor: 'pointer',
           }}
         >
           Tekrar dene

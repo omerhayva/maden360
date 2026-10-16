@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { CircleAlert } from 'lucide-react';
+import { Select } from '@/components/ui/Select';
+import { cx, inputClasses } from '@/components/ui/styles';
 import { formatNumber } from '@/lib/format';
 import type { ConsentPart, FormField } from '@/lib/submissions/forms';
 import { parseFormNumber } from '@/lib/submissions/values';
@@ -49,10 +51,9 @@ function ErrorText({ id, error }: { id: string; error?: string }) {
   );
 }
 
-const inputClass = (error?: string) =>
-  `mt-1.5 w-full rounded-md border bg-white px-3 text-base text-graphite-950 placeholder:text-graphite-400 focus:border-copper-600 focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-0 focus-visible:outline-copper-500 ${
-    error ? 'border-red-600' : 'border-graphite-300'
-  }`;
+/** Ortak alan görünümü (styles.ts → inputClasses): hatalı alanda kırmızı kenarlık */
+const inputClass = (error: string | undefined, extra: string) =>
+  inputClasses({ invalid: Boolean(error), className: cx('mt-1.5 px-3', extra) });
 
 function describedBy(field: FormField, error?: string) {
   const id = fieldId(field.id);
@@ -106,7 +107,7 @@ export function TextField({ field, value, error, onChange, onBlur }: FieldProps)
         aria-describedby={describedBy(field, error)}
         onChange={(event) => onChange(field.id, event.target.value)}
         onBlur={() => onBlur(field.id)}
-        className={`${inputClass(error)} min-h-12`}
+        className={inputClass(error, 'py-2')}
       />
       <Help id={`${id}-yardim`} text={field.help} />
       {readBack && (
@@ -139,7 +140,7 @@ export function TextAreaField({ field, value, error, onChange, onBlur }: FieldPr
         aria-describedby={describedBy(field, error)}
         onChange={(event) => onChange(field.id, event.target.value)}
         onBlur={() => onBlur(field.id)}
-        className={`${inputClass(error)} py-2.5 leading-6`}
+        className={inputClass(error, 'py-2.5 leading-6')}
       />
       <div className="flex items-start justify-between gap-3">
         <Help id={`${id}-yardim`} text={field.help} />
@@ -162,16 +163,17 @@ export function SelectField({ field, value, error, onChange, onBlur }: FieldProp
   return (
     <div>
       <Label field={field} htmlFor={id} />
-      <select
+      <Select
         id={id}
         name={field.id}
         value={raw}
+        invalid={Boolean(error)}
         aria-invalid={error ? true : undefined}
         aria-required={field.required ? true : undefined}
         aria-describedby={describedBy(field, error)}
         onChange={(event) => onChange(field.id, event.target.value)}
         onBlur={() => onBlur(field.id)}
-        className={`${inputClass(error)} min-h-12`}
+        wrapperClassName="mt-1.5"
       >
         {!field.defaultValue && <option value="">Seçin</option>}
         {field.options?.map((option) => (
@@ -179,7 +181,7 @@ export function SelectField({ field, value, error, onChange, onBlur }: FieldProp
             {option.label}
           </option>
         ))}
-      </select>
+      </Select>
       <Help id={`${id}-yardim`} text={field.help} />
       <ErrorText id={`${id}-hata`} error={error} />
     </div>
@@ -210,7 +212,7 @@ export function CheckboxGroupField({ field, value, error, onChange }: FieldProps
             <label
               key={option.value}
               htmlFor={optionId}
-              className="flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-graphite-300 bg-white px-3 py-2 text-sm hover:border-copper-400 has-checked:border-copper-600 has-checked:bg-copper-50 has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-copper-500"
+              className="flex min-h-12 cursor-pointer items-center gap-3 rounded-md border border-graphite-300 bg-white px-3 py-2 text-sm [-webkit-tap-highlight-color:transparent] transition-colors duration-100 ui-hover:border-copper-400 ui-active:bg-stone-50 has-checked:border-copper-600 has-checked:bg-copper-50 has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-copper-500"
             >
               <input
                 id={optionId}
@@ -286,7 +288,7 @@ export function ConsentCheckbox({
                 key={index}
                 href={part.href}
                 target="_blank"
-                className="font-semibold text-copper-700 underline"
+                className="font-semibold text-copper-700 underline underline-offset-2 ui-hover:text-copper-800"
               >
                 {part.text}
                 <span className="sr-only"> (yeni sekmede açılır)</span>

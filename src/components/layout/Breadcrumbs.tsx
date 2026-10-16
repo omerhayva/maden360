@@ -22,7 +22,10 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
                   {crumb.name}
                 </span>
               ) : (
-                <Link href={crumb.href} className="rounded hover:text-copper-700 hover:underline">
+                <Link
+                  href={crumb.href}
+                  className="-my-1 inline-block rounded py-1 underline-offset-4 ui-hover:text-copper-700 ui-hover:underline"
+                >
                   {crumb.name}
                 </Link>
               )}

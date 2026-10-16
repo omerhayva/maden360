@@ -2,9 +2,21 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Briefcase, Search, SearchX, Store, Tent, type LucideIcon } from 'lucide-react';
+import {
+  Briefcase,
+  ChevronRight,
+  Search,
+  SearchX,
+  Store,
+  Tent,
+  X,
+  type LucideIcon,
+} from 'lucide-react';
 import type MiniSearch from 'minisearch';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Button, IconButton } from '@/components/ui/Button';
+import { cardFrame, iconTile, stretchedLink, tileLink } from '@/components/ui/card';
+import { chipClasses, inputClasses } from '@/components/ui/styles';
 import { siteConfig } from '@/config/site';
 import { routes } from '@/i18n/routes';
 import { todayInTurkey } from '@/lib/listings/dates';
@@ -151,14 +163,27 @@ export function SearchClient() {
             autoComplete="off"
             enterKeyHint="search"
             placeholder="Örn. ekskavatör, kırıcı"
-            className="min-h-14 w-full rounded-lg border border-graphite-300 bg-white pl-11 pr-24 text-lg text-graphite-950 shadow-sm placeholder:text-graphite-500 focus:border-copper-500 focus:outline-none"
+            className={inputClasses({
+              size: 'xl',
+              className: `pl-11 sm:text-lg [&::-webkit-search-cancel-button]:appearance-none ${input ? 'pr-36' : 'pr-24'}`,
+            })}
           />
-          <button
-            type="submit"
-            className="absolute right-1.5 top-1.5 inline-flex min-h-11 items-center rounded-md bg-copper-600 px-4 font-semibold text-white hover:bg-copper-700"
-          >
-            Ara
-          </button>
+          {/* Konum kapsayıcıda: düğmelerin kendi "relative" sınıfıyla çakışmasın */}
+          <div className="absolute right-1.5 top-1.5 flex items-center gap-1">
+            {input && (
+              <IconButton
+                label="Aramayı temizle"
+                icon={X}
+                variant="subtle"
+                onClick={() => {
+                  setInput('');
+                  updateUrl('', filter);
+                  inputRef.current?.focus();
+                }}
+              />
+            )}
+            <Button type="submit">Ara</Button>
+          </div>
         </div>
       </form>
 
@@ -170,14 +195,16 @@ export function SearchClient() {
               type="button"
               aria-pressed={filter === item.value}
               onClick={() => updateUrl(query, item.value)}
-              className={`inline-flex min-h-10 items-center gap-1.5 rounded-full border px-4 text-sm font-semibold ${
-                filter === item.value
-                  ? 'border-graphite-900 bg-graphite-900 text-white'
-                  : 'border-graphite-300 bg-white text-graphite-800 hover:border-copper-400'
-              }`}
+              className={`${chipClasses({ selected: filter === item.value })} cursor-pointer`}
             >
               {item.label}
-              <span className={filter === item.value ? 'text-copper-300' : 'text-graphite-500'}>
+              <span
+                className={`rounded-full px-1.5 text-xs tabular-nums ${
+                  filter === item.value
+                    ? 'bg-graphite-700 text-copper-200'
+                    : 'bg-stone-100 text-graphite-600'
+                }`}
+              >
                 {counts[item.value]}
               </span>
             </button>
@@ -222,10 +249,7 @@ export function SearchClient() {
             {visibleHits.map((hit) => {
               const Icon = typeIcons[hit.type];
               return (
-                <li
-                  key={hit.id}
-                  className="relative rounded-xl border border-stone-200 bg-white p-4 hover:border-copper-300 sm:p-5"
-                >
+                <li key={hit.id} className={`${cardFrame} p-4 sm:p-5`}>
                   <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-graphite-500">
                     <Icon aria-hidden="true" className="h-4 w-4 text-copper-600" />
                     <span>{typeLabels[hit.type]}</span>
@@ -236,11 +260,8 @@ export function SearchClient() {
                       </>
                     )}
                   </div>
-                  <h2 className="mt-1.5 text-lg font-semibold text-graphite-950">
-                    <Link
-                      href={hit.url}
-                      className="after:absolute after:inset-0 hover:text-copper-800 focus-visible:outline-none"
-                    >
+                  <h2 className="mt-1.5 text-lg font-semibold text-graphite-950 group-hover:text-copper-800">
+                    <Link href={hit.url} className={stretchedLink}>
                       {hit.title}
                     </Link>
                   </h2>
@@ -272,7 +293,7 @@ function SearchSuggestions({ hasDocuments }: { hasDocuments: boolean }) {
           olacak.{' '}
           <Link
             href={routes.postListing()}
-            className="font-semibold text-copper-700 hover:underline"
+            className="font-semibold text-copper-700 underline underline-offset-4 ui-hover:text-copper-800"
           >
             İlan verin
           </Link>
@@ -290,10 +311,8 @@ function SearchSuggestions({ hasDocuments }: { hasDocuments: boolean }) {
       <ul className="mt-3 flex flex-wrap gap-2">
         {siteConfig.popularSearches.map((term) => (
           <li key={term}>
-            <Link
-              href={routes.search(term)}
-              className="inline-flex min-h-10 items-center rounded-full border border-graphite-300 bg-white px-4 text-sm font-medium text-graphite-800 hover:border-copper-400 hover:text-copper-800"
-            >
+            <Link href={routes.search(term)} className={chipClasses()}>
+              <Search aria-hidden="true" className="text-graphite-400" />
               {term}
             </Link>
           </li>
@@ -314,12 +333,15 @@ function BrowseLinks() {
     <ul className="mt-8 grid gap-3 sm:grid-cols-3">
       {links.map(({ href, label, icon: Icon }) => (
         <li key={href}>
-          <Link
-            href={href}
-            className="flex min-h-14 items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 font-semibold text-graphite-900 hover:border-copper-300 hover:text-copper-800"
-          >
-            <Icon aria-hidden="true" className="h-5 w-5 text-copper-600" />
-            {label}
+          <Link href={href} className={`${tileLink} min-h-16 font-semibold text-graphite-900`}>
+            <span className={`${iconTile} h-10 w-10`}>
+              <Icon aria-hidden="true" className="h-5 w-5" />
+            </span>
+            <span className="flex-1 group-hover:text-copper-800">{label}</span>
+            <ChevronRight
+              aria-hidden="true"
+              className="h-4 w-4 text-graphite-400 group-hover:text-copper-600"
+            />
           </Link>
         </li>
       ))}
@@ -343,7 +365,7 @@ function NoResults() {
             Aradığınızı bulamadıysanız{' '}
             <Link
               href={routes.postListing()}
-              className="font-semibold text-copper-700 hover:underline"
+              className="font-semibold text-copper-700 underline underline-offset-4 ui-hover:text-copper-800"
             >
               “Aranıyor” ilanı veya aday profili gönderebilirsiniz
             </Link>

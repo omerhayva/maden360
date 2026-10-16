@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, Plus, Search, X } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
+import { ButtonLink, IconButton } from '@/components/ui/Button';
+import { inputClasses } from '@/components/ui/styles';
 import { mainNav, trustNav } from '@/i18n/navigation';
 import { routes } from '@/i18n/routes';
 import { isActivePath } from './NavLinks';
@@ -37,21 +39,17 @@ export function MobileMenu() {
 
   return (
     <div className="lg:hidden">
-      <button
+      {/* Ad sabit kalır ("Menü"); açık/kapalı durumu aria-expanded ile bildirilir (WAI-ARIA APG) */}
+      <IconButton
         ref={buttonRef}
-        type="button"
+        label="Menü"
+        icon={open ? X : Menu}
+        variant="ghost-inverse"
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((value) => !value)}
-        className="inline-flex h-11 w-11 items-center justify-center rounded-md text-graphite-100 hover:bg-graphite-800"
-      >
-        {open ? (
-          <X aria-hidden="true" className="h-6 w-6" />
-        ) : (
-          <Menu aria-hidden="true" className="h-6 w-6" />
-        )}
-        <span className="sr-only">{open ? 'Menüyü kapat' : 'Menüyü aç'}</span>
-      </button>
+        className="aria-expanded:bg-graphite-800"
+      />
 
       <div
         id={panelId}
@@ -79,7 +77,7 @@ export function MobileMenu() {
                 type="search"
                 enterKeyHint="search"
                 placeholder="Firma, iş ilanı, ürün ara"
-                className="min-h-12 w-full rounded-md border border-graphite-700 bg-graphite-900 pl-10 pr-3 text-base text-white placeholder:text-graphite-400"
+                className={inputClasses({ tone: 'dark', size: 'lg', className: 'pl-10 pr-3' })}
               />
             </div>
           </Form>
@@ -93,7 +91,7 @@ export function MobileMenu() {
                     <Link
                       href={item.href}
                       aria-current={active ? 'page' : undefined}
-                      className={`flex min-h-14 flex-col justify-center py-2 ${active ? 'text-copper-400' : 'text-white'}`}
+                      className={`-mx-2 flex min-h-14 flex-col justify-center rounded-md px-2 py-2 transition-colors duration-100 ui-hover:bg-graphite-900 ui-active:bg-graphite-800 ${active ? 'text-copper-400' : 'text-white'}`}
                     >
                       <span className="text-base font-semibold">{item.label}</span>
                       {item.description && (
@@ -106,13 +104,15 @@ export function MobileMenu() {
             </ul>
           </nav>
 
-          <Link
+          <ButtonLink
             href={routes.postListing()}
-            className="mt-5 flex min-h-12 items-center justify-center gap-2 rounded-md bg-copper-600 px-4 font-semibold text-white hover:bg-copper-700"
+            size="lg"
+            width="full"
+            icon={Plus}
+            className="mt-5"
           >
-            <Plus aria-hidden="true" className="h-4 w-4" />
             İlan ver
-          </Link>
+          </ButtonLink>
 
           <nav aria-label="Kurumsal bağlantılar" className="mt-4 border-t border-graphite-800 pt-4">
             <ul className="grid grid-cols-2 gap-x-4">
@@ -120,7 +120,7 @@ export function MobileMenu() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="flex min-h-11 items-center text-sm text-graphite-300 hover:text-white"
+                    className="flex min-h-11 items-center text-sm text-graphite-300 underline-offset-4 ui-hover:text-white ui-hover:underline"
                   >
                     {item.label}
                   </Link>

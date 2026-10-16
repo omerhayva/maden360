@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { Check, CircleAlert, Copy, Mail, RotateCcw, Send } from 'lucide-react';
+import { Check, ChevronRight, CircleAlert, Copy, Mail, RotateCcw, Send } from 'lucide-react';
 import {
   Suspense,
   useEffect,
@@ -11,6 +11,7 @@ import {
   type FormEvent,
   type RefObject,
 } from 'react';
+import { Button, ButtonGroup, ButtonLink } from '@/components/ui/Button';
 import { createRef } from '@/lib/listings/format';
 import { todayInTurkey } from '@/lib/listings/dates';
 import { buildMailto, postSubmission, type DeliveryConfig } from '@/lib/submissions/deliver';
@@ -81,6 +82,8 @@ export function SubmissionForm({
   const [sending, setSending] = useState(false);
   const [outcome, setOutcome] = useState<Outcome | null>(null);
   const [honeypot, setHoneypot] = useState('');
+  /** Çift tıklama koruması: durum güncellemesi beklenmeden ikinci gönderimi engeller */
+  const busyRef = useRef(false);
   const summaryRef = useRef<HTMLDivElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
   const fields = useMemo(() => allFields(definition), [definition]);
@@ -128,6 +131,7 @@ export function SubmissionForm({
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    if (busyRef.current) return;
     setSubmitted(true);
     const result = validateSubmission(definition, values, consents);
     setErrors(result);
@@ -151,12 +155,17 @@ export function SubmissionForm({
     }
     const mailto = buildMailto(delivery.email, submission.subject, submission.text);
     if (delivery.endpoint) {
+      busyRef.current = true;
       setSending(true);
-      const status = await postSubmission(delivery, submission, definition.kind);
-      setSending(false);
-      setOutcome(
-        status === 'sent' ? { status, submission } : { status: 'failed', submission, mailto },
-      );
+      try {
+        const status = await postSubmission(delivery, submission, definition.kind);
+        setOutcome(
+          status === 'sent' ? { status, submission } : { status: 'failed', submission, mailto },
+        );
+      } finally {
+        busyRef.current = false;
+        setSending(false);
+      }
       return;
     }
     setOutcome({ status: 'mailto', submission, mailto });
@@ -319,14 +328,17 @@ export function SubmissionForm({
             ? ` Onaylanan ${definition.kind === 'fuar-standi' ? 'stand' : 'ilan'} ${definition.durationDays} gün yayında kalır.`
             : ''}
         </p>
-        <button
+        <Button
           type="submit"
-          disabled={sending}
-          className="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-copper-600 px-6 font-semibold text-white hover:bg-copper-700 disabled:opacity-70 sm:w-auto"
+          size="lg"
+          width="full-mobile"
+          icon={Send}
+          loading={sending}
+          loadingLabel="Başvurunuz gönderiliyor, lütfen bekleyin"
+          className="mt-4"
         >
-          <Send aria-hidden="true" className="h-4 w-4" />
           {sending ? 'Gönderiliyor…' : definition.submitLabel}
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -345,12 +357,22 @@ function SubmissionResult({
 }) {
   const [copied, setCopied] = useState(false);
   const { submission } = outcome;
+
+  // "Kopyalandı" geri bildirimi birkaç saniye sonra eski haline döner
+  useEffect(() => {
+    if (!copied) return;
+    const timer = window.setTimeout(() => setCopied(false), 3000);
+    return () => window.clearTimeout(timer);
+  }, [copied]);
+
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(submission.text);
       setCopied(true);
     } catch {
+      // Pano izni yoksa metni göster ve seç; kullanıcı kendisi kopyalar
       const area = document.getElementById('basvuru-metni') as HTMLTextAreaElement | null;
+      area?.closest('details')?.setAttribute('open', '');
       area?.select();
     }
   };
@@ -385,56 +407,45 @@ function SubmissionResult({
             `Form hizmetine şu an ulaşılamadı. Başvurunuzu ${email} adresine e-postayla gönderebilirsiniz; metin hazır.`}
         </p>
         {outcome.status !== 'sent' && (
-          <div className="mt-4 flex flex-wrap gap-3">
-            <a
-              href={outcome.mailto}
-              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-copper-600 px-4 font-semibold text-white hover:bg-copper-700"
-            >
-              <Mail aria-hidden="true" className="h-4 w-4" />
+          <ButtonGroup className="mt-4">
+            <ButtonLink href={outcome.mailto} icon={Mail}>
               E-posta uygulamasını aç
-            </a>
-            <button
-              type="button"
-              onClick={copy}
-              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-graphite-300 bg-white px-4 font-semibold text-graphite-900 hover:border-copper-400"
-            >
-              {copied ? (
-                <Check aria-hidden="true" className="h-4 w-4" />
-              ) : (
-                <Copy aria-hidden="true" className="h-4 w-4" />
-              )}
+            </ButtonLink>
+            {/* Sonuç kutusu bir canlı bölge (role="status"): "Kopyalandı" ekran okuyucuya duyurulur */}
+            <Button variant="secondary" icon={copied ? Check : Copy} onClick={copy}>
               {copied ? 'Kopyalandı' : 'Metni kopyala'}
-            </button>
-          </div>
+            </Button>
+          </ButtonGroup>
         )}
       </div>
 
       {outcome.status !== 'sent' && (
-        <details className="rounded-xl border border-stone-200 bg-white p-5">
-          <summary className="cursor-pointer font-semibold text-graphite-900">
+        <details className="group/ayrinti rounded-xl border border-stone-200 bg-white">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2 rounded-xl px-5 font-semibold text-graphite-900 transition-colors duration-100 ui-hover:bg-stone-50 [&::-webkit-details-marker]:hidden">
+            <ChevronRight
+              aria-hidden="true"
+              className="h-4 w-4 shrink-0 text-copper-600 group-open/ayrinti:rotate-90"
+            />
             Başvuru metnini göster
           </summary>
-          <label htmlFor="basvuru-metni" className="sr-only">
-            Başvuru metni
-          </label>
-          <textarea
-            id="basvuru-metni"
-            readOnly
-            value={submission.text}
-            rows={14}
-            className="mt-3 w-full rounded-md border border-graphite-300 bg-stone-50 p-3 font-mono text-xs leading-5 text-graphite-900"
-          />
+          <div className="px-5 pb-5">
+            <label htmlFor="basvuru-metni" className="sr-only">
+              Başvuru metni
+            </label>
+            <textarea
+              id="basvuru-metni"
+              readOnly
+              value={submission.text}
+              rows={14}
+              className="w-full rounded-md border border-graphite-300 bg-stone-50 p-3 font-mono text-xs leading-5 text-graphite-900"
+            />
+          </div>
         </details>
       )}
 
-      <button
-        type="button"
-        onClick={onReset}
-        className="inline-flex min-h-11 items-center gap-2 rounded-md px-2 font-semibold text-copper-700 hover:bg-copper-50"
-      >
-        <RotateCcw aria-hidden="true" className="h-4 w-4" />
+      <Button variant="ghost" icon={RotateCcw} onClick={onReset} className="-ml-2">
         Yeni başvuru
-      </button>
+      </Button>
     </div>
   );
 }

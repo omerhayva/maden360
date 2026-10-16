@@ -27,11 +27,11 @@ flowchart LR
 |---|---|---|
 | Çatı | Next.js 16 (App Router), React 19 | Statik dışa aktarma |
 | Dil | TypeScript 6 (strict) | |
-| Stil | Tailwind CSS 4 + Typography | Tasarım belirteçleri `src/app/globals.css` |
+| Stil | Tailwind CSS 4 + Typography | Tasarım belirteçleri `src/app/globals.css`; düğme, form alanı ve çip sınıfları `src/components/ui/styles.ts` ([arayuz-rehberi.md](arayuz-rehberi.md)) |
 | İçerik | Markdown + YAML ön bilgi | unified/remark/rehype (GFM tabloları); ham HTML kapalı |
 | Doğrulama | zod 4 | Hatalı içerik derlemeyi durdurur |
 | Arama | MiniSearch (tarayıcıda) | Türkçeye uyarlanmış dizinleme |
-| Test | Vitest | İçerik ve ilan kuralları, başvuru formları, sayı okuma, arama |
+| Test | Vitest | İçerik ve ilan kuralları, başvuru formları, sayı okuma, arama, arayüz sınıfları |
 | Yazı tipi | Inter (fontsource, kendi sunucumuzdan) | Dış yazı tipi servisi yok |
 
 ## Klasör yapısı
@@ -51,7 +51,8 @@ content/                  İçerik (editörlerin çalıştığı yer)
 src/
   app/                    Sayfalar (rotalar), site haritası, robots, arama dizini
   components/             Arayüz bileşenleri
-    listings/             İlan kartları, süzme, ilan sayfası parçaları
+    ui/                   Ortak arayüz: düğmeler, açılır liste, kart/kutucuk, boş durum (arayuz-rehberi.md)
+    listings/             İlan kartları, süzme, ilan sayfası parçaları, mobil eylem çubuğu
     forms/                Erişilebilir başvuru formu
   config/site.ts          Site adı, adres, iletişim (tek yapılandırma noktası)
   i18n/                   URL yapısı ve menüler (İngilizceye hazır)
@@ -138,8 +139,9 @@ Tüm bağlantılar `src/i18n/routes.ts` üzerinden üretilir. İngilizce eklendi
 - Tüm sayfalar derleme sırasında HTML olarak üretilir; içerik, JavaScript yüklenmeden okunabilir.
 - Görsel servis, video, dış yazı tipi veya izleme betiği yoktur. Inter yazı tipi siteyle birlikte sunulur
   ve yalnızca gereken karakter alt kümeleri (Latin + Latin genişletilmiş) indirilir.
-- Sayfa başına JavaScript (gzip): ana sayfa ~179 KB, fuar ve market ~189 KB, başvuru formu ~192 KB. Büyük
+- Sayfa başına JavaScript (gzip): ana sayfa ~181 KB, fuar ve market ~191 KB, başvuru formu ~194 KB. Büyük
   kısmı Next.js ve React çatısının temel yüküdür; süzme ve form kodu yalnızca ilgili sayfalarda yüklenir.
+  Ortak düğme sistemi bağımlılık eklemeden yazıldı (sayfa başına ~2–3 KB).
 - Arama dizini yalnızca arama sayfasında indirilir ve yalnızca yayımlanmış ilanları içerir.
 
 ## Güvenlik notları

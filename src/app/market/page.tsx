@@ -1,10 +1,13 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { Mail, Plus, Store } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { SafetyNotice } from '@/components/listings/Detail';
 import { ListingBrowser, StaticListingGrid } from '@/components/listings/ListingBrowser';
 import { HeaderActions, SubmissionsClosedNote } from '@/components/listings/SectionNav';
+import { ButtonLink } from '@/components/ui/Button';
+import { iconTile, tileLink } from '@/components/ui/card';
 import { CategoryIcon } from '@/components/ui/CategoryIcon';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -53,21 +56,24 @@ export default function MarketPage() {
     facetFilter(items, { id: 'il', label: 'İl', allLabel: 'Tüm iller' }),
   ];
   const empty = (
-    <EmptyState title="Şu an yayında market ilanı yok">
-      {open ? (
-        <>
-          Satmak, kiralamak veya aramak istediğiniz bir şey mi var?{' '}
-          <Link
-            href={routes.postListing('market-ilani')}
-            className="font-semibold text-copper-700 hover:underline"
-          >
+    <EmptyState
+      title="Şu an yayında market ilanı yok"
+      icon={<Store aria-hidden="true" />}
+      actions={
+        open ? (
+          <ButtonLink href={routes.postListing('market-ilani')} variant="secondary" icon={Plus}>
             İlk ilanı siz verin
-          </Link>
-          .
-        </>
-      ) : (
-        'Market ilanı başvuruları yakında açılacak.'
-      )}
+          </ButtonLink>
+        ) : (
+          <ButtonLink href={routes.contact()} variant="secondary" icon={Mail}>
+            Bize ulaşın
+          </ButtonLink>
+        )
+      }
+    >
+      {open
+        ? 'Satmak, kiralamak veya aramak istediğiniz ekipman, parça, hizmet ya da saha mı var? İlk ilanı siz verin.'
+        : 'Market ilanı başvuruları yakında açılacak.'}
     </EmptyState>
   );
 
@@ -98,13 +104,13 @@ export default function MarketPage() {
                 <li key={category.slug}>
                   <Link
                     href={routes.marketCategory(category.slug)}
-                    className="flex h-full min-h-16 items-center gap-3 rounded-xl border border-stone-200 bg-white p-4 hover:border-copper-300"
+                    className={`${tileLink} min-h-16`}
                   >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-graphite-900 text-copper-400">
+                    <span className={`${iconTile} h-10 w-10`}>
                       <CategoryIcon icon={category.icon} className="h-5 w-5" />
                     </span>
                     <span className="min-w-0">
-                      <span className="block text-sm font-semibold leading-5 text-graphite-950">
+                      <span className="block text-sm font-semibold leading-5 text-graphite-950 group-hover:text-copper-800">
                         {category.name}
                       </span>
                       <span className="block text-xs text-graphite-500">

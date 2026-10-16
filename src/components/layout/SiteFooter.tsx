@@ -40,7 +40,7 @@ export function SiteFooter() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="inline-flex min-h-9 items-center text-sm hover:text-white"
+                  className="inline-flex min-h-9 items-center text-sm underline-offset-4 pointer-coarse:min-h-11 ui-hover:text-white ui-hover:underline"
                 >
                   {item.label}
                 </Link>
@@ -55,7 +55,7 @@ export function SiteFooter() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="inline-flex min-h-9 items-center text-sm hover:text-white"
+                  className="inline-flex min-h-9 items-center text-sm underline-offset-4 pointer-coarse:min-h-11 ui-hover:text-white ui-hover:underline"
                 >
                   {item.label}
                 </Link>

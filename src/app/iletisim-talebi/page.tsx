@@ -1,7 +1,8 @@
-import Link from 'next/link';
+import { CalendarClock, Mail } from 'lucide-react';
 import { SubmissionForm } from '@/components/forms/SubmissionForm';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { ButtonLink } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { routes } from '@/i18n/routes';
 import { areSubmissionsOpen } from '@/lib/content';
@@ -38,15 +39,16 @@ export default function ContactRequestPage() {
               queryPrefill={{ ref: 'ilan' }}
             />
           ) : (
-            <EmptyState title="İletişim talepleri yakında açılacak">
-              Bu sürede{' '}
-              <Link
-                href={routes.contact()}
-                className="font-semibold text-copper-700 hover:underline"
-              >
-                iletişim sayfasından
-              </Link>{' '}
-              bize ulaşabilirsiniz.
+            <EmptyState
+              title="İletişim talepleri yakında açılacak"
+              icon={<CalendarClock aria-hidden="true" />}
+              actions={
+                <ButtonLink href={routes.contact()} variant="secondary" icon={Mail}>
+                  Bize ulaşın
+                </ButtonLink>
+              }
+            >
+              Bu sürede iletişim sayfasından bize ulaşabilirsiniz.
             </EmptyState>
           )}
         </div>

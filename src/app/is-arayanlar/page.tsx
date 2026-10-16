@@ -1,10 +1,10 @@
-import Link from 'next/link';
 import { Suspense } from 'react';
-import { ShieldCheck } from 'lucide-react';
+import { Briefcase, Mail, Plus, ShieldCheck, UserSearch } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { ListingBrowser, StaticListingGrid } from '@/components/listings/ListingBrowser';
 import { CareerTabs, HeaderActions, SubmissionsClosedNote } from '@/components/listings/SectionNav';
+import { ButtonLink } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { routes } from '@/i18n/routes';
 import { areSubmissionsOpen, getCandidates, getPosition } from '@/lib/content';
@@ -50,21 +50,24 @@ export default function CandidatesPage() {
     }),
   ];
   const empty = (
-    <EmptyState title="Şu an yayında aday profili yok">
-      {open ? (
-        <>
-          İş mi arıyorsunuz?{' '}
-          <Link
-            href={routes.postListing('aday-profili')}
-            className="font-semibold text-copper-700 hover:underline"
-          >
+    <EmptyState
+      title="Şu an yayında aday profili yok"
+      icon={<UserSearch aria-hidden="true" />}
+      actions={
+        open ? (
+          <ButtonLink href={routes.postListing('aday-profili')} variant="secondary" icon={Plus}>
             Profilinizi oluşturun
-          </Link>
-          ; iletişim bilgileriniz gizli kalır.
-        </>
-      ) : (
-        'Aday profili başvuruları yakında açılacak.'
-      )}
+          </ButtonLink>
+        ) : (
+          <ButtonLink href={routes.contact()} variant="secondary" icon={Mail}>
+            Bize ulaşın
+          </ButtonLink>
+        )
+      }
+    >
+      {open
+        ? 'İş arıyorsanız profilinizi oluşturun; adınız ve iletişim bilgileriniz gizli kalır.'
+        : 'Aday profili başvuruları yakında açılacak.'}
     </EmptyState>
   );
 
@@ -80,12 +83,13 @@ export default function CandidatesPage() {
           <HeaderActions
             primary={{ href: routes.postListing('aday-profili'), label: 'Aday profili oluştur' }}
             secondary={
-              <Link
+              <ButtonLink
                 href={routes.postListing('is-ilani')}
-                className="inline-flex min-h-11 items-center font-semibold text-copper-700 hover:underline"
+                variant="secondary"
+                icon={Briefcase}
               >
                 İşçi arıyorum: ilan ver
-              </Link>
+              </ButtonLink>
             }
           />
         ) : (

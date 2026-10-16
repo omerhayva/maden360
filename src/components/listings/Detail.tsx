@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import {
   ExternalLink,
   Flag,
@@ -10,6 +9,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { ButtonLink } from '@/components/ui/Button';
 import { Callout } from '@/components/ui/Callout';
 import { siteConfig } from '@/config/site';
 import { routes } from '@/i18n/routes';
@@ -108,7 +108,7 @@ export function NoticeBox({
               <span className="font-semibold">Dayanak:</span>{' '}
               <a
                 href={reference.url}
-                className="underline hover:no-underline"
+                className="underline underline-offset-2 ui-hover:text-amber-800"
                 rel="noopener noreferrer"
               >
                 {reference.title}
@@ -199,6 +199,10 @@ export interface ContactItems {
   address?: string;
 }
 
+/** İletişim satırı: tüm satır tek dokunuşla arar, e-posta yazar veya siteyi açar. */
+const contactRow =
+  'flex min-h-12 items-center gap-3 rounded-lg border border-stone-200 bg-white px-3 py-2 font-semibold text-graphite-900 [-webkit-tap-highlight-color:transparent] transition-colors duration-100 ui-hover:border-copper-400 ui-hover:bg-copper-50/60 ui-active:bg-copper-50';
+
 /** Doğrudan iletişim bilgileri (dış bağlantılar kullanıcı içeriği olarak işaretlenir). */
 export function ContactList({
   items,
@@ -214,35 +218,32 @@ export function ContactList({
     <ul className="space-y-2 text-sm">
       {items.phone && (
         <li>
-          <a
-            href={telHref(items.phone)}
-            className="flex min-h-11 items-center gap-3 rounded-lg border border-stone-200 px-3 font-semibold text-graphite-900 hover:border-copper-300"
-          >
-            <Phone aria-hidden="true" className="h-4 w-4 text-copper-600" />
-            {items.phone}
+          <a href={telHref(items.phone)} className={contactRow}>
+            <Phone aria-hidden="true" className="h-4 w-4 shrink-0 text-copper-600" />
+            <span>
+              <span className="sr-only">Telefon: </span>
+              {items.phone}
+            </span>
           </a>
         </li>
       )}
       {mailHref && (
         <li>
-          <a
-            href={mailHref}
-            className="flex min-h-11 items-center gap-3 rounded-lg border border-stone-200 px-3 font-semibold text-graphite-900 hover:border-copper-300"
-          >
+          <a href={mailHref} className={contactRow}>
             <Mail aria-hidden="true" className="h-4 w-4 shrink-0 text-copper-600" />
-            <span className="break-all">{items.email}</span>
+            <span className="break-all">
+              <span className="sr-only">E-posta: </span>
+              {items.email}
+            </span>
           </a>
         </li>
       )}
       {items.website && (
         <li>
-          <a
-            href={items.website}
-            rel="nofollow ugc noopener noreferrer"
-            className="flex min-h-11 items-center gap-3 rounded-lg border border-stone-200 px-3 font-semibold text-graphite-900 hover:border-copper-300"
-          >
+          <a href={items.website} rel="nofollow ugc noopener noreferrer" className={contactRow}>
             <Globe aria-hidden="true" className="h-4 w-4 shrink-0 text-copper-600" />
             <span className="break-all">
+              <span className="sr-only">Web sitesi: </span>
               {items.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
             </span>
             <ExternalLink
@@ -267,13 +268,15 @@ export function RelayContact({ refCode, description }: { refCode?: string; descr
   return (
     <div>
       <p className="text-sm leading-6 text-graphite-700">{description}</p>
-      <Link
+      <ButtonLink
         href={routes.contactRequest(refCode)}
-        className="mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-copper-600 px-4 font-semibold text-white hover:bg-copper-700"
+        size="lg"
+        width="full"
+        icon={MessageSquareText}
+        className="mt-3"
       >
-        <MessageSquareText aria-hidden="true" className="h-4 w-4" />
         İletişim talebi gönder
-      </Link>
+      </ButtonLink>
     </div>
   );
 }
@@ -359,7 +362,10 @@ export function ListingMetaFooter({
       <p className="no-print flex flex-wrap items-center gap-x-2 gap-y-1">
         <Flag aria-hidden="true" className="h-4 w-4 text-copper-600" />
         Yanıltıcı veya kurallara aykırı mı?
-        <a href={report} className="font-semibold text-copper-700 hover:underline">
+        <a
+          href={report}
+          className="inline-flex min-h-11 items-center font-semibold text-copper-700 underline underline-offset-4 ui-hover:text-copper-800"
+        >
           İlanı bildirin
         </a>
       </p>

@@ -27,7 +27,7 @@ export function NavLinks() {
             <Link
               href={item.href}
               aria-current={active ? 'page' : undefined}
-              className={`relative inline-flex min-h-11 items-center rounded-md px-3 text-[0.95rem] font-medium whitespace-nowrap transition-colors hover:bg-graphite-800 hover:text-white ${
+              className={`relative inline-flex min-h-11 items-center rounded-md px-3 text-[0.95rem] font-medium whitespace-nowrap transition-colors duration-100 ui-hover:bg-graphite-800 ui-hover:text-white ui-active:bg-graphite-700 ${
                 active
                   ? 'text-white after:absolute after:inset-x-3 after:-bottom-[0.6rem] after:h-0.5 after:rounded-full after:bg-copper-400'
                   : 'text-graphite-200'

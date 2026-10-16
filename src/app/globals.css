@@ -39,6 +39,27 @@
   --color-copper-900: #592e18;
 }
 
+/*
+ * Etkileşim durumları (düğme, çip, kart, form alanı):
+ *  ui-hover  → yalnızca fareli cihazlarda ve devre dışı olmayan öğelerde üzerine gelme
+ *  ui-active → devre dışı olmayan öğelerde basılı durum
+ * Devre dışı (disabled / aria-disabled="true") öğe üzerine gelince veya basınca değişmez.
+ * Bkz. docs/arayuz-rehberi.md
+ */
+@custom-variant ui-hover {
+  @media (hover: hover) {
+    &:hover:not(:disabled, [aria-disabled='true']) {
+      @slot;
+    }
+  }
+}
+
+@custom-variant ui-active {
+  &:active:not(:disabled, [aria-disabled='true']) {
+    @slot;
+  }
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
@@ -116,26 +137,6 @@
     scroll-margin-top: 5rem;
   }
 
-  /* Kaynak atıfları */
-  .prose-maden sup.cite {
-    font-size: 0.72em;
-    font-style: normal;
-    line-height: 0;
-    white-space: nowrap;
-    color: var(--color-graphite-500);
-  }
-
-  .prose-maden sup.cite a {
-    text-decoration: none;
-    font-weight: 600;
-    padding: 0 0.1em;
-    color: var(--color-copper-700);
-  }
-
-  .prose-maden sup.cite a:hover {
-    text-decoration: underline;
-  }
-
   /* Mobilde tablolar yatay kaydırılır, sayfa taşmaz */
   .table-wrap {
     overflow-x: auto;
@@ -163,6 +164,25 @@
   /* Süresi tarayıcıda dolan ilanlarda iletişim ve başvuru kutuları gizlenir (ExpiryNotice) */
   [data-ilan-suresi-doldu] .ilan-iletisim {
     display: none;
+  }
+
+  /*
+   * Mobil eylem çubuğu (MobileActionBar, ekranın altına sabit): sayfanın sonu çubuğun altında
+   * kalmasın ve klavyeyle odaklanan öğeler çubuğun arkasına kaymasın (WCAG 2.4.11).
+   */
+  @media (width < 64rem) {
+    html:has(.mobile-action-bar) {
+      scroll-padding-bottom: 6rem;
+    }
+
+    /* Altbilginin koyu zemini çubuğun altına uzanır; son satırlar çubuğun arkasında kalmaz */
+    body:has(.mobile-action-bar) > footer {
+      padding-bottom: 5rem;
+    }
+
+    [data-ilan-suresi-doldu] body > footer {
+      padding-bottom: 0;
+    }
   }
 
   /* Kontur çizgisi deseni (hero) */

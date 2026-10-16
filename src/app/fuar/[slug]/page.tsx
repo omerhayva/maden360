@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { BadgeCheck, Building2, MapPin } from 'lucide-react';
+import { BadgeCheck, Building2, MapPin, MessageSquareText } from 'lucide-react';
 import { Prose } from '@/components/content/Prose';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
@@ -20,8 +20,10 @@ import {
   VerifiedBadge,
 } from '@/components/listings/ListingBadges';
 import { JobCard, MarketCard } from '@/components/listings/ListingCards';
+import { MobileActionBar } from '@/components/listings/MobileActionBar';
 import { StandAvatar } from '@/components/listings/StandAvatar';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { chipClasses } from '@/components/ui/styles';
 import { routes } from '@/i18n/routes';
 import {
   getHall,
@@ -108,10 +110,7 @@ export default async function StandPage({ params }: Props) {
               <ul className="mt-4 flex flex-wrap gap-2" aria-label="Salonlar">
                 {halls.map((hall) => (
                   <li key={hall.slug}>
-                    <Link
-                      href={routes.hall(hall.slug)}
-                      className="inline-flex min-h-9 items-center rounded-full border border-stone-300 bg-stone-50 px-3 text-sm font-medium text-graphite-800 hover:border-copper-400"
-                    >
+                    <Link href={routes.hall(hall.slug)} className={chipClasses()}>
                       Salon {hall.code} · {hall.name}
                     </Link>
                   </li>
@@ -272,6 +271,10 @@ export default async function StandPage({ params }: Props) {
           </aside>
         </div>
       </Container>
+
+      {(stand.website || stand.email || stand.phone) && (
+        <MobileActionBar href="#iletisim" label="Firmayla iletişime geç" icon={MessageSquareText} />
+      )}
 
       {stand.status === 'published' && !stand.example && <JsonLd data={standSchema(stand)} />}
     </>

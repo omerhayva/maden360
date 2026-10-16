@@ -3,6 +3,7 @@ import { ArrowRight, Briefcase, Store, Tent, UserSearch, type LucideIcon } from 
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { SubmissionsClosedNote } from '@/components/listings/SectionNav';
+import { iconTile, tileClasses } from '@/components/ui/card';
 import { routes } from '@/i18n/routes';
 import { areSubmissionsOpen } from '@/lib/content';
 import { getFormDefinition, SUBMISSION_ORDER } from '@/lib/submissions/forms';
@@ -69,11 +70,11 @@ export default function PostListingPage() {
               const Icon = icons[type];
               const body = (
                 <>
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-graphite-900 text-copper-400">
+                  <span className={`${iconTile} h-11 w-11`}>
                     <Icon aria-hidden="true" className="h-5 w-5" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-lg font-semibold text-graphite-950">
+                    <span className="block text-lg font-semibold text-graphite-950 group-hover:text-copper-800">
                       {definition.title}
                     </span>
                     <span className="mt-1 block text-sm leading-6 text-graphite-600">
@@ -91,7 +92,7 @@ export default function PostListingPage() {
                   {open && (
                     <ArrowRight
                       aria-hidden="true"
-                      className="h-5 w-5 shrink-0 self-center text-copper-600"
+                      className="h-5 w-5 shrink-0 self-center text-graphite-400 group-hover:text-copper-600"
                     />
                   )}
                 </>
@@ -101,7 +102,7 @@ export default function PostListingPage() {
                   {open ? (
                     <Link
                       href={routes.postListing(type)}
-                      className="flex h-full gap-4 rounded-xl border border-stone-200 bg-white p-5 hover:border-copper-300"
+                      className={tileClasses({ align: 'start', size: 'lg' })}
                     >
                       {body}
                     </Link>
@@ -142,14 +143,14 @@ export default function PostListingPage() {
                 Ayrıntılar:{' '}
                 <Link
                   href={routes.listingRules()}
-                  className="font-semibold text-copper-400 hover:underline"
+                  className="font-semibold text-copper-400 underline underline-offset-4 ui-hover:text-copper-300"
                 >
                   İlan kuralları
                 </Link>{' '}
                 ·{' '}
                 <Link
                   href={routes.privacy()}
-                  className="font-semibold text-copper-400 hover:underline"
+                  className="font-semibold text-copper-400 underline underline-offset-4 ui-hover:text-copper-300"
                 >
                   KVKK aydınlatma metni
                 </Link>

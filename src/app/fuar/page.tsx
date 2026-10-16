@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown, ChevronRight, Mail, Plus, Tent } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { SafetyNotice } from '@/components/listings/Detail';
 import { ListingBrowser, StaticListingGrid } from '@/components/listings/ListingBrowser';
 import { HeaderActions, SubmissionsClosedNote } from '@/components/listings/SectionNav';
+import { ButtonLink } from '@/components/ui/Button';
+import { iconTile, tileClasses } from '@/components/ui/card';
 import { CategoryIcon } from '@/components/ui/CategoryIcon';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -43,22 +45,25 @@ export default function FairPage() {
     facetFilter(items, { id: 'il', label: 'İl', allLabel: 'Tüm iller' }),
   ];
   const empty = (
-    <EmptyState title="Henüz yayımlanmış stand yok">
+    <EmptyState
+      title="Henüz yayımlanmış stand yok"
+      icon={<Tent aria-hidden="true" />}
+      actions={
+        open ? (
+          <ButtonLink href={routes.postListing('fuar-standi')} variant="secondary" icon={Plus}>
+            Stand başvurusu yapın
+          </ButtonLink>
+        ) : (
+          <ButtonLink href={routes.contact()} variant="secondary" icon={Mail}>
+            Bize ulaşın
+          </ButtonLink>
+        )
+      }
+    >
       Sanal fuar yeni açılıyor.{' '}
-      {open ? (
-        <>
-          Firmanızı tanıtmak için{' '}
-          <Link
-            href={routes.postListing('fuar-standi')}
-            className="font-semibold text-copper-700 hover:underline"
-          >
-            stand başvurusu yapın
-          </Link>
-          .
-        </>
-      ) : (
-        'Stand başvuruları yakında açılacak.'
-      )}
+      {open
+        ? 'Firmanızı tanıtmak için stand başvurusu yapın; başvurular editör kontrolünden sonra yayımlanır.'
+        : 'Stand başvuruları yakında açılacak; firmanızı şimdiden tanıtmak isterseniz bize yazın.'}
     </EmptyState>
   );
 
@@ -74,12 +79,9 @@ export default function FairPage() {
           <HeaderActions
             primary={{ href: routes.postListing('fuar-standi'), label: 'Stand açın' }}
             secondary={
-              <a
-                href="#salonlar"
-                className="inline-flex min-h-11 items-center gap-1 font-semibold text-copper-700 hover:underline"
-              >
-                Salonları gezin <ArrowDown aria-hidden="true" className="h-4 w-4" />
-              </a>
+              <ButtonLink href="#salonlar" variant="secondary" iconEnd={ArrowDown}>
+                Salonları gezin
+              </ButtonLink>
             }
           />
         ) : (
@@ -99,18 +101,15 @@ export default function FairPage() {
               const count = getStandsByHall(hall.slug).length;
               return (
                 <li key={hall.slug}>
-                  <Link
-                    href={routes.hall(hall.slug)}
-                    className="flex h-full gap-4 rounded-xl border border-stone-200 bg-white p-4 hover:border-copper-300"
-                  >
-                    <span className="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-lg bg-graphite-900 text-copper-400">
+                  <Link href={routes.hall(hall.slug)} className={tileClasses({ align: 'start' })}>
+                    <span className={`${iconTile} h-12 w-12 flex-col`}>
                       <CategoryIcon icon={hall.icon} className="h-5 w-5" />
                       <span className="text-[0.65rem] font-bold leading-none text-graphite-200">
                         {hall.code}
                       </span>
                     </span>
-                    <span className="min-w-0">
-                      <span className="block font-semibold text-graphite-950">
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-semibold text-graphite-950 group-hover:text-copper-800">
                         <span className="sr-only">Salon {hall.code}: </span>
                         {hall.name}
                       </span>
@@ -121,6 +120,10 @@ export default function FairPage() {
                         {count > 0 ? `${count} stand` : 'Stand bekleniyor'}
                       </span>
                     </span>
+                    <ChevronRight
+                      aria-hidden="true"
+                      className="h-4 w-4 shrink-0 self-center text-graphite-400 group-hover:text-copper-600"
+                    />
                   </Link>
                 </li>
               );

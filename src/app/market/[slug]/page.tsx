@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { MapPin } from 'lucide-react';
+import { MapPin, MessageSquareText } from 'lucide-react';
 import { Prose } from '@/components/content/Prose';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
@@ -21,6 +21,7 @@ import {
   ListingStatusBadge,
   MarketTypeBadge,
 } from '@/components/listings/ListingBadges';
+import { MobileActionBar } from '@/components/listings/MobileActionBar';
 import { Callout } from '@/components/ui/Callout';
 import { routes } from '@/i18n/routes';
 import {
@@ -139,7 +140,7 @@ export default async function MarketListingPage({ params }: Props) {
               {category && (
                 <Link
                   href={routes.marketCategory(category.slug)}
-                  className="text-sm font-semibold uppercase tracking-wide text-copper-700 hover:underline"
+                  className="text-sm font-semibold uppercase tracking-wide text-copper-700 underline-offset-4 ui-hover:text-copper-800 ui-hover:underline"
                 >
                   {category.name}
                 </Link>
@@ -239,7 +240,10 @@ export default async function MarketListingPage({ params }: Props) {
             <SideCard title="Satıcı" id="satici">
               <p className="font-semibold text-graphite-950">
                 {stand ? (
-                  <Link href={stand.url} className="text-copper-700 hover:underline">
+                  <Link
+                    href={stand.url}
+                    className="text-copper-700 underline-offset-4 ui-hover:text-copper-800 ui-hover:underline"
+                  >
                     {listing.seller.name}
                   </Link>
                 ) : (
@@ -279,6 +283,8 @@ export default async function MarketListingPage({ params }: Props) {
           </aside>
         </div>
       </Container>
+
+      <MobileActionBar href="#satici" label="Satıcıyla iletişime geç" icon={MessageSquareText} />
     </>
   );
 }

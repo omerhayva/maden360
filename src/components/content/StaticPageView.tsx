@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Mail } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { iconTile, tileClasses } from '@/components/ui/card';
 import { siteConfig } from '@/config/site';
 import { routes, staticPageFiles, type StaticPageKey } from '@/i18n/routes';
 import { getPage } from '@/lib/content';
@@ -30,14 +31,16 @@ export function StaticPageView({ pageKey }: { pageKey: StaticPageKey }) {
           {pageKey === 'contact' && (
             <a
               href={`mailto:${siteConfig.contactEmail}`}
-              className="mb-8 flex items-center gap-3 rounded-xl border border-stone-200 bg-white p-5 hover:border-copper-300"
+              className={`${tileClasses({ size: 'lg' })} mb-8`}
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-graphite-900 text-copper-400">
+              <span className={`${iconTile} h-11 w-11`}>
                 <Mail aria-hidden="true" className="h-5 w-5" />
               </span>
-              <span>
+              <span className="min-w-0">
                 <span className="block text-sm text-graphite-600">E-posta</span>
-                <span className="block text-lg font-semibold text-graphite-950">{siteConfig.contactEmail}</span>
+                <span className="block break-all text-lg font-semibold text-graphite-950 group-hover:text-copper-800">
+                  {siteConfig.contactEmail}
+                </span>
               </span>
             </a>
           )}

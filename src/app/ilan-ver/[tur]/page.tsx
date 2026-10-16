@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ShieldCheck } from 'lucide-react';
+import { CalendarClock, Mail, ShieldCheck } from 'lucide-react';
 import { SubmissionForm } from '@/components/forms/SubmissionForm';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { ButtonLink } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { routes } from '@/i18n/routes';
 import { areSubmissionsOpen } from '@/lib/content';
@@ -58,16 +59,17 @@ export default async function SubmissionPage({ params }: Props) {
                 marketKinds={marketKindMap()}
               />
             ) : (
-              <EmptyState title="Başvurular yakında açılacak">
+              <EmptyState
+                title="Başvurular yakında açılacak"
+                icon={<CalendarClock aria-hidden="true" />}
+                actions={
+                  <ButtonLink href={routes.contact()} variant="secondary" icon={Mail}>
+                    Bize ulaşın
+                  </ButtonLink>
+                }
+              >
                 Başvuru formları, ilan kuralları ve KVKK aydınlatma metni yayımlandığında açılacak.
-                Bu sürede{' '}
-                <Link
-                  href={routes.contact()}
-                  className="font-semibold text-copper-700 hover:underline"
-                >
-                  iletişim sayfasından
-                </Link>{' '}
-                bize ulaşabilirsiniz.
+                Bu sürede iletişim sayfasından bize ulaşabilirsiniz.
               </EmptyState>
             )}
           </div>
@@ -93,14 +95,14 @@ export default async function SubmissionPage({ params }: Props) {
               <p className="px-1 text-sm text-graphite-600">
                 <Link
                   href={routes.listingRules()}
-                  className="font-semibold text-copper-700 hover:underline"
+                  className="font-semibold text-copper-700 underline underline-offset-4 ui-hover:text-copper-800"
                 >
                   İlan kuralları
                 </Link>{' '}
                 ·{' '}
                 <Link
                   href={routes.privacy()}
-                  className="font-semibold text-copper-700 hover:underline"
+                  className="font-semibold text-copper-700 underline underline-offset-4 ui-hover:text-copper-800"
                 >
                   KVKK aydınlatma metni
                 </Link>
