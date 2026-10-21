@@ -1,122 +1,180 @@
-# Arayüz rehberi: renkler, fotoğraflar, düğmeler ve form alanları
+# Arayüz rehberi: tasarım ilkeleri, renkler, yazı, listeler ve düğmeler
 
 Sitenin renkleri tek bir palette, fotoğrafları tek bir hazırlama düzeninde tanımlıdır; tüm düğmeler,
-düğme görünümlü bağlantılar, çipler, form alanları ve bağlantı kutucukları da tek bir sınıf
-üreticiden gelir. Amaç: her sayfada aynı görünüm ve davranış, dokunmatik ekranda rahat kullanım,
-klavye ve ekran okuyucu erişimi, fotoğraf üzerinde bile okunur yazılar.
+düğme görünümlü bağlantılar, çipler, form alanları, paneller ve liste satırları da ortak sınıf
+üreticilerden gelir. Amaç: her sayfada aynı görünüm ve davranış, telefonda rahat kullanım, klavye ve
+ekran okuyucu erişimi, fotoğraf üzerinde bile okunur yazılar.
+
+22 Ekim 2026'da site, "yapay zekâ ile yapıldığı belli" geri bildirimi üzerine yeniden tasarlandı.
+Bulgular, ölçümler ve gerekçeler: [uzman-incelemesi.md](uzman-incelemesi.md).
 
 | Dosya | İçerik |
 |---|---|
-| `src/components/ui/styles.ts` | Sınıf üreticiler: `buttonClasses`, `iconButtonClasses`, `chipClasses`, `inputClasses`, `textLinkClasses`, `cx` |
+| `src/app/globals.css` → `@theme` | Renk paleti (grafit, bakır, taş ölçekleri), yazı tipi, başlık kesimi, odak çerçevesi, `ui-hover` / `ui-active` varyantları |
+| `src/components/ui/styles.ts` | Sınıf üreticiler: `buttonClasses`, `iconButtonClasses`, `chipClasses`, `inputClasses`, `textLinkClasses`, fotoğraf katmanı, `cx` |
+| `src/components/ui/card.ts` | `panel`, `listPanel`, `listRow`, `cardFrame`, `cardBase`, `stretchedLink` |
 | `src/components/ui/Button.tsx` | `Button`, `ButtonLink`, `IconButton`, `IconLink`, `ButtonGroup` |
+| `src/components/ui/TextLink.tsx` | `TextLink` ("Tüm iş ilanları (4)" türü bağlantılar, oksuz) |
+| `src/components/ui/SectionHeading.tsx` | Bölüm başlığı ve sağında "Tümü" bağlantısı |
 | `src/components/ui/Select.tsx` | Ortak görünümlü açılır liste |
-| `src/components/ui/TextLink.tsx` | `ArrowLink` ("Tümünü gör →" bağlantıları) |
-| `src/components/ui/card.ts` | `cardFrame`, `cardBase`, `stretchedLink`, `tileClasses`, `iconTile` |
-| `src/components/listings/MobileActionBar.tsx` | İlan sayfalarında mobil eylem çubuğu |
-| `src/app/globals.css` | `ui-hover` ve `ui-active` durum varyantları, mobil eylem çubuğu kuralları |
-| `src/components/ui/styles.test.ts` | Sınıf çakışması, dokunma alanı ve elle yazılmış düğme stili denetimleri |
-| `src/app/globals.css` → `@theme` | Renk paleti (grafit, bakır, taş/kum ölçekleri), `heading-accent`, `contour-bg` |
-| `src/components/ui/palette.test.ts` | Paletin kontrast çiftleri ve elle yazılmış marka renkleri |
-| `src/config/photos.ts` | Fotoğraf listesi, odak noktaları, genişlikler, tonlama ayarları |
-| `src/components/ui/Photo.tsx` | `<picture>` ile AVIF/WebP dekoratif fotoğraf |
+| `src/components/listings/ListingCards.tsx` | İlan satırları (iş ilanı, iş arayan, market ilanı, firma) ve `Facts` bilgi satırı |
+| `src/components/listings/FairPlan.tsx` | Sanal Fuar salon planı |
+| `src/components/listings/Detail.tsx` | İlan sayfası parçaları: `FactList` (bilgi tablosu), iletişim kutuları, uyarılar |
+| `src/components/brand/Logo.tsx` | Çapraz çekiç işareti ve yazı logosu |
 | `src/components/layout/PageHeader.tsx` | Açık başlık veya `photo` verilirse fotoğraflı koyu başlık |
-| `scripts/prepare-images.ts` | `npm run generate:images`: kaynakları tonlar, `public/gorseller/` altına yazar |
-| `scripts/generate-brand-assets.mjs` | `npm run generate:brand`: logo simgeleri ve paylaşım görseli |
-| `assets/gorseller/` | Fotoğraf kaynakları ve [değiştirme rehberi](../assets/gorseller/README.md) |
-| `src/config/photos.test.ts` | Üretilen dosyalar, tonlama ve fotoğraf üzerindeki yazıların en kötü durum kontrastı |
+| `src/components/listings/MobileActionBar.tsx` | İlan sayfalarında mobil eylem çubuğu |
+| `src/config/photos.ts`, `src/components/ui/Photo.tsx` | Fotoğraf listesi, odak noktaları, tonlama; `<picture>` ile AVIF/WebP |
+| `scripts/prepare-images.ts` | `npm run generate:images`: fotoğrafları tonlar, `public/gorseller/` altına yazar |
+| `scripts/generate-brand-assets.mjs` | `npm run generate:brand`: simgeler ve paylaşım görseli |
+| `src/components/ui/styles.test.ts` | Sınıf çakışması, dokunma alanı, form kenarlığı, **şablon izleri** denetimleri |
+| `src/components/ui/palette.test.ts` | Paletin kontrast çiftleri, soğuk gri zemin, elle yazılmış marka renkleri |
+| `src/config/photos.test.ts` | Üretilen fotoğraflar ve fotoğraf üzerindeki yazıların en kötü durum kontrastı |
+
+## Tasarım ilkeleri
+
+1. **İçerik önde.** Ziyaretçi ilan veya firma aramaya gelir. Ana sayfada arama, "Ne arıyorsunuz?"
+   girişleri ve son ilanlar ilk ekranda; bölüm sayfalarında başlık kısa, liste hemen başlar.
+   Tanıtım blokları (ilkeler, adım adım anlatımlar) ana sayfada yer almaz.
+2. **Görsel yapı bilgi taşır.** Çizgi, numara, etiket ve kenarlık yalnızca bir anlam taşıyorsa
+   kullanılır: numaralı liste yalnızca gerçek bir sıra için ("İlan ver" sayfasındaki dört adım),
+   salon harfi salonun adıdır, kalın dış çizgi fuar alanının sınırıdır.
+3. **Tek akılda kalan öğe.** Cesaret tek bir yerde harcanır: Sanal Fuar salon planı (fuar
+   girişindeki kat planı gibi; salon sayfasında "Buradasınız"). Çevresindeki her şey sade kalır.
+4. **Liste, kart ızgarası değil.** İlanlar tek bir panelde satır satır listelenir; göz yukarıdan
+   aşağı tarar. Kart yalnızca gerçekten ayrı duran içerikte (yan sütun kutuları, ürün ve hizmetler).
+5. **Simge yalnızca işlev için:** arama, menü, kapatma, telefon, e-posta, dış bağlantı, uyarı.
+   Süs simgesi, simge kutusu ve bağlantıya eklenmiş ok yoktur.
+6. **Metin sektörün dilinde, kısa ve somut.** Slogan, zorlama üçleme, "tek yerde", "buluşturun",
+   noktalı virgüllü uzun cümle ve uzun tire kullanılmaz; site kendini anlatmaz. Kanıtı olmayan bilgi
+   eklenmez (süre, sayı, iddia). Hukuki metinler (ilan kuralları, KVKK) bu kuralın dışındadır.
+7. **Boş durum dürüst.** Sıfır sayılar yazılmaz; boş liste tek satırlık açık bir notla anlatılır.
+
+### Kullanılmayan şablon öğeleri
+
+Aşağıdakiler yapay zekâ ile üretilmiş sayfaların ortak izleridir ve sitede kullanılmaz.
+`styles.test.ts` → "şablon izleri" testi kaynak kodu tarar ve bunlardan biri eklenirse başarısız olur:
+
+| Kullanılmaz | Yerine |
+|---|---|
+| Başlık üstünde büyük harfli küçük etiket (`uppercase`, `tracking-wide`) | Etiket yok; gerekiyorsa başlığın altında cümle düzeninde bilgi satırı |
+| Degrade, bulanık parlama, dalgalı kontur zemin | Düz zemin; fotoğraf üzerindeki koyu katman tek istisna (işlevsel) |
+| Hap biçimli etiket ve düğme (`rounded-full`), iri köşe (`rounded-xl`) | 2–4 px köşe |
+| "→" veya ok simgesi eklenmiş bağlantı | Ne açılacağını söyleyen bağlantı metni: "Tüm iş ilanları (4)" |
+| Orta noktayla birleştirilmiş bilgi satırı ("A · B · C") | `Facts`: ince dikey çizgiyle ayrılmış parçalar, ya da virgül |
+| Kullanıcıya görünen metinde uzun tire (—) | Virgül, iki nokta veya ayrı cümle |
+| Başlığın bir sözcüğünü farklı renge boyamak (eski logodaki "360") | Tek renk |
 
 ## Renk paleti
 
-Tek tema vardır; tema seçici ve karanlık mod yoktur. 16 Ekim 2026'da renkler daha canlı ve zengin
-olacak şekilde yenilendi: grafit hafif çelik mavisi alt tonlu ve daha derin, bakır daha doygun, taş
-ölçeği soğuk gri yerine sıcak kum tonu. Ölçekler OKLCH renk uzayında tasarlandı ve
-`src/app/globals.css` → `@theme` içindedir; Tailwind sınıfları (`bg-copper-600`, `text-graphite-700`
-…) bu değerleri kullanır.
+Tek tema vardır; tema seçici ve karanlık mod yoktur. Ölçekler OKLCH renk uzayında tasarlandı ve
+`src/app/globals.css` → `@theme` içindedir. Zemin beyaz ve soğuk taş grisi, metin grafit, vurgu koyu
+bakır. Bakır az kullanılır: bağlantılar, birincil düğme, etkin menü çizgisi, odak çerçevesi ve salon
+planındaki harfler. Koyu zemin yalnızca fotoğraflı başlıklarda vardır.
 
-| Belirteç | Önceki | Yeni | Kullanım |
-|---|---|---|---|
-| `graphite-950` | `#14171a` | `#0c111a` | Üst bilgi, altbilgi, koyu bölümler, tarayıcı tema rengi |
-| `graphite-900` | `#1c2025` | `#161d27` | Koyu kartlar |
-| `graphite-500` | `#646d79` | `#656e7b` | Küçük bilgi metni (açık zeminde kullanılabilecek en açık gri) |
-| `copper-400` | `#df8446` | `#f08c46` | Koyu zeminde vurgu (logodaki "360", etkin menü çizgisi) |
-| `copper-500` | `#c96a2b` | `#db6b19` | Odak çerçevesi, logo zemini |
-| `copper-600` | `#a9541f` | `#b64e00` | Birincil düğme |
-| `copper-700` | `#87421b` | `#933d08` | Bağlantılar, açık zeminde vurgu metni |
-| `stone-100` | `#f5f5f4` | `#f6f2ec` | Sayfa zemini (sıcak kum) |
-| `stone-200` | `#e7e5e4` | `#e8e3da` | Kenarlıklar |
+| Belirteç | Değer | Kullanım |
+|---|---|---|
+| `white` | `#ffffff` | Üst bilgi, altbilgi, paneller, liste satırları |
+| `stone-100` | `#f3f5f7` | Sayfa zemini (soğuk taş grisi; 22 Ekim'e kadar krem `#f6f2ec`) |
+| `stone-200` / `stone-300` | `#e5e8ec` / `#d5d8dd` | Satır ayırıcıları / panel kenarlıkları |
+| `graphite-950` … `graphite-700` | `#0c111a` … `#39424f` | Başlıklar ve gövde metni |
+| `graphite-600` / `graphite-500` | `#4d5663` / `#656e7b` | İkincil metin / küçük bilgi metni (açık zeminde en açık gri) |
+| `graphite-500` | `#656e7b` | Form alanı kenarlığı |
+| `copper-700` | `#933d08` | Birincil düğme, bağlantılar, odak çerçevesi, logo işareti, salon harfleri |
+| `copper-800` / `copper-900` | `#75300b` / `#5d270d` | Birincil düğme: üzerine gelince / basılıyken |
+| `copper-300` | `#f9b07a` | Fotoğraflı başlıkta odak çerçevesi; salon planında bulunulan salonun harfi |
 
-Kontrast (WCAG 2.2 AA): beyaz / `copper-600` 5,2:1 · `copper-700` / beyaz 7,2:1, / `stone-100` 6,5:1
-· `copper-400` / `graphite-950` 7,7:1 · `graphite-500` / `stone-100` 4,6:1 · odak çerçevesi
-`copper-500`: beyaz 3,4:1, `stone-100` 3,1:1, `graphite-950` 5,5:1. `palette.test.ts` 25 renk
-çiftini, ölçeklerin açıktan koyuya sıralı olduğunu ve kontur deseninin çizgisi üzerindeki metinleri
-denetler.
+Kontrast (WCAG 2.2 AA): beyaz / `copper-700` 7,2:1 · `copper-700` / `stone-100` 6,6:1 ·
+`graphite-500` / `stone-100` 4,7:1 · form kenarlığı `graphite-500` / beyaz 5,2:1 (WCAG 1.4.11) ·
+odak çerçevesi `copper-700` / beyaz 7,2:1, fotoğraflı başlıkta `copper-300` / `graphite-950` 10,4:1.
+`palette.test.ts` 29 çifti, ölçeklerin açıktan koyuya sıralı olduğunu ve zeminin krem değil soğuk gri
+olduğunu denetler.
 
-Renk değerini elle yazmak gerektiğinde (logo SVG'si, simgeler, `manifest`, tema rengi, kritik hata
-ekranı, marka görseli betiği) paletteki değeri kullanın; test, paletin dışındaki değeri yakalar.
-Logo veya palet değişirse `npm run generate:brand` simgeleri ve paylaşım görselini yeniden üretir.
+Renk değerini elle yazmak gerektiğinde (simge SVG'si, `manifest`, tema rengi, kritik hata ekranı, marka
+görseli betiği) paletteki değeri kullanın; test, paletin dışındaki değeri yakalar. Logo işareti
+`currentColor` ile boyanır (`text-copper-700`). Logo veya palet değişirse `npm run generate:brand`
+simgeleri ve paylaşım görselini yeniden üretir.
 
-### Vurgu öğeleri
+## Yazı tipi ve tipografi
 
-- **Bölüm başlığı çizgisi** (`heading-accent`): sayfa düzeyindeki bölüm başlıklarının üstünde kısa
-  bakır çizgi. `SectionHeading` bunu kendiliğinden ekler; el yazımı bölüm başlıklarında
-  (`Tüm ilanlar`, `Açık pozisyonlar`…) sınıfı ekleyin. İlan ayrıntı sayfalarındaki içerik alt
-  başlıklarında (İş tanımı, Ürünler…) kullanılmaz.
-- **Bakır ince çizgi**: üst bilginin altında ve altbilginin üstünde, kenarlara doğru kaybolan çizgi.
-- **Kontur deseni** (`contour-bg`): "Güven ilkelerimiz" bölümü ve altbilgide eş yükselti çizgileri.
-- **Simge kutuları** (`iconTile`): grafit geçişli zemin üzerinde bakır simge.
-- Hareket eklenmedi: geçişler, gölgeler ve desenler durağandır.
+- **IBM Plex Sans** (değişken; ağırlık 100–700, genişlik %75–100), `@fontsource-variable/ibm-plex-sans`
+  ile siteyle birlikte sunulur. Mühendislik belgeleri için tasarlanmış bir ailedir; yapay zekâ
+  araçlarının varsayılanı olan Inter, Geist, DM Sans gibi aileler bilinçli olarak seçilmedi. Türkçe
+  metin için indirilen dosyalar 109,6 KB (Inter 130,2 KB idi).
+- **Başlıklar** yarı dar kesimde (`font-stretch: 87.5%`, `globals.css`), yarı kalın (600); harf
+  aralığı daraltılmaz. **Gövde** normal genişlikte, 400. Salon harfleri dar kesimde (%75).
+- Sayılar (fiyat, ücret, sayaçlar, tarih) `tabular-nums` ile hizalanır. Küçük veri etiketleri için
+  ayrı eş aralıklı yazı tipi kullanılmaz (ilan numarası da dahil).
+- Fiyatlar ilan sitelerindeki gibi yazılır: "4.750.000 TL", "210 USD/ton", "70.000–90.000 TL net,
+  aylık", fiyatsız ilanda "Fiyat sorunuz" (`src/lib/listings/format.ts`).
 
 ## Fotoğraflı başlıklar
 
 | Yer | Fotoğraf (`photos` anahtarı) |
 |---|---|
 | Ana sayfa girişi | `ana-sayfa` |
-| Ana sayfadaki üç bölüm kartının üst şeridi | `fuar`, `is-ilanlari`, `market` |
 | Sanal Fuar ve salon sayfaları | `fuar` |
 | İş İlanları | `is-ilanlari` |
-| Aday Profilleri | `is-arayanlar` |
+| İş Arayanlar | `is-arayanlar` |
 | Market ve kategori sayfaları | `market` |
 | İlan ver ve başvuru formu sayfaları | `ilan-ver` |
 | Sosyal medya paylaşım görseli (`public/og-image.jpg`) | `ana-sayfa` |
 
 Arama, kurumsal sayfalar (Hakkımızda, İletişim…), ilan ayrıntı sayfaları ve iletişim talebi açık
-başlıkta kalır: bu sayfalarda içerik ön plandadır.
+başlıkta kalır. Ana sayfadaki bölüm kartları ve onların fotoğraf şeritleri 22 Ekim'de kaldırıldı.
+
+Başlıklar kısadır (telefonda yaklaşık 300 px): yol gösterici, başlık, bir iki cümlelik açıklama ve en
+fazla bir birincil eylem. Başlığın üstüne etiket konmaz.
 
 **Nasıl çalışır?**
 
 1. Kaynaklar `assets/gorseller/<anahtar>.jpg` (en az 1376 px genişlik). Mevcut altı fotoğraf yapay
    zekâ ile üretildi; gerçek bir yeri, firmayı veya kişiyi göstermez.
-2. `npm run generate:images` her kaynak için: parlaklığı %1–%99 aralığına yayar → koyu
-   fotoğrafların orta tonlarını gamma eğrisiyle aydınlatır (üs en az 0,65; siyah ve beyaz yerinde
-   kalır) → 640, 960 ve 1376 px'e küçültür → tonlar (parlaklık → renk eşlemesi: gölgeler grafit,
-   açık tonlar bakır; özgün rengin %25'i korunur) → AVIF ve WebP olarak `public/gorseller/` altına
-   yazar. Üretilen dosyalar depoya eklenir; site derlemesi betiği çalıştırmaz.
-3. `Photo` bileşeni `<picture>` ile AVIF (destekleyen tarayıcılar) ve WebP sunar; `sizes` ile
-   tarayıcı ekrana uygun dosyayı seçer. Fotoğraflar dekoratiftir (`alt=""`). Başlık fotoğrafı
-   sayfanın en büyük öğesi olduğundan öncelikle (`fetchpriority="high"`), kart şeritleri tembel
-   yüklenir ve en fazla 960 px dosya kullanır.
-4. Fotoğrafın üstünde koyu katman (`photoScrimClasses`) vardır: 1280 px altında her yerde %75
-   grafit; 1280 px ve üstünde soldan sağa %90 → %75 (genişliğin %65'inde) → %25. Metin sütunu en
-   fazla 48rem olduğundan geniş ekranda fotoğraf sağ tarafta açılır.
+2. `npm run generate:images` her kaynak için parlaklığı yayar, koyu fotoğrafların orta tonlarını
+   açar, 640, 960 ve 1376 px'e küçültür, tonlar (gölgeler grafit, açık tonlar bakır; özgün rengin %25'i
+   korunur) ve AVIF ile WebP olarak `public/gorseller/` altına yazar. Üretilen dosyalar depoya eklenir.
+3. `Photo` bileşeni `<picture>` ile AVIF ve WebP sunar; fotoğraflar dekoratiftir (`alt=""`) ve
+   başlık fotoğrafı öncelikle yüklenir (`fetchpriority="high"`).
+4. Fotoğrafın üstünde koyu katman (`photoScrimClasses`) vardır: 1280 px altında %75 grafit; 1280 px ve
+   üstünde soldan sağa %90 → %75 → %25.
 
 **Fotoğraf üzerindeki yazılar** yalnızca beyaz, `graphite-100`, `graphite-200` ve `copper-300`
-olabilir; `graphite-300` ve daha koyusu en kötü durumda 4,5:1'i sağlamaz. `photos.test.ts`, metnin
-hemen arkasında hem tonlamanın üretebileceği en açık pikselin hem de 36 dosyanın her birindeki
-gerçek en açık pikselin olduğunu varsayarak kontrastı hesaplar. Ölçülen en kötü değerler: beyaz
-9,2:1, `graphite-100` 7,8:1, `graphite-200` 6,5:1, `copper-300` 5,0:1. Düğmeler kendi dolgulu
-zeminlerinde durur; fotoğraflı başlıktaki ikincil düğme `variant="inverse"`, sekmeler ve "formlar
-yakında açılacak" notu koyu zemine göre tasarlanmıştır (`SectionNav`).
+olabilir. `photos.test.ts`, tonlamanın üretebileceği en açık piksel ve 36 dosyanın her birindeki
+gerçek en açık piksel için kontrastı hesaplar (en kötü durumda beyaz 9,2:1, `copper-300` 5,0:1).
+Fotoğraflı başlıktaki ikincil düğme `variant="inverse"`, iş ilanları sekmeleri ve "formlar yakında
+açılacak" notu koyu zemine göre tasarlanmıştır (`SectionNav`).
 
-**Boyutlar:** 1376 px AVIF 41–79 KB. Ana sayfa (giriş + üç kart şeridi): telefonda (3× ekran)
-170 KB, dizüstünde 114 KB; bölüm sayfaları tek fotoğraf, ≈ 80 KB. Sayfalara JavaScript eklenmedi.
+**Boyutlar:** ana sayfa telefonda (3× ekran) 50,5 KB fotoğraf indirir (önce 170 KB), bölüm sayfaları
+tek fotoğraf, yaklaşık 60–80 KB.
 
 **Fotoğraf değiştirmek veya yeni sayfaya eklemek:**
 [assets/gorseller/README.md](../assets/gorseller/README.md).
 
+## Listeler, paneller ve kartlar
+
+- **Panel** (`panel`): beyaz zemin, 1 px `stone-300` kenarlık, 2 px köşe, gölge yok.
+- **Liste paneli** (`listPanel`) ve **liste satırı** (`listRow`): ilanlar, firmalar, arama sonuçları,
+  "İlan ver" seçenekleri. Satırın tamamı başlıktaki bağlantıyla tıklanır (`stretchedLink`); üzerine
+  gelince zemin hafifçe koyulaşır ve başlığın altı çizilir; klavye odağında satır çerçevelenir.
+- **İlan satırı düzeni** (`ListingCards.tsx`): solda başlık ve bilgiler; sağda en çok bakılan değer
+  (ücret, fiyat, il). Telefonda bu değer başlığın altına iner. Bilgi parçaları `Facts` ile ince dikey
+  çizgiyle ayrılır. Satır kaydığında yeni satırın başındaki çizgi kırpılarak gizlenir.
+- **Bilgi tablosu** (`FactList`): ilan sayfalarında, teknik çizimlerdeki antet gibi ince çizgilerle
+  ayrılmış hücreler; küçük etiket üstte, değer altta. Son satırda boş hücre kalmaz.
+- **Kart** (`cardFrame`, `cardBase`): yalnızca ayrı duran içerikte (ör. firma sayfasında ürün ve
+  hizmetler). Üzerine gelince kenarlık koyulaşır.
+- **Dizin listesi**: market kategorileri gibi kısa bağlantı listeleri; alt çizgiyle ayrılmış satırlar,
+  sağda sayı (sıfırsa sayı yazılmaz).
+- **Salon planı** (`FairPlan`): ana sayfada, Sanal Fuar'da ve salon sayfalarında. Hücreler arasındaki
+  çizgiler duvar, kalın dış çizgi fuar alanının sınırıdır. Son hücre "Fuaye"dir ve son sırayı
+  doldurur. Salon sayfasında o salon koyu zeminde ve "Buradasınız" notuyla gösterilir
+  (`aria-current="page"`). Telefonda harf solda, ad sağda; geniş ekranda alt alta.
+
 ## Araştırılan açık kaynak tasarım sistemleri
 
 16 Ekim 2026'da GitHub'daki şu depoların düğme bileşenleri ve kullanım kuralları incelendi. Kod
-kopyalanmadı; yaklaşımlar Tailwind CSS 4 ile yeniden yazıldı.
+kopyalanmadı; yaklaşımlar Tailwind CSS 4 ile yeniden yazıldı. 22 Ekim'deki yeniden tasarımın
+dayanakları için bkz. [uzman-incelemesi.md](uzman-incelemesi.md) (Anthropic frontend-design rehberi,
+blader/humanizer).
 
 | Kaynak | İncelenen dosya | Maden360'a alınan karar |
 |---|---|---|
@@ -129,21 +187,20 @@ kopyalanmadı; yaklaşımlar Tailwind CSS 4 ile yeniden yazıldı.
 | [w3c/aria-practices](https://github.com/w3c/aria-practices/blob/main/content/patterns/button/button-pattern.html) | Button pattern | Bağlantı ile düğme ayrımı; geçişli düğmede (`aria-pressed`) etiketin durumla değişmemesi; açılır paneli kontrol eden düğmede `aria-expanded` |
 
 **Neden yeni bağımlılık eklenmedi?** shadcn/ui'nin kullandığı `class-variance-authority` ve
-`tailwind-merge` yerine yaklaşık 200 satırlık `styles.ts` yazıldı: `tailwind-merge` 3.7 tek başına
-~9 KB (gzip) eklerken `styles.ts` ~1,5 KB'tır. Sınıf çakışmalarını çalışma anında çözmek yerine
-çakışmayı baştan önleyen kurallar ve bunu denetleyen testler kullanılır (aşağıda). Değişiklik sonrası
-sayfa başına JavaScript artışı 2–3 KB'tır (gzip).
+`tailwind-merge` yerine kısa bir `styles.ts` yazıldı: `tailwind-merge` 3.7 tek başına ~9 KB (gzip)
+eklerken `styles.ts` ~1,5 KB'tır. Sınıf çakışmalarını çalışma anında çözmek yerine çakışmayı baştan
+önleyen kurallar ve bunu denetleyen testler kullanılır (aşağıda).
 
 ## Düğme türleri
 
 | Tür (`variant`) | Görünüm | Ne zaman? | Örnek |
 |---|---|---|---|
-| `primary` | Bakır zemin, beyaz metin, koyu alt kenar | Sayfanın ana eylemi; bir ekranda tercihen bir tane | İlan ver, İlanı gönder, Ara, Başvur |
-| `secondary` | Beyaz zemin, gri kenarlık, alt kenar | Ana eylemin yanındaki eylemler; boş liste durumundaki eylemler | Salonları gezin, Metni kopyala, Bize ulaşın |
+| `primary` | Koyu bakır zemin, beyaz metin, koyu alt kenar | Sayfanın ana eylemi; bir ekranda tercihen bir tane | İlan ver, İlanı gönder, Ara, Başvur |
+| `secondary` | Beyaz zemin, gri kenarlık (`graphite-400`), alt kenar | Ana eylemin yanındaki eylemler; boş liste durumundaki eylemler | Metni kopyala, Bize ulaşın, Bize yazın |
 | `ghost` | Saydam, bakır metin | Düşük öncelikli eylemler | Süzgeçleri temizle, Yeni başvuru |
-| `subtle` | Saydam, gri | Alan içindeki küçük simge düğmeleri | Aramayı temizle (×) |
-| `inverse` | Koyu zeminde çerçeveli | Koyu bölümde ikincil eylem | Ana sayfa: Stand açın veya ilan verin |
-| `ghost-inverse` | Koyu zeminde saydam | Üst menüdeki simgeler | Menü, Ara |
+| `subtle` | Saydam, gri | Simge düğmeleri: üst bilgideki Ara ve Menü, arama kutusunu temizle | Menü, Ara, × |
+| `inverse` | Koyu yarı saydam zemin, beyaz çerçeve | Fotoğraflı başlıkta ikincil eylem | İş arıyorum, profil oluştur |
+| `ghost-inverse` | Koyu zeminde saydam | Koyu zeminde simge düğmesi (şu an kullanılmıyor) | |
 
 Tehlikeli eylem (`danger`) türü bilinçli olarak yoktur: sitede silme gibi geri alınamaz bir eylem
 bulunmuyor. GOV.UK'nin önerisiyle, böyle bir eylem eklenirse onay adımıyla birlikte tasarlanmalıdır.
@@ -156,8 +213,10 @@ bulunmuyor. GOV.UK'nin önerisiyle, böyle bir eylem eklenirse onay adımıyla b
 | `md` | 44 px | Varsayılan |
 | `lg` | 48 px | Form gönderme, ilan sayfasında başvuru, mobil eylem çubuğu |
 
-- Dokunmatik ekranda (`pointer: coarse`) tüm düğmeler, çipler ve simge düğmeleri en az **44 × 44 px**
-  olur (WCAG 2.5.5 hedefi; AA düzeyindeki alt sınır 24 px).
+- Dokunmatik ekranda (`pointer: coarse`) tüm düğmeler, çipler, simge düğmeleri, logo, yol gösterici
+  bağlantılar ve bağımsız bağlantılar en az **44 px** yüksekliktedir (WCAG 2.5.5 hedefi; AA düzeyindeki
+  alt sınır 24 px). Görünümü büyütmeden yalnızca dokunma alanını genişletmek için negatif dikey boşluk
+  kullanılır (`pointer-coarse:-my-2 pointer-coarse:min-h-11`).
 - Simge düğmeleri karedir: 40/44/48 px.
 - Genişlik (`width`): `auto` (içerik kadar), `full` (tam genişlik), `full-mobile` (mobilde tam
   genişlik, geniş ekranda içerik kadar).
@@ -170,7 +229,7 @@ bulunmuyor. GOV.UK'nin önerisiyle, böyle bir eylem eklenirse onay adımıyla b
 | Dinlenme | Tür rengi; `primary`/`secondary`/`inverse` düğmelerde 2 px koyu alt kenar | Düğme olduğu ilk bakışta anlaşılır |
 | Üzerine gelme | Bir ton koyu zemin | Yalnızca fareli cihazlarda (`ui-hover` varyantı); dokunmatik ekranda takılı kalmaz |
 | Basılı | İki ton koyu zemin; düğme 2 px iner, alt kenar kaybolur | `ui-active` varyantı; dokunmatik ekranda da çalışır |
-| Klavye odağı | 3 px bakır çerçeve, 2 px boşlukla | `:focus-visible`; fareyle tıklamada görünmez |
+| Klavye odağı | 3 px koyu bakır çerçeve, 2 px boşlukla; fotoğraflı başlıkta açık bakır | `:focus-visible`; fareyle tıklamada görünmez |
 | Devre dışı | Soluk, "yasak" imleci, üzerine gelme ve basma tepkisi yok | Kullanmaktan kaçının: kullanıcı nedenini anlamaz. Bunun yerine düğmeyi gösterip hatayı açıklayın |
 | Yükleniyor | Dönen simge, "Gönderiliyor…" metni, ilerleme imleci | `loading` özelliği: `aria-disabled` (odak düğmede kalır), tıklama ve Enter ile yeniden gönderim yok sayılır, ekran okuyucuya duyurulur |
 
@@ -183,40 +242,51 @@ form işleyicisinde (anlık bayrak) engeller.
 ## Bağlantı mı, düğme mi?
 
 - Başka bir sayfaya, adrese veya aynı sayfadaki bir bölüme götürüyorsa **bağlantıdır**: `ButtonLink`
-  (düğme görünümlü) veya `ArrowLink` / metin bağlantısı.
+  (düğme görünümlü), `TextLink` veya metin bağlantısı.
 - Bir işlem yapıyorsa (form gönderme, kopyalama, panel açma, süzgeç temizleme) **düğmedir**: `Button`
   veya `IconButton`.
 - Görünüm aynı olabilir; HTML öğesi işleve uygun olmalıdır. `ButtonLink`, site içi adreslerde Next.js
   bağlantısı, diğerlerinde (`#`, `mailto:`, `tel:`, `https:`) düz `<a>` üretir.
-- Metin içindeki bağlantılar her zaman altı çizilidir; bölüm sonlarındaki bağlantılar `ArrowLink` ile
-  oklu ve 44 px yüksekliğinde verilir.
+- Metin içindeki bağlantılar her zaman altı çizilidir. Bölüm başlığı yanındaki bağlantılar
+  (`TextLink`) ok taşımaz; ne açılacağını ve varsa kayıt sayısını söyler: "Tüm market ilanları (7)".
 
 ## Etiket yazımı
 
 - Eylemi anlatan kısa ifade, mümkünse fiille: "İlan ver", "İlanı gönder", "Süzgeçleri temizle",
   "Satıcıyla iletişime geç".
-- Cümle düzeni: yalnızca ilk harf büyük; tamamı büyük harfli düğme yok.
+- Cümle düzeni: yalnızca ilk harf büyük; tamamı büyük harfli düğme veya etiket yok.
 - "Tıklayın", "Buraya", "Devam" gibi bağlamsız etiketler yok. Ekran okuyucu için bağlam gerekiyorsa
   görünmez ek kullanılır: "Telefonla başvur: 0312 …".
-- Simge tek başına anlam taşımaz: `IconButton` ve `IconLink` için `label` zorunludur (erişilebilir ad
-  ve fareyle üzerine gelince ipucu).
+- Simge tek başına anlam taşımaz: `IconButton` ve `IconLink` için `label` zorunludur.
 - Durum etiketle değil öznitelikle bildirilir: süzgeç sekmelerinde `aria-pressed`, menü ve "Süzgeçler"
-  düğmesinde `aria-expanded`. Menü düğmesinin adı her zaman "Menü"dür.
+  düğmesinde `aria-expanded`, iş ilanları sekmelerinde ve salon planında `aria-current`. Menü
+  düğmesinin adı her zaman "Menü"dür.
 
 ## Kullanım
 
 ```tsx
-import { Plus, Send, X, ArrowDown } from 'lucide-react';
+import { Plus, Send, X } from 'lucide-react';
 import { Button, ButtonGroup, ButtonLink, IconButton } from '@/components/ui/Button';
+import { listPanel } from '@/components/ui/card';
+import { JobCard } from '@/components/listings/ListingCards';
 
 // Sayfanın ana eylemi
 <ButtonLink href={routes.postListing()} icon={Plus}>İlan ver</ButtonLink>
 
-// Birincil + ikincil eylem (mobilde alt alta)
+// Fotoğraflı başlıkta birincil + ikincil eylem (mobilde alt alta)
 <ButtonGroup>
-  <ButtonLink href={routes.postListing('fuar-standi')} icon={Plus}>Stand açın</ButtonLink>
-  <ButtonLink href="#salonlar" variant="secondary" iconEnd={ArrowDown}>Salonları gezin</ButtonLink>
+  <ButtonLink href={routes.postListing('is-ilani')} icon={Plus}>İş ilanı ver</ButtonLink>
+  <ButtonLink href={routes.postListing('aday-profili')} variant="inverse">
+    İş arıyorum, profil oluştur
+  </ButtonLink>
 </ButtonGroup>
+
+// İlan listesi: tek panel, satır satır
+<ul className={listPanel}>
+  {jobs.map((job) => (
+    <li key={job.url}><JobCard data={jobCard(job)} /></li>
+  ))}
+</ul>
 
 // Form gönderme: yükleniyor durumu ve çift gönderim koruması
 <Button type="submit" size="lg" width="full-mobile" icon={Send} loading={sending}>
@@ -236,7 +306,7 @@ Tailwind'de aynı özelliği ayarlayan iki sınıftan (ör. `relative` ve `absol
 olacağı yazılış sırasına değil, CSS dosyasındaki sıraya bağlıdır. Bu yüzden:
 
 - Bileşenlere `className` ile yalnızca düğmenin kendi sınıflarıyla çakışmayan yardımcılar verilir:
-  kenar boşluğu (`mt-4`, `-ml-2`) veya bir duruma bağlı varyant (`aria-expanded:bg-graphite-800`).
+  kenar boşluğu (`mt-4`, `-ml-2`) veya bir duruma bağlı varyant (`aria-expanded:bg-stone-200`).
 - Görünürlük (`hidden`), konum (`absolute`), renk, yükseklik ve iç boşluk değişiklikleri bir
   kapsayıcıya verilir:
 
@@ -248,34 +318,29 @@ olacağı yazılış sırasına değil, CSS dosyasındaki sıraya bağlıdır. B
 
 - Yeni bir görünüm gerekiyorsa `styles.ts`'e yeni bir tür veya seçenek eklenir.
 - `styles.test.ts` tüm tür/boyut/genişlik bileşimlerini çakışmaya karşı denetler; ayrıca bileşenlerde
-  elle yazılmış birincil düğme rengi (`hover:bg-copper-700`) bulunursa test başarısız olur.
+  elle yazılmış birincil düğme rengi (`ui-hover:bg-copper-800`) bulunursa test başarısız olur.
 
 ## Form alanları
 
 - Metin kutusu ve çok satırlı alan: `inputClasses({ size, tone, invalid })`; açılır liste: `Select`.
-- Odakta kenarlık bakıra döner ve kalınlaşır, çevresinde hafif bir hale belirir. Yüksek kontrast
+- Kenarlık `graphite-500`: beyaz zeminde 5,2:1 (WCAG 1.4.11 arayüz sınırları için 3:1 ister). 22
+  Ekim'e kadar `graphite-300` (1,97:1) idi. Seçenek kutuları (onay kutulu etiketler) de aynı kenarlığı
+  kullanır.
+- Odakta kenarlık koyu bakıra döner ve kalınlaşır, çevresinde hafif bir hale belirir. Yüksek kontrast
   modunda gölgeler çizilmediği için saydam dış çizgi odak çerçevesi olarak görünür.
 - Hatalı alan: kırmızı kenarlık + `aria-invalid` + alanın altındaki hata metni; hata yalnızca renkle
   bildirilmez.
 - Yükseklikler: başvuru formları 48 px, liste süzgeçleri 44 px, büyük arama kutuları 56 px.
 - Yazı boyutu 16 px'ten küçük değildir (iOS, odaklanınca sayfayı yakınlaştırmaz).
-- Açılır listede tarayıcının küçük oku yerine ortak ok simgesi kullanılır; yüksek kontrast modunda
-  tarayıcının kendi görünümüne dönülür.
+- Yer tutucu metinler telefonda kesilmeyecek uzunluktadır (tek satırlık alanda en fazla ~30 karakter).
 
 ## Çipler
 
-`chipClasses({ selected, tone })`: popüler aramalar, salon ve kategori bağlantıları, arama sayfasındaki
-tür sekmeleri. Sekme olarak kullanılan çipler `<button aria-pressed>`'dir; seçili çip yalnızca renkle
-değil koyu zeminle de ayrışır. Koyu zeminde `tone: 'inverse'` kullanılır.
-
-## Kartlar ve kutucuklar
-
-- **Kart** (`cardFrame`, `cardBase`): başlıktaki bağlantı `stretchedLink` ile kartın tamamını kaplar;
-  kart içindeki diğer bağlantılar ayrıca tıklanabilir kalır.
-- **Kutucuk** (`tileClasses({ surface, align, size })`): kutunun tamamı tek bir bağlantıdır (kategori,
-  salon, bölüm kısayolları); sağdaki ok yönlendirme olduğunu gösterir.
-- Üzerine gelince kenarlık bakıra döner ve gölge hafifçe derinleşir; klavye odağında kartın tamamı
-  çerçevelenir.
+`chipClasses({ selected, tone })`: arama sayfasındaki tür sekmeleri ve popüler aramalar, firma
+sayfasındaki salon bağlantıları. Köşeleri küçüktür (hap biçimi yok). Sekme olarak kullanılan çipler
+`<button aria-pressed>`'dir; seçili çip yalnızca renkle değil koyu zeminle de ayrışır. Koyu zeminde
+`tone: 'inverse'` kullanılır. Ana sayfadaki "Sık arananlar" çip değil, virgülle ayrılmış metin
+bağlantılarıdır.
 
 ## Mobil eylem çubuğu ve mobil süzgeçler
 
@@ -289,41 +354,44 @@ değil koyu zeminle de ayrışır. Koyu zeminde `tone: 'inverse'` kullanılır.
 
 ## Yeni arayüz öğesi eklerken kontrol listesi
 
-- [ ] Ortak bileşenler kullanıldı: `Button`, `ButtonLink`, `IconButton`, `ArrowLink`, `Select`,
-      `inputClasses`, `chipClasses`, `tileClasses`.
+- [ ] İçerik önde: yeni öğe ilanları veya firmaları aşağı itiyor mu? Gerekli değilse eklemeyin.
+- [ ] Ortak bileşenler kullanıldı: `Button`, `ButtonLink`, `IconButton`, `TextLink`, `Select`,
+      `inputClasses`, `chipClasses`, `panel`, `listPanel`, `listRow`, `Facts`.
+- [ ] Şablon izi yok: büyük harfli etiket, degrade, parlama, hap biçimi, ok eklenmiş bağlantı, orta
+      nokta, uzun tire (`npm test` → "şablon izleri").
+- [ ] Simge yalnızca bir işlev için; süs simgesi yok.
+- [ ] Metin kısa ve somut; noktalı virgül, slogan ve zorlama üçleme yok; kanıtı olmayan bilgi yok.
 - [ ] Ekranda tek birincil düğme var; diğerleri `secondary` veya `ghost`.
 - [ ] Etiket eylemi anlatıyor; simge düğmesinde `label` verildi.
 - [ ] Bağlantı ile düğme doğru seçildi (götürüyor mu, yapıyor mu?).
-- [ ] Dokunmatik ekranda ≥ 44 px; 390 px genişlikte yatay taşma yok.
+- [ ] Dokunmatik ekranda ≥ 44 px; 390 px genişlikte yatay taşma yok; yer tutucu kesilmiyor.
 - [ ] Klavyeyle ulaşılıyor ve odak görünüyor.
 - [ ] Renkler paletten (`graphite`, `copper`, `stone`); elle renk değeri yazılmadı.
 - [ ] Fotoğraflı başlığa konan öğeler koyu zemin için (beyaz, `graphite-100/200`, `copper-300`
       yazı; `inverse` düğme).
-- [ ] Yeni veya değişen fotoğraf için `npm run generate:images` çalıştırıldı, kaynak ve
-      `public/gorseller/` birlikte commit edildi.
 - [ ] `npm run check` geçti (`styles.test.ts`, `palette.test.ts`, `photos.test.ts` dahil).
 
-## Doğrulama (16 Ekim 2026)
+## Doğrulama
 
-- `styles.test.ts`: 175 test (tüm bileşimlerde sınıf çakışması yok, dokunma alanı, yüksek kontrast
-  kenarlığı, bileşenlerde elle yazılmış düğme rengi yok).
-- Tarayıcı testleri (390 px dokunmatik ve 1366 px), 27 yeni denetim: 18 sayfada yatay taşma 0 px;
-  mobilde ölçülen 34 düğme ve çipin tamamı ≥ 44 × 44 px; basılı durum ve klavye odağı; "Süzgeçler"
-  düğmesi; arama kutusunu temizleme; mobil eylem çubuğu (dört ilan türü); menü düğmesi; "Metni
-  kopyala" geri bildirimi. Önceki 33 etkileşim testi de geçti.
-- axe-core: önizlemede 26 sayfa × 2 genişlik, üretim derlemesinde boş liste durumları ve kapalı
-  formlar dahil 14 sayfa × 2 genişlik; ihlal yok.
+### Yeniden tasarım (22 Ekim 2026)
+
+- Testler: 10 dosyada 400 test. `styles.test.ts` yeni "şablon izleri" denetimleri ve form kenarlığı
+  testiyle; `palette.test.ts` yeni kontrast çiftleri ve soğuk gri zemin testiyle.
+- Tarayıcı, 19 etkileşim denetimi: mobil menü (açma, Escape ile kapatma, odağın düğmeye dönmesi);
+  mobil süzgeçler (açma, il süzgeci, adrese yazılma, temizleme); 17 sayfada 390 px'te yatay taşma yok;
+  düğme, alan ve bağımsız bağlantılar ≥ 44 px; salon planında "Buradasınız"; ana sayfada dört amaç
+  bağlantısı ve "Son iş ilanları"nın ilk ekranda başlaması; "İçeriğe geç" bağlantısı; odak çerçevesi
+  rengi (açık ve fotoğraflı zeminde); arama sonucunun duyurulması ve temizleme. Tümü geçti.
+- axe-core: önizleme derlemesinde 17 sayfa × 2 genişlik (390 ve 1366 px); ihlal yok. Fotoğraf
+  üzerindeki metnin kontrastını axe ölçemez; `photos.test.ts` denetler.
+- Üretim derlemesi (ilansız, formlar kapalı): 42 sayfa, site denetimi temiz; ana sayfa boş durumda
+  ekran görüntüsüyle kontrol edildi.
+- Ölçümler ve bulgular: [uzman-incelemesi.md](uzman-incelemesi.md).
+
+### Önceki doğrulamalar (16 Ekim 2026)
+
+- Düğme sistemi: `styles.test.ts` 175 test; 390 px dokunmatik ve 1366 px'te 27 tarayıcı denetimi;
+  axe-core önizlemede 26, üretimde 14 sayfa × 2 genişlik, ihlal yok.
+- Tema ve fotoğraflar: 388 test; axe-core önizlemede 15, üretimde 11 sayfa × 2 genişlik, ihlal yok.
 - Başsız test tarayıcısında fare bulunmadığından (`hover: none`), üzerine gelme durumu CSS kuralı
-  üzerinden doğrulandı (`@media (hover: hover)` içinde, devre dışı düğmeler hariç).
-
-### Tema ve fotoğraf güncellemesi (16 Ekim 2026)
-
-- Testler: 10 dosyada 388 test (`palette.test.ts` 30, `photos.test.ts` 65, `styles.test.ts` 178).
-- Tarayıcı: önizleme derlemesinde 14 sayfa, üretim derlemesinde 5 sayfa, 390 ve 1366 px; yatay
-  taşma 0 px.
-- axe-core: önizlemede 15 sayfa × 2 genişlik, üretimde (kapalı formlar, boş listeler) 11 sayfa × 2
-  genişlik; ihlal yok. axe, fotoğraf veya desen üzerindeki metnin kontrastını ölçemez ("incomplete"
-  sayar); bu durum `photos.test.ts` ve `palette.test.ts` ile denetlenir.
-- İndirilen görseller (ağ kaydı): ana sayfa telefonda 4 AVIF dosyası, 170 KB; dizüstünde 114 KB;
-  Sanal Fuar 1 dosya, 80 KB; arama sayfası 0.
-- Sayfa başına JavaScript değişmedi (ana sayfa 181,4 KB, liste sayfaları 191,6 KB gzip).
+  üzerinden doğrulanır (`@media (hover: hover)` içinde, devre dışı düğmeler hariç).

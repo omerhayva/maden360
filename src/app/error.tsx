@@ -22,15 +22,12 @@ export default function ErrorPage({
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
       <div className="max-w-2xl">
-        <p className="text-sm font-semibold uppercase tracking-wide text-copper-700">
-          Beklenmeyen hata
-        </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-graphite-950">
+        <h1 className="text-3xl leading-tight font-semibold text-graphite-950">
           Bir şeyler ters gitti
         </h1>
         <p className="mt-4 text-lg leading-8 text-graphite-700">
-          Sayfa yüklenirken bir hata oluştu. Tekrar deneyebilir veya ana sayfaya dönebilirsiniz.
-          Sorun sürerse bize bildirin.
+          Sayfa yüklenirken beklenmeyen bir hata oluştu. Tekrar deneyebilir veya ana sayfaya
+          dönebilirsiniz. Sorun sürerse bize bildirin.
         </p>
         {error.digest && (
           <p className="mt-2 text-sm text-graphite-500">Hata kodu: {error.digest}</p>

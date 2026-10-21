@@ -44,7 +44,7 @@ export type ButtonWidth = (typeof BUTTON_WIDTHS)[number];
  * Renk geçişleri kısa (100 ms) ve yalnızca renk/gölge içindir; basınca geçiş beklenmez.
  */
 const BUTTON_BASE =
-  'relative inline-flex shrink-0 cursor-pointer select-none items-center justify-center gap-2 rounded-md border text-center font-semibold leading-tight no-underline [-webkit-tap-highlight-color:transparent] transition-[color,background-color,border-color,box-shadow,translate] duration-100 ui-active:transition-none disabled:cursor-not-allowed disabled:opacity-55 data-loading:cursor-progress [&_svg]:pointer-events-none [&_svg]:shrink-0';
+  'relative inline-flex shrink-0 cursor-pointer select-none items-center justify-center gap-2 rounded-sm border text-center font-semibold leading-tight no-underline [-webkit-tap-highlight-color:transparent] transition-[color,background-color,border-color,box-shadow,translate] duration-100 ui-active:transition-none disabled:cursor-not-allowed disabled:opacity-55 data-loading:cursor-progress [&_svg]:pointer-events-none [&_svg]:shrink-0';
 
 /**
  * "Basılabilir" düğmeler: altta 2 px'lik koyu kenar; basınca düğme 2 px iner ve kenar kaybolur.
@@ -56,18 +56,18 @@ const PRESSABLE =
 
 const BUTTON_VARIANT_CLASSES: Record<ButtonVariant, string> = {
   /** Sayfanın ana eylemi (bir ekranda tercihen bir tane) */
-  primary: `${PRESSABLE} border-transparent bg-copper-600 text-white [--btn-edge:var(--color-copper-800)] ui-hover:bg-copper-700 ui-hover:[--btn-edge:var(--color-copper-900)] ui-active:bg-copper-800`,
+  primary: `${PRESSABLE} border-transparent bg-copper-700 text-white [--btn-edge:var(--color-copper-900)] ui-hover:bg-copper-800 ui-hover:[--btn-edge:var(--color-copper-950)] ui-active:bg-copper-900`,
   /** İkincil eylemler; ana eylemin yanında */
-  secondary: `${PRESSABLE} border-graphite-300 bg-white text-graphite-900 [--btn-edge:var(--color-graphite-300)] ui-hover:border-graphite-400 ui-hover:bg-stone-50 ui-hover:[--btn-edge:var(--color-graphite-400)] ui-active:bg-stone-100`,
+  secondary: `${PRESSABLE} border-graphite-400 bg-white text-graphite-900 [--btn-edge:var(--color-graphite-400)] ui-hover:border-graphite-600 ui-hover:bg-stone-50 ui-hover:[--btn-edge:var(--color-graphite-600)] ui-active:bg-stone-100`,
   /** Düşük öncelikli eylemler (süzgeç temizleme, yeni başvuru); bakır metin */
   ghost:
     'border-transparent bg-transparent text-copper-700 ui-hover:bg-copper-50 ui-hover:text-copper-800 ui-active:bg-copper-100',
   /** Nötr simge düğmeleri (ör. arama kutusunu temizle) */
   subtle:
     'border-transparent bg-transparent text-graphite-600 ui-hover:bg-stone-100 ui-hover:text-graphite-950 ui-active:bg-stone-200',
-  /** Koyu zeminde ikincil eylem (ana sayfa üst bölümü) */
-  inverse: `${PRESSABLE} border-graphite-500 bg-graphite-900/60 text-white [--btn-edge:var(--color-graphite-950)] ui-hover:border-copper-400 ui-hover:bg-graphite-800 ui-active:bg-graphite-700`,
-  /** Koyu zeminde simge düğmeleri (üst menü) */
+  /** Fotoğraflı (koyu) başlıklarda ikincil eylem */
+  inverse: `${PRESSABLE} border-white/60 bg-graphite-950/55 text-white [--btn-edge:var(--color-graphite-950)] ui-hover:border-white ui-hover:bg-graphite-950/75 ui-active:bg-graphite-950/90`,
+  /** Koyu zeminde simge düğmeleri */
   'ghost-inverse':
     'border-transparent bg-transparent text-graphite-100 ui-hover:bg-graphite-800 ui-hover:text-white ui-active:bg-graphite-700',
 };
@@ -137,7 +137,7 @@ export function iconButtonClasses({
 export type ChipTone = 'light' | 'inverse';
 
 /**
- * Yuvarlak etiket bağlantıları ve süzgeç düğmeleri. Süzgeç olarak kullanılan çipte seçili
+ * Etiket bağlantıları ve süzgeç düğmeleri (küçük köşeli, hap biçimi kullanılmaz). Süzgeç olarak kullanılan çipte seçili
  * durum `aria-pressed` ile bildirilir; etiket metni seçime göre değişmez (WAI-ARIA APG).
  */
 export function chipClasses({
@@ -145,12 +145,12 @@ export function chipClasses({
   tone = 'light',
 }: { selected?: boolean; tone?: ChipTone } = {}): string {
   return cx(
-    'inline-flex min-h-10 items-center gap-1.5 rounded-full border px-3.5 text-sm font-medium [-webkit-tap-highlight-color:transparent] transition-colors duration-100 pointer-coarse:min-h-11 [&_svg]:size-4 [&_svg]:shrink-0',
+    'inline-flex min-h-10 items-center gap-1.5 rounded-sm border px-3 text-sm font-medium [-webkit-tap-highlight-color:transparent] transition-colors duration-100 pointer-coarse:min-h-11 [&_svg]:size-4 [&_svg]:shrink-0',
     tone === 'inverse'
-      ? 'border-graphite-600 bg-graphite-900/60 text-graphite-100 ui-hover:border-copper-400 ui-hover:text-white ui-active:bg-graphite-800'
+      ? 'border-white/45 bg-graphite-950/45 text-white ui-hover:border-white ui-hover:bg-graphite-950/70 ui-active:bg-graphite-950/85'
       : selected
         ? 'border-graphite-900 bg-graphite-900 text-white'
-        : 'border-graphite-300 bg-white text-graphite-800 ui-hover:border-copper-500 ui-hover:text-copper-800 ui-active:bg-copper-50',
+        : 'border-graphite-400 bg-white text-graphite-800 ui-hover:border-graphite-700 ui-hover:text-graphite-950 ui-active:bg-stone-100',
   );
 }
 
@@ -161,17 +161,18 @@ export type FieldSize = (typeof FIELD_SIZES)[number];
 export type FieldTone = 'light' | 'dark';
 
 const FIELD_SIZE_CLASSES: Record<FieldSize, string> = {
-  sm: 'min-h-10 rounded-md',
-  md: 'min-h-11 rounded-md',
-  lg: 'min-h-12 rounded-md',
+  sm: 'min-h-10 rounded-sm',
+  md: 'min-h-11 rounded-sm',
+  lg: 'min-h-12 rounded-sm',
   /** Büyük arama kutuları (ana sayfa, arama sayfası) */
-  xl: 'min-h-14 rounded-lg',
+  xl: 'min-h-14 rounded-sm',
 };
 
 /**
- * Metin kutusu, açılır liste ve çok satırlı alanlar. Odakta kenarlık bakıra döner ve kalınlaşır,
- * çevresinde yumuşak bir hale belirir. Saydam dış çizgi yüksek kontrast modunda odak çerçevesi
- * olarak görünür (gölgeler o modda çizilmez).
+ * Metin kutusu, açılır liste ve çok satırlı alanlar. Kenarlık beyaz zeminde ≈ 5,2:1 kontrastlıdır
+ * (graphite-500; WCAG 1.4.11 arayüz sınırları için 3:1 ister). Odakta kenarlık koyu bakıra döner
+ * ve kalınlaşır, çevresinde hafif bir hale belirir. Saydam dış çizgi yüksek kontrast modunda odak
+ * çerçevesi olarak görünür (gölgeler o modda çizilmez).
  */
 export function inputClasses({
   size = 'lg',
@@ -184,8 +185,8 @@ export function inputClasses({
     tone === 'dark'
       ? 'border-graphite-700 bg-graphite-900 text-white placeholder:text-graphite-400 ui-hover:not-focus:border-graphite-500 focus:border-copper-400 focus:ring-copper-400/30 focus:inset-ring-copper-400'
       : invalid
-        ? 'border-red-600 bg-white text-graphite-950 shadow-xs placeholder:text-graphite-500 focus:border-red-700 focus:ring-red-600/20 focus:inset-ring-red-700'
-        : 'border-graphite-300 bg-white text-graphite-950 shadow-xs placeholder:text-graphite-500 ui-hover:not-focus:border-graphite-400 focus:border-copper-600 focus:ring-copper-500/25 focus:inset-ring-copper-600',
+        ? 'border-red-700 bg-white text-graphite-950 placeholder:text-graphite-500 focus:border-red-700 focus:ring-red-700/20 focus:inset-ring-red-700'
+        : 'border-graphite-500 bg-white text-graphite-950 placeholder:text-graphite-500 ui-hover:not-focus:border-graphite-700 focus:border-copper-700 focus:ring-copper-700/20 focus:inset-ring-copper-700',
     FIELD_SIZE_CLASSES[size],
     className,
   );
@@ -212,8 +213,9 @@ export const photoFillClasses = 'absolute inset-0 -z-10 size-full object-cover';
 /* ---------------------------------- Metin bağlantıları ---------------------------------- */
 
 /**
- * Bölüm sonlarındaki "Tümünü gör →" türü bağlantılar: bir metin bağlantısıdır (düğme değil),
- * ancak dokunma alanı 44 px yüksekliktedir.
+ * Bölüm başlığı yanındaki ve bölüm sonlarındaki "Tüm iş ilanları (4)" türü bağlantılar. Metin
+ * bağlantısıdır (düğme değil); ok simgesi eklenmez, ne olduğu metinden anlaşılır. Dokunma alanı
+ * 44 px yüksekliktedir.
  */
 export function textLinkClasses({
   tone = 'light',
@@ -223,8 +225,8 @@ export function textLinkClasses({
   return cx(
     'inline-flex min-h-11 items-center gap-1.5 font-semibold underline-offset-4 ui-hover:underline [&_svg]:size-4 [&_svg]:shrink-0',
     tone === 'inverse'
-      ? 'text-copper-400 ui-hover:text-copper-300'
-      : 'text-copper-700 ui-hover:text-copper-800',
+      ? 'text-copper-300 ui-hover:text-copper-200'
+      : 'text-copper-700 ui-hover:text-copper-900',
     size === 'md' ? 'text-base' : 'text-sm',
     className,
   );

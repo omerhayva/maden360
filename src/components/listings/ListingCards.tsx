@@ -1,8 +1,6 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { Briefcase, CalendarClock, Clock, MapPin, UserSearch } from 'lucide-react';
-import { cardBase, cardFrame, stretchedLink } from '@/components/ui/card';
-import { CategoryIcon } from '@/components/ui/CategoryIcon';
+import { listRow, stretchedLink } from '@/components/ui/card';
 import type { CategoryIcon as CategoryIconName } from '@/lib/content/schemas';
 import type { ContentStatus } from '@/lib/content/schemas';
 import { formatDate } from '@/lib/format';
@@ -17,8 +15,13 @@ import {
 import { StandAvatar } from './StandAvatar';
 
 /**
- * İlan kartları. Sunucuda ve tarayıcıdaki süzme bileşeninde ortak kullanılır;
- * yalnızca düz veri alır (sunucuya özgü içe aktarma yok).
+ * İlan satırları. Liste panelinin (card.ts → listPanel) içinde, her biri bir <li> olarak
+ * kullanılır. Sunucuda ve tarayıcıdaki süzme bileşeninde ortak kullanılır; yalnızca düz veri
+ * alır (sunucuya özgü içe aktarma yok).
+ *
+ * Satır düzeni: solda başlık ve bilgiler, sağda (telefonda başlığın altında) en çok bakılan
+ * değer (ücret, fiyat, il). Bilgi parçaları ince dikey çizgiyle ayrılır; büyük harfli etiket ve
+ * süs simgesi kullanılmaz.
  */
 
 interface CommonCard {
@@ -46,6 +49,8 @@ export interface JobCardData extends CommonCard {
   employer: string;
   location: string;
   chips: string[];
+  /** Yan haklar (servis, yemek, lojman...) */
+  benefits?: string[];
   salary?: string;
   postedAt?: string;
   expiresAt?: string;
@@ -66,7 +71,7 @@ export interface MarketCardData extends CommonCard {
   title: string;
   type: MarketType;
   category: string;
-  /** Görsel yoksa kartta küçük kategori simgesi gösterilir */
+  /** Kategori simgesi (içerik şemasında tutulur; satırda gösterilmez) */
   icon: CategoryIconName;
   location: string;
   price: string;
@@ -79,21 +84,68 @@ export type ListingCardData = StandCardData | JobCardData | CandidateCardData | 
 
 type Heading = 'h2' | 'h3';
 
-function Badges({
-  status,
-  example,
-  children,
+/**
+ * Bilgi parçaları: aralarında ince dikey çizgi (orta nokta kullanılmaz). Liste, çizgi ve iç
+ * boşluk kadar (1 px + 10 px) sola kaydırılıp kırpılan bir kapsayıcıya konur; böylece satır
+ * kaydığında yeni satırın başındaki çizgi görünmez.
+ */
+export function Facts({
+  items,
+  label,
+  className = '',
 }: {
-  status: ContentStatus;
-  example?: boolean;
-  children?: ReactNode;
+  items: (string | false | null | undefined)[];
+  label?: string;
+  className?: string;
 }) {
+  const list = items.filter((item): item is string => Boolean(item));
+  if (list.length === 0) return null;
+  return (
+    <div className={`overflow-hidden ${className}`}>
+      <ul
+        aria-label={label}
+        className="-ml-[11px] flex flex-wrap items-center gap-y-1 text-sm leading-5 text-graphite-700"
+      >
+        {list.map((item, index) => (
+          <li key={`${item}-${index}`} className="border-l border-stone-300 px-2.5">
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function StatusBadges({ status, example }: { status: ContentStatus; example?: boolean }) {
   return (
     <>
-      {children}
       <ListingStatusBadge status={status} />
       <ExampleBadge example={example} />
     </>
+  );
+}
+
+/** Başlık satırı: solda başlık, sağda öne çıkan değer (telefonda alt alta) */
+function TitleLine({
+  H,
+  href,
+  title,
+  aside,
+}: {
+  H: Heading;
+  href: string;
+  title: string;
+  aside?: ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
+      <H className="text-lg leading-snug font-semibold text-graphite-950">
+        <Link href={href} className={stretchedLink}>
+          {title}
+        </Link>
+      </H>
+      {aside}
+    </div>
   );
 }
 
@@ -105,34 +157,23 @@ export function StandCard({
   headingLevel?: Heading;
 }) {
   return (
-    <article className={cardBase}>
-      <div className="flex items-start gap-4">
-        <StandAvatar name={data.name} logo={data.logo} className="h-14 w-14 text-lg" />
-        <div className="min-w-0 flex-1">
-          <H className="text-lg font-semibold leading-snug text-graphite-950 group-hover:text-copper-800">
-            <Link href={data.url} className={stretchedLink}>
-              {data.name}
-            </Link>
-          </H>
-          <p className="mt-1 flex flex-wrap items-center gap-x-2 text-sm text-graphite-600">
-            <span className="inline-flex items-center gap-1">
-              <MapPin aria-hidden="true" className="h-3.5 w-3.5 text-copper-600" />
-              {data.city}
-            </span>
-            <span aria-hidden="true">·</span>
-            <span>{data.halls.join(', ')}</span>
-          </p>
-        </div>
-      </div>
-      <p className="mt-3 line-clamp-3 text-sm leading-6 text-graphite-700">{data.summary}</p>
-      <div className="mt-auto flex flex-wrap items-center gap-2 pt-4">
-        <Badges status={data.status} example={data.example}>
+    <article className={`${listRow} flex gap-4`}>
+      <StandAvatar name={data.name} logo={data.logo} className="mt-0.5 h-12 w-12 text-base" />
+      <div className="min-w-0 flex-1">
+        <TitleLine
+          H={H}
+          href={data.url}
+          title={data.name}
+          aside={<p className="shrink-0 text-sm text-graphite-700">{data.city}</p>}
+        />
+        <Facts items={data.halls} label="Salonlar" className="mt-1" />
+        <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-graphite-800">{data.summary}</p>
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-graphite-600">
           <FeaturedBadge featured={data.featured} />
           <VerifiedBadge checkedAt={data.verifiedAt} />
-        </Badges>
-        {data.offeringCount > 0 && (
-          <span className="text-xs text-graphite-500">{data.offeringCount} ürün ve hizmet</span>
-        )}
+          {data.offeringCount > 0 && <span>{data.offeringCount} ürün ve hizmet</span>}
+          <StatusBadges status={data.status} example={data.example} />
+        </div>
       </div>
     </article>
   );
@@ -146,52 +187,31 @@ export function JobCard({
   headingLevel?: Heading;
 }) {
   return (
-    <article className={cardBase}>
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-copper-700">
-          <Briefcase aria-hidden="true" className="h-3.5 w-3.5" />
-          {data.position}
-        </span>
-        <Badges status={data.status} example={data.example} />
+    <article className={listRow}>
+      <TitleLine
+        H={H}
+        href={data.url}
+        title={data.title}
+        aside={
+          data.salary && (
+            <p className="shrink-0 text-sm font-semibold text-graphite-950 tabular-nums">
+              {data.salary}
+            </p>
+          )
+        }
+      />
+      <p className="mt-1 text-sm text-graphite-800">
+        <span className="font-medium">{data.employer}</span>, {data.location}
+      </p>
+      <Facts items={data.chips} label="İlan özellikleri" className="mt-1" />
+      {data.benefits && data.benefits.length > 0 && (
+        <p className="mt-1 text-sm text-graphite-700">Yan haklar: {data.benefits.join(', ')}</p>
+      )}
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-graphite-600">
+        {data.postedAt && <span>Yayın: {formatDate(data.postedAt)}</span>}
+        {data.expiresAt && <span>Son başvuru: {formatDate(data.expiresAt)}</span>}
+        <StatusBadges status={data.status} example={data.example} />
       </div>
-      <H className="mt-2 text-lg font-semibold leading-snug text-graphite-950 group-hover:text-copper-800">
-        <Link href={data.url} className={stretchedLink}>
-          {data.title}
-        </Link>
-      </H>
-      <p className="mt-1 text-sm text-graphite-700">
-        <span className="font-medium">{data.employer}</span>
-        <span aria-hidden="true"> · </span>
-        <span className="inline-flex items-center gap-1">
-          <MapPin aria-hidden="true" className="h-3.5 w-3.5 text-copper-600" />
-          {data.location}
-        </span>
-      </p>
-      <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="İlan özellikleri">
-        {data.chips.map((chip) => (
-          <li
-            key={chip}
-            className="rounded-md bg-stone-100 px-2 py-0.5 text-xs font-medium text-graphite-700"
-          >
-            {chip}
-          </li>
-        ))}
-      </ul>
-      {data.salary && <p className="mt-3 text-sm font-semibold text-graphite-900">{data.salary}</p>}
-      <p className="mt-auto flex flex-wrap gap-x-4 gap-y-1 pt-4 text-xs text-graphite-500">
-        {data.postedAt && (
-          <span className="inline-flex items-center gap-1">
-            <Clock aria-hidden="true" className="h-3.5 w-3.5" />
-            Yayın: {formatDate(data.postedAt)}
-          </span>
-        )}
-        {data.expiresAt && (
-          <span className="inline-flex items-center gap-1">
-            <CalendarClock aria-hidden="true" className="h-3.5 w-3.5" />
-            Son başvuru: {formatDate(data.expiresAt)}
-          </span>
-        )}
-      </p>
     </article>
   );
 }
@@ -204,40 +224,28 @@ export function CandidateCard({
   headingLevel?: Heading;
 }) {
   return (
-    <article className={cardBase}>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-copper-700">
-          <UserSearch aria-hidden="true" className="h-3.5 w-3.5" />
-          {data.position}
-        </span>
-        {data.ref && <span className="font-mono text-xs text-graphite-500">{data.ref}</span>}
-      </div>
-      <H className="mt-2 text-lg font-semibold leading-snug text-graphite-950 group-hover:text-copper-800">
-        <Link href={data.url} className={stretchedLink}>
-          {data.headline}
-        </Link>
-      </H>
-      <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Profil özellikleri">
-        {data.chips.map((chip) => (
-          <li
-            key={chip}
-            className="rounded-md bg-stone-100 px-2 py-0.5 text-xs font-medium text-graphite-700"
-          >
-            {chip}
-          </li>
-        ))}
-      </ul>
-      <p className="mt-3 flex items-start gap-1 text-sm text-graphite-700">
-        <MapPin aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-copper-600" />
-        <span>{data.cities.join(', ')}</span>
+    <article className={listRow}>
+      <TitleLine
+        H={H}
+        href={data.url}
+        title={data.headline}
+        aside={
+          data.ref && (
+            <p className="shrink-0 text-xs text-graphite-600 tabular-nums">Profil no {data.ref}</p>
+          )
+        }
+      />
+      <Facts items={[data.position, ...data.chips]} label="Profil özellikleri" className="mt-1" />
+      <p className="mt-1 text-sm text-graphite-700">
+        Çalışabileceği iller: {data.cities.join(', ')}
       </p>
       {data.certificates.length > 0 && (
-        <p className="mt-1 line-clamp-2 text-sm text-graphite-600">
+        <p className="mt-1 line-clamp-2 text-sm text-graphite-700">
           Belgeler: {data.certificates.join(', ')}
         </p>
       )}
-      <div className="mt-auto flex flex-wrap gap-2 pt-4">
-        <Badges status={data.status} example={data.example} />
+      <div className="mt-2 flex flex-wrap items-center gap-2 empty:hidden">
+        <StatusBadges status={data.status} example={data.example} />
       </div>
     </article>
   );
@@ -251,7 +259,7 @@ export function MarketCard({
   headingLevel?: Heading;
 }) {
   return (
-    <article className={`${cardFrame} overflow-hidden`}>
+    <article className={`${listRow} flex gap-4`}>
       {data.image && (
         // eslint-disable-next-line @next/next/no-img-element -- statik dışa aktarım; görseller önceden küçültülür
         <img
@@ -259,40 +267,29 @@ export function MarketCard({
           alt={data.image.alt}
           loading="lazy"
           decoding="async"
-          className="aspect-[16/10] w-full object-cover"
+          className="h-20 w-28 shrink-0 rounded-xs bg-stone-100 object-cover sm:h-24 sm:w-32"
         />
       )}
-      <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-start gap-3">
-          {!data.image && (
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-graphite-900 text-copper-400">
-              <CategoryIcon icon={data.icon} className="h-5 w-5" />
-            </span>
-          )}
-          <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-            <MarketTypeBadge type={data.type} />
-            <span className="text-xs font-semibold uppercase tracking-wide text-copper-700">
-              {data.category}
-            </span>
-            <Badges status={data.status} example={data.example} />
-          </div>
+      <div className="min-w-0 flex-1">
+        <TitleLine
+          H={H}
+          href={data.url}
+          title={data.title}
+          aside={
+            <p className="shrink-0 text-base font-semibold text-graphite-950 tabular-nums">
+              {data.price}
+            </p>
+          }
+        />
+        <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          <MarketTypeBadge type={data.type} />
+          <Facts items={[data.category, data.location]} label="Kategori ve konum" />
         </div>
-        <H className="mt-3 text-lg font-semibold leading-snug text-graphite-950 group-hover:text-copper-800">
-          <Link href={data.url} className={stretchedLink}>
-            {data.title}
-          </Link>
-        </H>
-        {data.meta.length > 0 && (
-          <p className="mt-1 text-sm text-graphite-600">{data.meta.join(' · ')}</p>
-        )}
-        <p className="mt-3 text-base font-bold text-graphite-950">{data.price}</p>
-        <p className="mt-auto flex flex-wrap gap-x-3 pt-3 text-xs text-graphite-500">
-          <span className="inline-flex items-center gap-1">
-            <MapPin aria-hidden="true" className="h-3.5 w-3.5" />
-            {data.location}
-          </span>
-          {data.postedAt && <span>{formatDate(data.postedAt)}</span>}
-        </p>
+        <Facts items={data.meta} label="Ürün bilgileri" className="mt-1" />
+        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-graphite-600">
+          {data.postedAt && <span>Yayın: {formatDate(data.postedAt)}</span>}
+          <StatusBadges status={data.status} example={data.example} />
+        </div>
       </div>
     </article>
   );

@@ -157,8 +157,8 @@ function jobForm(r: FormRegistries): FormDefinition {
     kind: 'is-ilani',
     title: 'İş ilanı ver',
     description:
-      'Açık pozisyonunuzu maden mühendisleri, teknikerler ve saha çalışanlarıyla buluşturun. İlanınız editör kontrolünden sonra yayımlanır ve süresi dolunca otomatik olarak kalkar.',
-    short: 'İşçi mi arıyorsunuz? Açık pozisyonunuzu yayımlayın.',
+      'Ocağınıza, tesisinize veya sahanıza eleman arıyorsanız ilanınızı buradan gönderin. Editör kontrolünden sonra yayımlanır, süresi dolunca kendiliğinden kalkar.',
+    short: 'Eleman arayan ocak, tesis ve firmalar için.',
     refPrefix: REF_PREFIXES.job,
     durationDays: LISTING_MAX_DAYS.job,
     submitLabel: 'İlanı gönder',
@@ -174,7 +174,7 @@ function jobForm(r: FormRegistries): FormDefinition {
             required: true,
             minLength: 5,
             maxLength: 90,
-            placeholder: 'Ör. Maden Mühendisi (Açık Ocak Planlama)',
+            placeholder: 'Ör. Maden Mühendisi (Açık Ocak)',
           },
           { id: 'position', label: 'Meslek', type: 'select', required: true, options: r.positions },
           {
@@ -330,13 +330,13 @@ function jobForm(r: FormRegistries): FormDefinition {
             label: 'Başvuru notu',
             type: 'text',
             maxLength: 160,
-            placeholder: 'Ör. Konu satırına ilan numarasını yazın.',
+            placeholder: 'Ör. Konuya ilan numarasını yazın',
           },
         ],
       },
       privateContactSection(
         'İlan sorumlusu (yayımlanmaz)',
-        'İlanı doğrulamak için kullanılır; ilanda görünmez.',
+        'İlanı doğrulamak için kullanılır, ilanda görünmez.',
       ),
     ],
     consents: [
@@ -357,8 +357,8 @@ function candidateForm(r: FormRegistries): FormDefinition {
     kind: 'aday-profili',
     title: 'İş arıyorum: aday profili oluştur',
     description:
-      'Deneyiminizi ve tercihlerinizi işverenlerle paylaşın. Adınız ve iletişim bilgileriniz yayımlanmaz; işverenlerin talepleri editörlerimiz tarafından size iletilir.',
-    short: 'İş mi arıyorsunuz? İletişim bilgileriniz gizli kalarak profil oluşturun.',
+      'Deneyiminizi, belgelerinizi ve çalışmak istediğiniz illeri yazın. Adınız ve iletişim bilgileriniz yayımlanmaz. İşverenlerin taleplerini editör size iletir.',
+    short: 'İş arayan mühendis, tekniker ve operatörler için. İletişim bilgileriniz gizli kalır.',
     refPrefix: REF_PREFIXES.candidate,
     durationDays: LISTING_MAX_DAYS.candidate,
     submitLabel: 'Profili gönder',
@@ -376,7 +376,7 @@ function candidateForm(r: FormRegistries): FormDefinition {
             minLength: 5,
             maxLength: 90,
             noContactInfo: true,
-            placeholder: 'Ör. 8 yıl deneyimli ekskavatör operatörü',
+            placeholder: 'Ör. Ekskavatör operatörü, 8 yıl',
           },
           { id: 'position', label: 'Meslek', type: 'select', required: true, options: r.positions },
           {
@@ -467,7 +467,7 @@ function candidateForm(r: FormRegistries): FormDefinition {
         id: 'iletisim',
         title: 'İletişim bilgileriniz (yayımlanmaz)',
         description:
-          'Yalnızca editörlerimiz görür; işverenlerin talepleri bu bilgilerle size iletilir.',
+          'Bu bilgileri yalnızca editör görür ve işverenlerin taleplerini size bu bilgilerle iletir.',
         fields: [
           {
             id: 'contactName',
@@ -523,8 +523,8 @@ function marketForm(r: FormRegistries): FormDefinition {
     kind: 'market-ilani',
     title: 'Market ilanı ver',
     description:
-      'Ekipman, yedek parça, hizmet, cevher ve saha ilanınızı sektörle paylaşın. Maden360 alım-satıma taraf değildir ve ödeme almaz; alıcılar sizinle doğrudan veya editör aracılığıyla iletişime geçer.',
-    short: 'Ekipman, yedek parça, hizmet, cevher veya saha ilanı verin.',
+      'Satılık veya kiralık makine, yedek parça, hizmet, cevher ve saha ilanı verin. Maden360 alım satıma taraf değildir, ödeme almaz. Alıcılar sizinle doğrudan veya editör aracılığıyla iletişime geçer.',
+    short: 'Makine, parça, hizmet, cevher veya saha satan, kiralayan ya da arayanlar için.',
     refPrefix: REF_PREFIXES.market,
     durationDays: LISTING_MAX_DAYS.market,
     submitLabel: 'İlanı gönder',
@@ -554,7 +554,7 @@ function marketForm(r: FormRegistries): FormDefinition {
             required: true,
             minLength: 5,
             maxLength: 90,
-            placeholder: 'Ör. 30 ton sınıfı paletli ekskavatör',
+            placeholder: 'Ör. 30 tonluk paletli ekskavatör',
           },
           {
             id: 'description',
@@ -597,7 +597,7 @@ function marketForm(r: FormRegistries): FormDefinition {
             type: 'text',
             required: true,
             maxLength: 60,
-            placeholder: 'Ör. Krom cevheri, feldspat, mermer blok',
+            placeholder: 'Ör. Krom cevheri, feldspat',
           },
           {
             id: 'oreGrade',
@@ -636,7 +636,8 @@ function marketForm(r: FormRegistries): FormDefinition {
       {
         id: 'saha',
         title: 'Saha ve ruhsat bilgileri',
-        description: 'Ruhsat numarası ve koordinat yayımlanmaz; editör doğrulama için isteyebilir.',
+        description:
+          'Ruhsat numarası ve koordinatlar yayımlanmaz. Editör doğrulama için isteyebilir.',
         showIf: { field: 'category', in: site },
         fields: [
           {
@@ -687,7 +688,7 @@ function marketForm(r: FormRegistries): FormDefinition {
             type: 'number',
             min: 0.01,
             max: 10_000_000_000,
-            help: 'Boş bırakırsanız “Fiyat için iletişime geçin” yazar.',
+            help: 'Boş bırakırsanız ilanda “Fiyat sorunuz” yazar.',
           },
           {
             id: 'priceCurrency',
@@ -793,8 +794,8 @@ function standForm(r: FormRegistries): FormDefinition {
     kind: 'fuar-standi',
     title: 'Sanal fuarda stand açın',
     description:
-      'Firmanızı, ürün ve hizmetlerinizi madencilik sektörüne tanıtın. Stand bilgileri editör tarafından doğrulandıktan sonra yayımlanır ve yılda bir yenilenir.',
-    short: 'Tedarikçi veya hizmet firması mısınız? Firmanızı tanıtın.',
+      'Firmanızın ürünlerini, markalarını ve iletişim bilgilerini sanal fuarda bir stand sayfasında yayımlayın. Editör bilgileri doğruladıktan sonra yayımlanır. Stand yılda bir yenilenir.',
+    short: 'Tedarikçi ve hizmet firmaları için.',
     refPrefix: REF_PREFIXES.stand,
     durationDays: LISTING_MAX_DAYS.stand,
     submitLabel: 'Stand başvurusunu gönder',
@@ -844,7 +845,7 @@ function standForm(r: FormRegistries): FormDefinition {
             maxItems: 12,
             maxLength: 400,
             provinceList: true,
-            help: 'Her satıra bir il; “Türkiye geneli” veya “Yurt dışı” da yazabilirsiniz.',
+            help: 'Her satıra bir il yazın. “Türkiye geneli” veya “Yurt dışı” da yazabilirsiniz.',
           },
           {
             id: 'founded',
@@ -931,7 +932,7 @@ function standForm(r: FormRegistries): FormDefinition {
             type: 'text',
             maxLength: 120,
             private: true,
-            help: 'Firmanın doğrulanması için; yayımlanmaz.',
+            help: 'Firmayı doğrulamak için istenir, yayımlanmaz.',
           },
         ],
       },
@@ -954,7 +955,7 @@ function contactRequestForm(r: FormRegistries): FormDefinition {
     kind: 'iletisim-talebi',
     title: 'İletişim talebi gönder',
     description:
-      'Aday profilleri ve iletişim bilgisi gizli market ilanları için talebinizi bize iletin; editörlerimiz ilan sahibine ulaştırır. İlan sahibi uygun görürse sizinle iletişime geçer.',
+      'Aday profilleri ve iletişim bilgisi gizli market ilanları için talebinizi bize iletin. Editör talebi ilan sahibine ulaştırır. İlan sahibi uygun görürse sizinle iletişime geçer.',
     short: 'Aday veya ilan sahibine editör aracılığıyla ulaşın.',
     refPrefix: REF_PREFIXES.contact,
     submitLabel: 'Talebi gönder',

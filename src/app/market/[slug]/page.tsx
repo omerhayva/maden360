@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { MapPin, MessageSquareText } from 'lucide-react';
+import { MessageSquareText } from 'lucide-react';
 import { Prose } from '@/components/content/Prose';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const listing = getMarketListing((await params).slug);
   if (!listing) return {};
   return pageMetadata({
-    title: listing.seoTitle ?? `${listing.title} — ${listing.city}`,
+    title: listing.seoTitle ?? `${listing.title}, ${listing.city}`,
     description: listing.seoDescription ?? listing.summary,
     path: listing.url,
     noindex: listing.status !== 'published' || listing.example,
@@ -140,7 +140,7 @@ export default async function MarketListingPage({ params }: Props) {
               {category && (
                 <Link
                   href={routes.marketCategory(category.slug)}
-                  className="text-sm font-semibold uppercase tracking-wide text-copper-700 underline-offset-4 ui-hover:text-copper-800 ui-hover:underline"
+                  className="inline-flex items-center text-sm font-medium text-copper-700 underline underline-offset-4 pointer-coarse:-my-3 pointer-coarse:min-h-11 ui-hover:text-copper-900"
                 >
                   {category.name}
                 </Link>
@@ -148,10 +148,10 @@ export default async function MarketListingPage({ params }: Props) {
               <ListingStatusBadge status={listing.status} />
               <ExampleBadge example={listing.example} />
             </div>
-            <h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight text-graphite-950 sm:text-4xl">
+            <h1 className="mt-3 text-3xl leading-tight font-semibold text-graphite-950 sm:text-4xl">
               {listing.title}
             </h1>
-            <p className="mt-3 text-2xl font-bold text-graphite-950">
+            <p className="mt-3 text-2xl font-semibold text-graphite-950 tabular-nums">
               {formatPrice(listing.price)}
               {listing.price?.negotiable && (
                 <span className="ml-2 align-middle text-sm font-medium text-graphite-600">
@@ -159,10 +159,7 @@ export default async function MarketListingPage({ params }: Props) {
                 </span>
               )}
             </p>
-            <p className="mt-2 inline-flex items-center gap-1 text-graphite-700">
-              <MapPin aria-hidden="true" className="h-4 w-4 text-copper-600" />
-              {locationOf(listing)}
-            </p>
+            <p className="mt-1 text-graphite-700">{locationOf(listing)}</p>
             <ListingPreviewNotice
               status={listing.status}
               example={listing.example}
@@ -189,7 +186,7 @@ export default async function MarketListingPage({ params }: Props) {
                       src={image.src}
                       alt={image.alt}
                       loading={index === 0 ? 'eager' : 'lazy'}
-                      className="aspect-[16/10] w-full rounded-xl border border-stone-200 object-cover"
+                      className="aspect-[16/10] w-full rounded-sm border border-stone-300 object-cover"
                     />
                   </li>
                 ))}
@@ -210,7 +207,7 @@ export default async function MarketListingPage({ params }: Props) {
             )}
 
             <section aria-labelledby="aciklama">
-              <h2 id="aciklama" className="text-2xl font-bold tracking-tight text-graphite-950">
+              <h2 id="aciklama" className="text-2xl font-semibold text-graphite-950">
                 Açıklama
               </h2>
               <Prose html={listing.html} className="mt-4" />
@@ -242,7 +239,7 @@ export default async function MarketListingPage({ params }: Props) {
                 {stand ? (
                   <Link
                     href={stand.url}
-                    className="text-copper-700 underline-offset-4 ui-hover:text-copper-800 ui-hover:underline"
+                    className="text-copper-700 underline-offset-4 ui-hover:text-copper-900 ui-hover:underline"
                   >
                     {listing.seller.name}
                   </Link>
@@ -252,7 +249,7 @@ export default async function MarketListingPage({ params }: Props) {
               </p>
               <p className="text-sm text-graphite-600">
                 {sellerKindLabels[listing.seller.kind]}
-                {stand ? ' · Sanal fuarda standı var' : ''}
+                {stand ? ', sanal fuarda standı var' : ''}
               </p>
               <div className="mt-4">
                 {listing.contact.mode === 'dogrudan' ? (

@@ -1,19 +1,17 @@
 import Link from 'next/link';
-import { ArrowRight, Briefcase, Store, Tent, UserSearch, type LucideIcon } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { SubmissionsClosedNote } from '@/components/listings/SectionNav';
-import { iconTile, tileClasses } from '@/components/ui/card';
+import { listPanel, listRow, panel, stretchedLink } from '@/components/ui/card';
 import { routes } from '@/i18n/routes';
 import { areSubmissionsOpen } from '@/lib/content';
 import { getFormDefinition, SUBMISSION_ORDER } from '@/lib/submissions/forms';
 import { formRegistries } from '@/lib/submissions/registries';
-import type { SubmissionType } from '@/lib/submissions/types';
 import { pageMetadata } from '@/lib/seo/metadata';
 
 const title = 'İlan ver';
 const description =
-  'İş ilanı, aday profili, market ilanı veya sanal fuar standı için başvurun. Üyelik gerekmez; başvurular editör kontrolünden sonra yayımlanır ve süresi dolunca otomatik olarak kalkar.';
+  'İş ilanı, aday profili, market ilanı ve fuar standı için başvuru formları. Üyelik gerekmez. Başvurunuzu editör okur, uygunsa yayımlar.';
 
 export const metadata = pageMetadata({
   title: 'İlan ver: iş ilanı, aday profili, market ilanı ve fuar standı',
@@ -21,31 +19,29 @@ export const metadata = pageMetadata({
   path: routes.postListing(),
 });
 
-const icons: Record<SubmissionType, LucideIcon> = {
-  'is-ilani': Briefcase,
-  'aday-profili': UserSearch,
-  'market-ilani': Store,
-  'fuar-standi': Tent,
-};
-
+/** Gerçek bir sıra olduğu için numaralı liste (form → numara → kontrol → yayın) */
 const steps = [
   {
     title: 'Formu doldurun',
     text: 'Üyelik gerekmez. Yayımlanmayacak iletişim bilgileriniz ayrı bölümde sorulur.',
   },
   {
-    title: 'Başvurunuz bize ulaşır',
-    text: 'Size bir başvuru numarası verilir; yazışmalarda bu numarayı kullanın.',
+    title: 'Başvuru numaranızı alın',
+    text: 'Başvurunuz bize ulaşınca size bir numara verilir. Yazışmalarda bu numarayı kullanın.',
   },
   {
-    title: 'Editör kontrolü',
-    text: 'Bilgiler ilan kurallarına göre kontrol edilir; eksik varsa size yazarız.',
+    title: 'Editör kontrol eder',
+    text: 'Bilgileri ilan kurallarına göre kontrol ederiz. Eksik varsa size yazarız.',
   },
   {
-    title: 'Yayın ve otomatik bitiş',
-    text: 'Onaylanan ilan yayımlanır; süresi dolunca kendiliğinden kalkar.',
+    title: 'İlan yayına girer',
+    text: 'Onaylanan ilan yayımlanır, süresi dolunca kendiliğinden kalkar.',
   },
 ];
+
+function durationLabel(days: number): string {
+  return days >= 365 ? '1 yıl yayında kalır' : `${days} gün yayında kalır`;
+}
 
 export default function PostListingPage() {
   const open = areSubmissionsOpen();
@@ -60,61 +56,38 @@ export default function PostListingPage() {
       >
         {!open && <SubmissionsClosedNote />}
       </PageHeader>
-      <Container className="space-y-12 py-10">
-        <section aria-labelledby="basvuru-turleri">
+      <Container className="grid gap-10 py-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-12 lg:py-10">
+        <section aria-labelledby="basvuru-turleri" className="min-w-0">
           <h2
             id="basvuru-turleri"
-            className="heading-accent text-2xl font-bold tracking-tight text-graphite-950"
+            className="text-2xl leading-tight font-semibold text-graphite-950"
           >
             Ne yayımlamak istiyorsunuz?
           </h2>
-          <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+          <ul className={`mt-4 ${listPanel}`}>
             {SUBMISSION_ORDER.map((type) => {
               const definition = getFormDefinition(type, registries);
-              const Icon = icons[type];
-              const body = (
-                <>
-                  <span className={`${iconTile} h-11 w-11`}>
-                    <Icon aria-hidden="true" className="h-5 w-5" />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-lg font-semibold text-graphite-950 group-hover:text-copper-800">
-                      {definition.title}
-                    </span>
-                    <span className="mt-1 block text-sm leading-6 text-graphite-600">
-                      {definition.short}
-                    </span>
-                    {definition.durationDays && (
-                      <span className="mt-2 block text-xs font-semibold text-copper-700">
-                        {definition.durationDays >= 365
-                          ? '1 yıl'
-                          : `${definition.durationDays} gün`}{' '}
-                        yayında kalır
-                      </span>
-                    )}
-                  </span>
-                  {open && (
-                    <ArrowRight
-                      aria-hidden="true"
-                      className="h-5 w-5 shrink-0 self-center text-graphite-400 group-hover:text-copper-600"
-                    />
-                  )}
-                </>
-              );
               return (
                 <li key={type}>
-                  {open ? (
-                    <Link
-                      href={routes.postListing(type)}
-                      className={tileClasses({ align: 'start', size: 'lg' })}
+                  <div className={open ? listRow : 'px-4 py-4 sm:px-5'}>
+                    <h3
+                      className={`text-lg leading-snug font-semibold ${open ? 'text-graphite-950' : 'text-graphite-700'}`}
                     >
-                      {body}
-                    </Link>
-                  ) : (
-                    <div className="flex h-full gap-4 rounded-xl border border-dashed border-stone-300 bg-white p-5 opacity-80">
-                      {body}
-                    </div>
-                  )}
+                      {open ? (
+                        <Link href={routes.postListing(type)} className={stretchedLink}>
+                          {definition.title}
+                        </Link>
+                      ) : (
+                        definition.title
+                      )}
+                    </h3>
+                    <p className="mt-1 text-sm leading-6 text-graphite-700">{definition.short}</p>
+                    {definition.durationDays && (
+                      <p className="mt-1 text-sm text-graphite-600">
+                        {durationLabel(definition.durationDays)}
+                      </p>
+                    )}
+                  </div>
                 </li>
               );
             })}
@@ -123,41 +96,47 @@ export default function PostListingPage() {
 
         <section
           aria-labelledby="nasil-calisir"
-          className="rounded-xl bg-graphite-950 p-6 text-white sm:p-8"
+          className={`${panel} min-w-0 self-start p-5 sm:p-6`}
         >
-          <h2 id="nasil-calisir" className="heading-accent text-2xl font-bold tracking-tight">
-            Nasıl çalışır?
+          <h2 id="nasil-calisir" className="text-xl leading-tight font-semibold text-graphite-950">
+            Başvurudan yayına
           </h2>
-          <ol className="mt-6 grid gap-6 md:grid-cols-4">
+          <ol className="mt-4 space-y-4">
             {steps.map((step, index) => (
-              <li key={step.title}>
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-copper-600 font-bold">
+              <li key={step.title} className="flex gap-3">
+                <span
+                  aria-hidden="true"
+                  className="w-5 shrink-0 text-lg leading-6 font-semibold text-copper-700 tabular-nums"
+                >
                   {index + 1}
                 </span>
-                <p className="mt-3 font-semibold">{step.title}</p>
-                <p className="mt-1 text-sm leading-6 text-graphite-300">{step.text}</p>
+                <div>
+                  <p className="font-semibold text-graphite-950">{step.title}</p>
+                  <p className="mt-0.5 text-sm leading-6 text-graphite-700">{step.text}</p>
+                </div>
               </li>
             ))}
           </ol>
-          <p className="mt-6 text-sm leading-6 text-graphite-300">
-            Maden360 alım-satıma ve işe alım süreçlerine taraf değildir; ödeme almaz.
+          <p className="mt-5 border-t border-stone-200 pt-4 text-sm leading-6 text-graphite-700">
+            Maden360 alım satıma ve işe alıma taraf değildir, ödeme almaz.
             {open && (
               <>
                 {' '}
-                Ayrıntılar:{' '}
+                Ayrıntılar için{' '}
                 <Link
                   href={routes.listingRules()}
-                  className="font-semibold text-copper-400 underline underline-offset-4 ui-hover:text-copper-300"
+                  className="font-medium text-copper-700 underline underline-offset-4 ui-hover:text-copper-900"
                 >
-                  İlan kuralları
+                  ilan kuralları
                 </Link>{' '}
-                ·{' '}
+                ve{' '}
                 <Link
                   href={routes.privacy()}
-                  className="font-semibold text-copper-400 underline underline-offset-4 ui-hover:text-copper-300"
+                  className="font-medium text-copper-700 underline underline-offset-4 ui-hover:text-copper-900"
                 >
                   KVKK aydınlatma metni
                 </Link>
+                .
               </>
             )}
           </p>

@@ -225,7 +225,7 @@ export const SELLER_KINDS = Object.keys(sellerKindLabels) as [SellerKind, ...Sel
 
 export const contactModeLabels = {
   dogrudan: 'İletişim bilgileri ilanda görünsün',
-  aracili: 'İletişim bilgilerim gizli kalsın; talepler Maden360 üzerinden iletilsin',
+  aracili: 'İletişim bilgilerim gizli kalsın, talepler Maden360 üzerinden iletilsin',
 } as const;
 export type ContactMode = keyof typeof contactModeLabels;
 export const CONTACT_MODES = Object.keys(contactModeLabels) as [ContactMode, ...ContactMode[]];

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { MessageSquareText, UserSearch } from 'lucide-react';
+import { MessageSquareText } from 'lucide-react';
 import { Prose } from '@/components/content/Prose';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
@@ -53,22 +53,24 @@ export default async function CandidatePage({ params }: Props) {
         <Container className="py-8 lg:py-10">
           <Breadcrumbs
             items={[
-              { name: 'Aday Profilleri', href: routes.candidates() },
+              { name: 'İş Arayanlar', href: routes.candidates() },
               { name: candidate.ref ?? candidate.headline, href: candidate.url },
             ]}
           />
           <div className="mt-5 max-w-3xl">
-            <p className="inline-flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-copper-700">
-              <UserSearch aria-hidden="true" className="h-4 w-4" />
-              {position?.name ?? candidate.position}
-            </p>
-            <h1 className="mt-2 text-3xl font-bold leading-tight tracking-tight text-graphite-950 sm:text-4xl">
+            <h1 className="text-3xl leading-tight font-semibold text-graphite-950 sm:text-4xl">
               {candidate.headline}
             </h1>
-            <div className="mt-3 flex flex-wrap items-center gap-2">
+            <p className="mt-2 text-sm text-graphite-600">
+              Meslek: {position?.name ?? candidate.position}
               {candidate.ref && (
-                <span className="font-mono text-sm text-graphite-600">{candidate.ref}</span>
+                <>
+                  {', profil no '}
+                  <span className="tabular-nums">{candidate.ref}</span>
+                </>
               )}
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-2 empty:hidden">
               <ListingStatusBadge status={candidate.status} />
               <ExampleBadge example={candidate.example} />
             </div>
@@ -114,7 +116,7 @@ export default async function CandidatePage({ params }: Props) {
             />
             {candidate.html && (
               <section aria-labelledby="hakkinda" className="mt-10">
-                <h2 id="hakkinda" className="text-2xl font-bold tracking-tight text-graphite-950">
+                <h2 id="hakkinda" className="text-2xl font-semibold text-graphite-950">
                   Aday hakkında
                 </h2>
                 <Prose html={candidate.html} className="mt-4" />

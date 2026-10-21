@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { BadgeCheck, Building2, MapPin, MessageSquareText } from 'lucide-react';
+import { MessageSquareText } from 'lucide-react';
 import { Prose } from '@/components/content/Prose';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
@@ -85,20 +85,12 @@ export default async function StandPage({ params }: Props) {
           <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-start">
             <StandAvatar name={stand.name} logo={stand.logo} className="h-20 w-20 text-2xl" />
             <div className="min-w-0 max-w-3xl">
-              <h1 className="text-3xl font-bold leading-tight tracking-tight text-graphite-950 sm:text-4xl">
+              <h1 className="text-3xl leading-tight font-semibold text-graphite-950 sm:text-4xl">
                 {stand.name}
               </h1>
-              <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-graphite-600">
-                <span className="inline-flex items-center gap-1">
-                  <MapPin aria-hidden="true" className="h-4 w-4 text-copper-600" />
-                  {stand.city}
-                </span>
-                {stand.founded && (
-                  <span className="inline-flex items-center gap-1">
-                    <Building2 aria-hidden="true" className="h-4 w-4 text-copper-600" />
-                    Kuruluş: {stand.founded}
-                  </span>
-                )}
+              <p className="mt-2 text-graphite-700">
+                {stand.city}
+                {stand.founded && <>, kuruluş {stand.founded}</>}
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <FeaturedBadge featured={stand.featured} />
@@ -111,7 +103,7 @@ export default async function StandPage({ params }: Props) {
                 {halls.map((hall) => (
                   <li key={hall.slug}>
                     <Link href={routes.hall(hall.slug)} className={chipClasses()}>
-                      Salon {hall.code} · {hall.name}
+                      Salon {hall.code}: {hall.name}
                     </Link>
                   </li>
                 ))}
@@ -131,14 +123,14 @@ export default async function StandPage({ params }: Props) {
           <div className="min-w-0">
             {stand.offerings.length > 0 && (
               <section aria-labelledby="urunler">
-                <h2 id="urunler" className="text-2xl font-bold tracking-tight text-graphite-950">
+                <h2 id="urunler" className="text-2xl font-semibold text-graphite-950">
                   Ürün ve hizmetler
                 </h2>
                 <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                   {stand.offerings.map((offering) => (
                     <li
                       key={offering.name}
-                      className="rounded-xl border border-stone-200 bg-white p-4"
+                      className="rounded-sm border border-stone-300 bg-white p-4"
                     >
                       <p className="font-semibold text-graphite-950">{offering.name}</p>
                       {offering.description && (
@@ -154,10 +146,7 @@ export default async function StandPage({ params }: Props) {
 
             {stand.html && (
               <section aria-labelledby="firma-hakkinda" className="mt-10">
-                <h2
-                  id="firma-hakkinda"
-                  className="text-2xl font-bold tracking-tight text-graphite-950"
-                >
+                <h2 id="firma-hakkinda" className="text-2xl font-semibold text-graphite-950">
                   Firma hakkında
                 </h2>
                 <Prose html={stand.html} className="mt-4" />
@@ -170,7 +159,7 @@ export default async function StandPage({ params }: Props) {
               <div className="mt-10 grid gap-6 sm:grid-cols-2">
                 {stand.brands.length > 0 && (
                   <section aria-labelledby="markalar">
-                    <h2 id="markalar" className="mb-3 text-lg font-bold text-graphite-950">
+                    <h2 id="markalar" className="mb-3 text-lg font-semibold text-graphite-950">
                       Temsil edilen markalar
                     </h2>
                     <ChipList items={stand.brands} label="Markalar" />
@@ -178,7 +167,7 @@ export default async function StandPage({ params }: Props) {
                 )}
                 {stand.certificates.length > 0 && (
                   <section aria-labelledby="belgeler">
-                    <h2 id="belgeler" className="mb-3 text-lg font-bold text-graphite-950">
+                    <h2 id="belgeler" className="mb-3 text-lg font-semibold text-graphite-950">
                       Belgeler ve sertifikalar
                     </h2>
                     <ChipList items={stand.certificates} label="Belgeler" />
@@ -186,7 +175,10 @@ export default async function StandPage({ params }: Props) {
                 )}
                 {stand.serviceArea.length > 0 && (
                   <section aria-labelledby="hizmet-bolgesi">
-                    <h2 id="hizmet-bolgesi" className="mb-3 text-lg font-bold text-graphite-950">
+                    <h2
+                      id="hizmet-bolgesi"
+                      className="mb-3 text-lg font-semibold text-graphite-950"
+                    >
                       Hizmet bölgesi
                     </h2>
                     <ChipList items={stand.serviceArea} label="Hizmet bölgesi" />
@@ -197,10 +189,7 @@ export default async function StandPage({ params }: Props) {
 
             {(listings.length > 0 || jobs.length > 0) && (
               <section aria-labelledby="firma-ilanlari" className="mt-12">
-                <h2
-                  id="firma-ilanlari"
-                  className="text-2xl font-bold tracking-tight text-graphite-950"
-                >
+                <h2 id="firma-ilanlari" className="text-2xl font-semibold text-graphite-950">
                   Firmanın ilanları
                 </h2>
                 <ul className="mt-4 grid gap-4 md:grid-cols-2">
@@ -247,13 +236,9 @@ export default async function StandPage({ params }: Props) {
             </SideCard>
             <section
               aria-labelledby="dogrulama"
-              className="rounded-xl border border-stone-200 bg-white p-5 text-sm"
+              className="rounded-sm border border-stone-300 bg-white p-5 text-sm"
             >
-              <h2
-                id="dogrulama"
-                className="flex items-center gap-2 text-base font-bold text-graphite-950"
-              >
-                <BadgeCheck aria-hidden="true" className="h-4 w-4 text-copper-600" />
+              <h2 id="dogrulama" className="text-lg font-semibold text-graphite-950">
                 Doğrulama
               </h2>
               {stand.verification ? (

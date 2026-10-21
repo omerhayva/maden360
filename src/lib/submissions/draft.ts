@@ -97,7 +97,7 @@ function provinces(values: FormValues, id: string): string[] {
 
 function header(ref: string, kind: ListingKind): string {
   return [
-    `# Başvuru ${ref} — editör kontrolünden sonra yayımlamak için:`,
+    `# Başvuru ${ref}: editör kontrolünden sonra yayımlamak için`,
     `#   status: published, postedAt, expiresAt (en fazla ${LISTING_MAX_DAYS[kind]} gün),`,
     '#   moderatedBy ve moderatedAt alanlarını doldurun. Kurallar: docs/ilanlar-ve-fuar.md',
   ].join('\n');

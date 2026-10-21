@@ -1,16 +1,16 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { Mail, Plus } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { FairPlan } from '@/components/listings/FairPlan';
 import { ListingBrowser, StaticListingGrid } from '@/components/listings/ListingBrowser';
 import { HeaderActions } from '@/components/listings/SectionNav';
 import { ButtonLink } from '@/components/ui/Button';
-import { CategoryIcon } from '@/components/ui/CategoryIcon';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { chipClasses } from '@/components/ui/styles';
+import { SectionHeading } from '@/components/ui/SectionHeading';
+import { TextLink } from '@/components/ui/TextLink';
 import { routes } from '@/i18n/routes';
 import { areSubmissionsOpen, getHall, getHalls, getStandsByHall } from '@/lib/content';
 import { isPreviewMode } from '@/lib/content/visibility';
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const hall = getHall((await params).slug);
   if (!hall) return {};
   return pageMetadata({
-    title: `${hall.name} firmaları — Sanal Fuar Salon ${hall.code}`,
+    title: `Salon ${hall.code}: ${hall.name} firmaları`,
     description: hall.description,
     path: routes.hall(hall.slug),
   });
@@ -40,11 +40,10 @@ export default async function HallPage({ params }: Props) {
   if (!hall) notFound();
   const items = getStandsByHall(hall.slug).map(standItem);
   const open = areSubmissionsOpen();
-  const others = getHalls().filter((other) => other.slug !== hall.slug);
+  const halls = getHalls();
   const empty = (
     <EmptyState
-      title="Bu salonda henüz stand yok"
-      icon={<CategoryIcon icon={hall.icon} />}
+      title="Bu salonda henüz stand açan firma yok"
       actions={
         open ? (
           <ButtonLink href={routes.postListing('fuar-standi')} variant="secondary" icon={Plus}>
@@ -59,7 +58,7 @@ export default async function HallPage({ params }: Props) {
     >
       {open
         ? 'Bu alanda faaliyet gösteriyorsanız stand açarak firmanızı tanıtın.'
-        : 'Stand başvuruları yakında açılacak. Aşağıdaki diğer salonlara göz atabilirsiniz.'}
+        : 'Stand başvuruları yakında açılacak. Aşağıdaki plandan diğer salonlara geçebilirsiniz.'}
     </EmptyState>
   );
 
@@ -67,8 +66,7 @@ export default async function HallPage({ params }: Props) {
     <>
       <PageHeader
         photo="fuar"
-        eyebrow={`Sanal Fuar · Salon ${hall.code}`}
-        title={hall.name}
+        title={`Salon ${hall.code}: ${hall.name}`}
         description={hall.description}
         breadcrumbs={[
           { name: 'Sanal Fuar', href: routes.fair() },
@@ -81,13 +79,13 @@ export default async function HallPage({ params }: Props) {
           />
         )}
       </PageHeader>
-      <Container className="space-y-12 py-10">
+      <Container className="space-y-10 py-8 lg:py-10">
         <section aria-labelledby="salon-standlari">
           <h2
             id="salon-standlari"
-            className="heading-accent mb-5 text-2xl font-bold tracking-tight text-graphite-950"
+            className="mb-4 text-2xl leading-tight font-semibold text-graphite-950"
           >
-            Salondaki standlar
+            Bu salondaki firmalar
           </h2>
           <Suspense fallback={<StaticListingGrid items={items} empty={empty} />}>
             <ListingBrowser
@@ -95,27 +93,32 @@ export default async function HallPage({ params }: Props) {
               filters={[facetFilter(items, { id: 'il', label: 'İl', allLabel: 'Tüm iller' })]}
               searchLabel="Bu salonda ara"
               searchPlaceholder="Firma, ürün veya marka"
-              noun="stand"
+              noun="firma"
               showExpired={isPreviewMode()}
               empty={empty}
             />
           </Suspense>
         </section>
-        <nav aria-labelledby="diger-salonlar">
-          <h2 id="diger-salonlar" className="text-lg font-bold text-graphite-950">
-            Diğer salonlar
-          </h2>
-          <ul className="mt-3 flex flex-wrap gap-2">
-            {others.map((other) => (
-              <li key={other.slug}>
-                <Link href={routes.hall(other.slug)} className={chipClasses()}>
-                  <CategoryIcon icon={other.icon} className="text-copper-600" />
-                  {other.code} · {other.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <section aria-labelledby="salon-plani">
+          <SectionHeading id="salon-plani" title="Salon planı" />
+          <div className="mt-4">
+            <FairPlan
+              halls={halls}
+              current={hall.slug}
+              counts={Object.fromEntries(
+                halls.map((other) => [other.slug, getStandsByHall(other.slug).length]),
+              )}
+              extra={
+                <>
+                  <span className="font-semibold text-graphite-950">Fuaye</span>
+                  <TextLink href={routes.fair()} className="-my-2">
+                    Tüm firmalar
+                  </TextLink>
+                </>
+              }
+            />
+          </div>
+        </section>
       </Container>
     </>
   );

@@ -8,10 +8,10 @@ yazar. Ayrıntılar: [docs/arayuz-rehberi.md → Fotoğraflı başlıklar](../..
 | Dosya | Nerede görünür | İçerik |
 |---|---|---|
 | `ana-sayfa.jpg` | Ana sayfa girişi, sosyal medya paylaşım görseli | Gün batımında açık ocak, rampada maden kamyonu |
-| `fuar.jpg` | Sanal Fuar, salon sayfaları, ana sayfadaki Sanal Fuar kartı | Fuar salonunda sondaj makinesi, mobil kırıcı, ekskavatör |
-| `is-ilanlari.jpg` | İş İlanları, ana sayfadaki İş İlanları kartı | Açık ocağı izleyen, baretli ve yelekli iki mühendis (arkadan) |
-| `is-arayanlar.jpg` | Aday Profilleri | Lamba odasında baretler ve kask lambaları |
-| `market.jpg` | Market, kategori sayfaları, ana sayfadaki Market kartı | Kırma-eleme tesisi, stok yığınları, yükleyici |
+| `fuar.jpg` | Sanal Fuar, salon sayfaları | Fuar salonunda sondaj makinesi, mobil kırıcı, ekskavatör |
+| `is-ilanlari.jpg` | İş İlanları | Açık ocağı izleyen, baretli ve yelekli iki mühendis (arkadan) |
+| `is-arayanlar.jpg` | İş Arayanlar | Lamba odasında baretler ve kask lambaları |
+| `market.jpg` | Market, kategori sayfaları | Kırma-eleme tesisi, stok yığınları, yükleyici |
 | `ilan-ver.jpg` | İlan ver ve başvuru formu sayfaları | Saha ofisinde baret, tablet, maden planları, karot sandığı |
 
 Mevcut altı fotoğraf **yapay zekâ ile üretilmiştir** (16 Ekim 2026); gerçek bir yeri, firmayı veya

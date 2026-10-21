@@ -4,6 +4,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ChevronDown, Search, SlidersHorizontal, X } from 'lucide-react';
 import { useEffect, useId, useMemo, useState, type ReactNode } from 'react';
 import { Button } from '@/components/ui/Button';
+import { listPanel, panel } from '@/components/ui/card';
 import { Select } from '@/components/ui/Select';
 import { inputClasses } from '@/components/ui/styles';
 import { isExpired, todayInTurkey } from '@/lib/listings/dates';
@@ -67,7 +68,7 @@ export function ListingBrowser({
   searchPlaceholder,
   noun,
   showExpired,
-  gridClassName = 'grid gap-4 md:grid-cols-2 lg:grid-cols-3',
+  gridClassName = listPanel,
   empty,
   cardHeading = 'h3',
 }: ListingBrowserProps) {
@@ -142,7 +143,7 @@ export function ListingBrowser({
           event.preventDefault();
           updateUrl({ q: input });
         }}
-        className="rounded-xl border border-stone-200 bg-white p-4"
+        className={`${panel} p-4`}
       >
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2">
@@ -181,7 +182,7 @@ export function ListingBrowser({
                 <span className="flex-1 text-left">
                   Süzgeçler
                   {activeFilterCount > 0 && (
-                    <span className="ml-1.5 rounded-full bg-graphite-900 px-2 py-0.5 text-xs text-white">
+                    <span className="ml-1.5 rounded-xs bg-graphite-900 px-1.5 py-0.5 text-xs text-white tabular-nums">
                       {activeFilterCount}
                       <span className="sr-only"> etkin</span>
                     </span>
@@ -241,7 +242,9 @@ export function ListingBrowser({
           ))}
         </ul>
       ) : (
-        <div className="mt-3 flex flex-col items-start gap-3 rounded-xl border border-dashed border-graphite-300 bg-white p-6 text-graphite-700 sm:flex-row sm:items-center sm:justify-between">
+        <div
+          className={`${panel} mt-3 flex flex-col items-start gap-3 p-5 text-graphite-700 sm:flex-row sm:items-center sm:justify-between`}
+        >
           <p>Bu süzgeçlerle eşleşen {noun} yok. Süzgeçleri değiştirin veya temizleyin.</p>
           <Button variant="secondary" size="sm" icon={X} onClick={resetFilters}>
             Süzgeçleri temizle
@@ -255,7 +258,7 @@ export function ListingBrowser({
 /** JavaScript yüklenmeden (ve arama motorlarında) görünen tam liste */
 export function StaticListingGrid({
   items,
-  gridClassName = 'grid gap-4 md:grid-cols-2 lg:grid-cols-3',
+  gridClassName = listPanel,
   empty,
   cardHeading = 'h3',
 }: {

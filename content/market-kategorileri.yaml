@@ -12,7 +12,7 @@
 
 - slug: is-makineleri
   name: İş makineleri
-  description: Ekskavatör, loder, dozer, greyder, kaya kamyonu ve damperli araçlar; satılık, kiralık ve aranan.
+  description: Ekskavatör, loder, dozer, greyder, kaya kamyonu ve damperli araç. Satılık, kiralık ve aranan ilanlar.
   icon: truck
   order: 1
   kind: ekipman
@@ -64,7 +64,7 @@
 
 - slug: hizmetler
   name: Hizmetler
-  description: Sondaj, patlatma, dekapaj, nakliye, analiz, harita–ölçüm, bakım-onarım ve danışmanlık hizmetleri.
+  description: Sondaj, patlatma, dekapaj, nakliye, analiz, harita-ölçüm, bakım-onarım ve danışmanlık hizmetleri.
   icon: wrench
   order: 8
   kind: hizmet
@@ -79,7 +79,7 @@
 
 - slug: cevher-urun
   name: Cevher ve ürün
-  description: Cevher, konsantre, endüstriyel hammadde, doğal taş blok ve ürün alım-satımı.
+  description: Cevher, konsantre, endüstriyel hammadde, doğal taş blok ve ürün alım satımı.
   icon: gem
   order: 9
   kind: cevher
@@ -89,7 +89,7 @@
 
 - slug: saha-ruhsat
   name: Saha, ruhsat ve rödövans
-  description: Ruhsatlı saha devri, rödövans ve ortaklık ilanları; maden grubu, ruhsat türü ve rezerv dayanağıyla.
+  description: Ruhsatlı saha devri, rödövans ve ortaklık ilanları. İlanlarda maden grubu, ruhsat türü ve rezerv dayanağı belirtilir.
   icon: map
   order: 10
   kind: saha

@@ -212,7 +212,7 @@ export function CheckboxGroupField({ field, value, error, onChange }: FieldProps
             <label
               key={option.value}
               htmlFor={optionId}
-              className="flex min-h-12 cursor-pointer items-center gap-3 rounded-md border border-graphite-300 bg-white px-3 py-2 text-sm [-webkit-tap-highlight-color:transparent] transition-colors duration-100 ui-hover:border-copper-400 ui-active:bg-stone-50 has-checked:border-copper-600 has-checked:bg-copper-50 has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-copper-500"
+              className="flex min-h-12 cursor-pointer items-center gap-3 rounded-sm border border-graphite-500 bg-white px-3 py-2 text-sm [-webkit-tap-highlight-color:transparent] transition-colors duration-100 ui-hover:border-graphite-700 ui-active:bg-stone-50 has-checked:border-copper-700 has-checked:bg-copper-50 has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-copper-700"
             >
               <input
                 id={optionId}
@@ -226,7 +226,7 @@ export function CheckboxGroupField({ field, value, error, onChange }: FieldProps
                       : [...selected, option.value],
                   )
                 }
-                className="h-5 w-5 shrink-0 accent-copper-600"
+                className="h-5 w-5 shrink-0 accent-copper-700"
               />
               <span className="font-medium text-graphite-900">{option.label}</span>
             </label>
@@ -277,7 +277,7 @@ export function ConsentCheckbox({
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${domId}-hata` : undefined}
           onChange={(event) => onChange(id, event.target.checked)}
-          className="mt-0.5 h-5 w-5 shrink-0 accent-copper-600"
+          className="mt-0.5 h-5 w-5 shrink-0 accent-copper-700"
         />
         <label htmlFor={domId} className="text-sm leading-6 text-graphite-800">
           {parts.map((part, index) =>

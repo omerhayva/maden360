@@ -5,7 +5,7 @@ import { inputClasses } from '@/components/ui/styles';
 import { routes } from '@/i18n/routes';
 
 interface SearchFormProps {
-  /** "header": koyu üst menü için kompakt; "hero": ana sayfa için büyük; "light": açık zemin */
+  /** "header": üst menü için kompakt; "hero": ana sayfa için büyük; "light": sayfa içi */
   variant?: 'header' | 'hero' | 'light';
   defaultValue?: string;
   id?: string;
@@ -37,9 +37,7 @@ export function SearchForm({
         </label>
         <Search
           aria-hidden="true"
-          className={`pointer-events-none absolute left-3 ${isHero ? 'h-5 w-5' : 'h-4 w-4'} ${
-            isHeader ? 'text-graphite-400' : 'text-graphite-500'
-          }`}
+          className={`pointer-events-none absolute left-3 text-graphite-500 ${isHero ? 'h-5 w-5' : 'h-4 w-4'}`}
         />
         <input
           id={id}
@@ -49,10 +47,10 @@ export function SearchForm({
           autoFocus={autoFocus}
           autoComplete="off"
           enterKeyHint="search"
-          placeholder={isHero ? 'Örn. ekskavatör, kırıcı' : 'Firma, iş ilanı, ürün ara'}
+          placeholder={isHero ? 'Meslek, makine, firma' : 'Firma, iş ilanı, ürün ara'}
           className={
             isHeader
-              ? inputClasses({ tone: 'dark', size: 'sm', className: 'pl-9 pr-3' })
+              ? inputClasses({ size: 'sm', className: 'pl-9 pr-3' })
               : inputClasses({
                   size: 'xl',
                   className: isHero ? 'pl-11 pr-24 sm:text-lg' : 'pl-9 pr-24',

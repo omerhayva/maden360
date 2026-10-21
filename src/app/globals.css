@@ -3,21 +3,26 @@
 
 /*
  * Tasarım belirteçleri (design tokens)
- * Renk düzeni: derin grafit (yapı, koyu bölümler), canlı bakır (vurgu), sıcak kum/taş (zemin),
- * beyaz (kartlar). Ölçekler OKLCH'de tasarlandı: grafit hafif çelik mavisi, taş hafif kum tonlu.
- * Kontrast notları (WCAG 2.2 AA; normal metin ≥ 4,5:1, odak çerçevesi ≥ 3:1):
- *   copper-600 (#b64e00) üzerinde beyaz metin ≈ 5,2:1   → birincil düğme
- *   copper-700 (#933d08) beyaz üzerinde ≈ 7,2:1, stone-100 üzerinde ≈ 6,5:1 → bağlantılar
- *   copper-400 (#f08c46) graphite-950 üzerinde ≈ 7,7:1  → koyu zeminde vurgu
- *   graphite-500 (#656e7b) stone-100 üzerinde ≈ 4,6:1   → küçük bilgi metni (daha açığı kullanılmaz)
- *   copper-500 (#db6b19) odak çerçevesi: beyaz ≈ 3,4:1, stone-100 ≈ 3,1:1, graphite-950 ≈ 5,5:1
+ * Renk düzeni: beyaz ve soğuk taş grisi zemin, grafit metin, koyu bakır vurgu. Bakır az kullanılır:
+ * bağlantılar, birincil düğme, etkin menü çizgisi, odak çerçevesi ve fuar planındaki salon harfleri.
+ * Koyu zemin yalnızca fotoğraflı başlıklarda vardır (fotoğraf + koyu katman).
+ * Ölçekler OKLCH'de tasarlandı: grafit hafif çelik mavisi, taş aynı tonun düşük kromalı (gri) hali.
+ * Kontrast notları (WCAG 2.2 AA; normal metin ≥ 4,5:1, arayüz sınırları ve odak çerçevesi ≥ 3:1):
+ *   copper-700 (#933d08) üzerinde beyaz metin ≈ 7,2:1   → birincil düğme
+ *   copper-700 beyaz üzerinde ≈ 7,2:1, stone-100 üzerinde ≈ 6,6:1 → bağlantılar, odak çerçevesi
+ *   graphite-500 (#656e7b) stone-100 üzerinde ≈ 4,7:1   → küçük bilgi metni (daha açığı kullanılmaz)
+ *   graphite-500 form alanı kenarlığı beyaz üzerinde ≈ 5,2:1 (WCAG 1.4.11)
+ *   copper-300 (#f9b07a) graphite-950 üzerinde ≈ 10,4:1 → fotoğraflı başlıklarda odak çerçevesi
  * Tüm çiftler src/components/ui/palette.test.ts ile denetlenir. Fotoğraflı başlıklardaki koyu
  * katman ve metin renkleri için bkz. src/config/photos.ts ve photos.test.ts.
+ *
+ * Yazı tipi: IBM Plex Sans (değişken; ağırlık 100–700, genişlik %75–100). Gövde metni normal
+ * genişlikte, başlıklar yarı dar (%87,5) kesimle dizilir; tek aile, iki belirgin rol.
  */
 @theme {
   --font-sans:
-    'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Arial, sans-serif;
+    'IBM Plex Sans Variable', 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 
   --color-graphite-50: #f5f7f9;
@@ -44,18 +49,18 @@
   --color-copper-900: #5d270d;
   --color-copper-950: #3c1808;
 
-  /* Tailwind'in "stone" ölçeği yerine sıcak kum tonları (sayfa zemini, kenarlıklar) */
-  --color-stone-50: #fcfaf7;
-  --color-stone-100: #f6f2ec;
-  --color-stone-200: #e8e3da;
-  --color-stone-300: #d8d0c6;
-  --color-stone-400: #aca397;
-  --color-stone-500: #887e74;
-  --color-stone-600: #6a6259;
-  --color-stone-700: #534b44;
-  --color-stone-800: #3a342f;
-  --color-stone-900: #25211d;
-  --color-stone-950: #14110e;
+  /* Tailwind'in "stone" ölçeği yerine soğuk taş grisi (sayfa zemini, kenarlıklar, ayırıcılar) */
+  --color-stone-50: #f9fafc;
+  --color-stone-100: #f3f5f7;
+  --color-stone-200: #e5e8ec;
+  --color-stone-300: #d5d8dd;
+  --color-stone-400: #a6abb2;
+  --color-stone-500: #7b8187;
+  --color-stone-600: #5f646a;
+  --color-stone-700: #494d53;
+  --color-stone-800: #2f3338;
+  --color-stone-900: #1b1e22;
+  --color-stone-950: #0c0f12;
 }
 
 /*
@@ -87,19 +92,31 @@
 
   body {
     @apply bg-stone-100 text-graphite-900 antialiased;
-    font-feature-settings:
-      'cv11',
-      'tnum' 0;
+  }
+
+  /* Başlıklar yarı dar kesim; sıfır özgüllük (:where) sayesinde yardımcı sınıflar ezebilir */
+  :where(h1, h2, h3, h4) {
+    font-stretch: 87.5%;
+    text-wrap: balance;
+  }
+
+  :where(p, li, dd) {
+    text-wrap: pretty;
   }
 
   :focus-visible {
-    outline: 3px solid var(--color-copper-500);
+    outline: 3px solid var(--color-copper-700);
     outline-offset: 2px;
     border-radius: 2px;
   }
 
+  /* Fotoğraflı (koyu) başlıklarda odak çerçevesi açık bakır */
+  .photo-header :focus-visible {
+    outline-color: var(--color-copper-300);
+  }
+
   ::selection {
-    background: var(--color-copper-200);
+    background: var(--color-copper-100);
     color: var(--color-graphite-950);
   }
 
@@ -123,10 +140,10 @@
     --tw-prose-links: var(--color-copper-700);
     --tw-prose-bold: var(--color-graphite-950);
     --tw-prose-counters: var(--color-graphite-500);
-    --tw-prose-bullets: var(--color-copper-500);
+    --tw-prose-bullets: var(--color-graphite-400);
     --tw-prose-hr: var(--color-graphite-200);
     --tw-prose-quotes: var(--color-graphite-800);
-    --tw-prose-quote-borders: var(--color-copper-400);
+    --tw-prose-quote-borders: var(--color-copper-600);
     --tw-prose-captions: var(--color-graphite-500);
     --tw-prose-code: var(--color-graphite-900);
     --tw-prose-th-borders: var(--color-graphite-300);
@@ -161,8 +178,8 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     margin: 1.5em 0;
-    border: 1px solid var(--color-graphite-200);
-    border-radius: 0.5rem;
+    border: 1px solid var(--color-stone-300);
+    border-radius: 0.25rem;
     background: white;
   }
 
@@ -194,7 +211,7 @@
       scroll-padding-bottom: 6rem;
     }
 
-    /* Altbilginin koyu zemini çubuğun altına uzanır; son satırlar çubuğun arkasında kalmaz */
+    /* Altbilgi çubuğun altına uzanır; son satırlar çubuğun arkasında kalmaz */
     body:has(.mobile-action-bar) > footer {
       padding-bottom: 5rem;
     }
@@ -202,23 +219,6 @@
     [data-ilan-suresi-doldu] body > footer {
       padding-bottom: 0;
     }
-  }
-
-  /* Sayfa düzeyindeki bölüm başlıklarının üstündeki kısa bakır çizgi (dekoratif) */
-  .heading-accent::before {
-    content: '';
-    display: block;
-    width: 2.5rem;
-    height: 0.25rem;
-    margin-bottom: 0.75rem;
-    border-radius: 9999px;
-    background-image: linear-gradient(to right, var(--color-copper-500), var(--color-copper-700));
-  }
-
-  /* Eş yükselti (kontur) çizgisi deseni: koyu bölümler ve altbilgi */
-  .contour-bg {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300' fill='none' stroke='%231e2733' stroke-width='1.2'%3E%3Cpath d='M-20 220 C 80 180 140 250 240 210 S 420 140 520 190 S 640 230 660 200'/%3E%3Cpath d='M-20 190 C 90 150 150 215 250 180 S 410 110 520 160 S 640 200 660 170'/%3E%3Cpath d='M-20 160 C 100 120 160 180 260 150 S 400 80 520 130 S 640 170 660 140'/%3E%3Cpath d='M-20 130 C 110 95 170 150 270 120 S 395 55 520 100 S 640 140 660 110'/%3E%3Cpath d='M-20 100 C 120 70 180 120 280 92 S 390 32 520 72 S 640 110 660 82'/%3E%3Cpath d='M-20 70 C 130 45 190 92 290 65 S 385 12 520 46 S 640 82 660 56'/%3E%3Cpath d='M-20 260 C 70 215 130 285 230 245 S 430 175 520 225 S 640 265 660 235'/%3E%3C/svg%3E");
-    background-size: 600px 300px;
   }
 }
 

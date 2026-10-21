@@ -97,6 +97,7 @@ export function jobCard(job: JobPosting): JobCardData {
     employer: job.employer.name,
     location: locationOf(job),
     chips,
+    benefits: job.benefits,
     salary: job.salary ? formatSalary(job.salary) : undefined,
     postedAt: job.postedAt,
     expiresAt: job.expiresAt,

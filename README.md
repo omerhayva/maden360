@@ -25,13 +25,16 @@ editör onayıyla yayımlanır.
 - **SEO ve erişilebilirlik:** özgün başlık/açıklama/kanonik URL, yapılandırılmış veri (JobPosting,
   Organization), site haritası; klavye ve ekran okuyucu desteği, WCAG 2.2 AA kontrast.
 - **Ortak arayüz sistemi:** GOV.UK, Primer, shadcn/ui, USWDS ve Radix tasarım sistemleri incelenerek
-  hazırlanan düğme, form alanı, çip ve kutucuk bileşenleri; dokunmatik ekranda ≥ 44 px dokunma alanı,
-  basılı/odak/yükleniyor durumları, mobilde sabit başvuru çubuğu
+  hazırlanan düğme, form alanı, çip, panel ve liste bileşenleri; dokunmatik ekranda ≥ 44 px dokunma
+  alanı, basılı/odak/yükleniyor durumları, mobilde sabit başvuru çubuğu
   (bkz. [docs/arayuz-rehberi.md](docs/arayuz-rehberi.md)).
-- **Tema ve fotoğraflar:** grafit, canlı bakır ve sıcak kum tonlarından oluşan tek tema; ana sayfa ve
-  bölüm başlıklarında sitenin renklerine göre tonlanmış maden fotoğrafları. Fotoğraf üzerindeki
-  yazıların okunurluğu testlerle güvence altındadır; fotoğraflar kendi çekimlerinizle tek komutla
-  değiştirilebilir (bkz. [assets/gorseller/README.md](assets/gorseller/README.md)).
+- **İlan sitesi tasarımı (22 Ekim 2026):** içerik önde; beyaz ve soğuk gri zemin, koyu bakır vurgu,
+  IBM Plex Sans; ilanlar satır satır; Sanal Fuar için harfli salon planı; hazır şablon izleri yok ve
+  testle denetleniyor. 10 uzman bakış açısıyla yapılan inceleme, ölçümler ve sizden beklenen bilgiler:
+  [docs/uzman-incelemesi.md](docs/uzman-incelemesi.md).
+- **Fotoğraflar:** ana sayfa ve bölüm başlıklarında sitenin renklerine göre tonlanmış maden
+  fotoğrafları. Fotoğraf üzerindeki yazıların okunurluğu testlerle güvence altındadır; fotoğraflar
+  kendi çekimlerinizle tek komutla değiştirilebilir (bkz. [assets/gorseller/README.md](assets/gorseller/README.md)).
 
 > **Önemli:** Fuar, iş ve market bölümlerindeki 18 dosya yalnızca önizlemede görünen **örnek
 > içeriktir** (`example: true`). Üretim derlemesinde (`npm run build`) örnek ilanlar yer almaz. İlan

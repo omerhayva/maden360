@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { loadContentStore, type ContentStore } from './repository';
 import { validateStore } from './validate';
 
-const TODAY = '2026-10-16';
+/**
+ * Testlerin "bugün"ü sabittir (sonuç tarihe göre değişmesin). İçerikteki en yeni updatedAt
+ * tarihinden önce olamaz: bir sayfayı güncellediğinizde bu tarihi de ileri alın.
+ */
+const TODAY = '2026-10-22';
 const { store, errors: loadErrors } = loadContentStore();
 
 const clone = (value: ContentStore): ContentStore => structuredClone(value);

@@ -15,10 +15,15 @@ function resolveSiteUrl(): string {
 
 export const siteConfig = {
   name: 'Maden360',
-  shortDescription: 'Madencilik sektör ağı',
-  tagline: 'Madenciliğin fuarı, iş ilanları ve marketi',
+  shortDescription: 'Madencilik ilanları ve firma rehberi',
+  /** Ana sayfanın <title> etiketi ve paylaşım görseli */
+  tagline: 'Madencilik iş ilanları, makine ilanları ve firma rehberi',
+  /** Varsayılan meta açıklaması (arama motoru sonuçlarında görünür) */
   description:
-    'Madencilik sektörü için sanal fuar, iş ilanları ve market: tedarikçi ve hizmet firmalarının standları, işçi ve iş arayanlar, ekipman, yedek parça, hizmet, cevher ve saha ilanları. İlanlar editör onayıyla yayımlanır.',
+    'Madencilik iş ilanları, iş arayan mühendis ve operatör profilleri, satılık ve kiralık iş makineleri, yedek parça, cevher ve saha ilanları, tedarikçi firma rehberi. İlanlar editör onayıyla yayımlanır.',
+  /** Altbilgideki kısa tanım */
+  footerNote:
+    'Madencilik sektörü için ücretsiz ilan sitesi. Her ilanı yayından önce bir editör okur.',
   url: resolveSiteUrl(),
   /** SITE_URL ayarlanmadan üretim derlemesi alınırsa uyarı vermek için kullanılır. */
   isUrlConfigured: Boolean(process.env.SITE_URL?.trim()),

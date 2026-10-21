@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { isInternalHref } from '@/lib/href';
-import { cardBase, cardFrame, iconTile, tileClasses } from './card';
+import { cardBase, cardFrame, listPanel, listRow, panel, stretchedLink } from './card';
 import {
   BUTTON_SIZES,
   BUTTON_VARIANTS,
@@ -176,7 +176,9 @@ describe('düğme sınıfları', () => {
   it.each(BUTTON_VARIANTS)('%s: yüksek kontrast modu için kenarlık var', (variant) => {
     const list = tokens(buttonClasses({ variant }));
     expect(list).toContain('border');
-    expect(list.some((cls) => /^border-(transparent|graphite-\d+)$/.test(cls))).toBe(true);
+    expect(list.some((cls) => /^border-(transparent|graphite-\d+|white\/\d+)$/.test(cls))).toBe(
+      true,
+    );
   });
 
   it('devre dışı ve yükleniyor durumları görsel olarak ayrışır', () => {
@@ -258,12 +260,17 @@ describe('form alanları', () => {
     const list = tokens(inputClasses());
     expect(list).toEqual(
       expect.arrayContaining([
-        'focus:border-copper-600',
+        'focus:border-copper-700',
         'focus:ring-3',
         'focus:outline-transparent',
       ]),
     );
-    expect(tokens(inputClasses({ invalid: true }))).toContain('border-red-600');
+    expect(tokens(inputClasses({ invalid: true }))).toContain('border-red-700');
+  });
+
+  it('alan kenarlığı beyaz zeminde ayırt edilir (WCAG 1.4.11: graphite-500 ≈ 5,2:1)', () => {
+    expect(tokens(inputClasses())).toContain('border-graphite-500');
+    expect(tokens(inputClasses())).not.toContain('border-graphite-300');
   });
 });
 
@@ -280,12 +287,10 @@ describe('metin bağlantıları ve kartlar', () => {
   it.each([
     ['cardFrame', cardFrame],
     ['cardBase', cardBase],
-    ['tile white/center', tileClasses()],
-    ['tile stone/center', tileClasses({ surface: 'stone' })],
-    ['tile white/start', tileClasses({ align: 'start' })],
-    ['tile stone/start', tileClasses({ surface: 'stone', align: 'start' })],
-    ['tile white/start/lg', tileClasses({ align: 'start', size: 'lg' })],
-    ['iconTile', iconTile],
+    ['panel', panel],
+    ['listPanel', listPanel],
+    ['listRow', listRow],
+    ['stretchedLink', stretchedLink],
     ['fotoğraf katmanı', photoScrimClasses],
     ['fotoğraf', photoFillClasses],
   ])('%s: çakışan sınıf yok', (_name, classes) => {
@@ -314,8 +319,62 @@ describe('bileşenlerde elle yazılmış düğme stili yok', () => {
 
   it('birincil düğme renkleri yalnızca styles.ts içinde tanımlanır', () => {
     const offenders = outsideUi.filter((path) =>
-      /hover:bg-copper-700|ui-hover:bg-copper-700/.test(readFileSync(path, 'utf8')),
+      /ui-hover:bg-copper-800|bg-copper-700 text-white/.test(readFileSync(path, 'utf8')),
     );
     expect(offenders.map((path) => relative(root, path))).toEqual([]);
+  });
+});
+
+/**
+ * Hazır şablon izleri geri gelmesin (bkz. docs/uzman-incelemesi.md ve docs/arayuz-rehberi.md):
+ * büyük harfli üst etiketler, degrade ve parlama süsleri, hap biçimli etiketler, ok eklenmiş
+ * bağlantılar ve orta noktayla birleştirilmiş bilgi satırları kullanılmaz. Fotoğraf üzerindeki
+ * koyu katman (styles.ts → photoScrimClasses) işlevsel olduğu için degrade kuralının dışındadır.
+ */
+describe('şablon izleri', () => {
+  const root = join(process.cwd(), 'src');
+  const files: string[] = [];
+  const walk = (dir: string) => {
+    for (const name of readdirSync(dir)) {
+      const path = join(dir, name);
+      if (statSync(path).isDirectory()) walk(path);
+      else if (/\.(tsx|ts)$/.test(path) && !path.endsWith('.test.ts')) files.push(path);
+    }
+  };
+  walk(root);
+  const sources = files.map((path) => ({
+    path: relative(root, path),
+    text: readFileSync(path, 'utf8'),
+  }));
+
+  const rules: [string, RegExp, string[]][] = [
+    ['büyük harfli etiket', /\buppercase\b/, []],
+    ['açılmış harf aralığı', /\btracking-(wide|wider|widest|tight|tighter)\b/, []],
+    ['degrade süs', /\bbg-(linear|radial|conic)-/, [join('components', 'ui', 'styles.ts')]],
+    ['bulanık parlama', /\bblur-(sm|md|lg|xl|2xl|3xl)\b/, []],
+    ['hap biçimi', /\brounded-full\b/, []],
+    ['iri köşe', /\brounded-(xl|2xl|3xl)\b/, []],
+    ['ok simgeli bağlantı', /\b(ArrowRight|ArrowDown|ChevronsRight)\b/, []],
+    ['orta noktalı bilgi satırı', /·/, []],
+  ];
+
+  it.each(rules)('%s kullanılmıyor', (_name, pattern, allowed) => {
+    const offenders = sources
+      .filter(({ path, text }) => !allowed.includes(path) && pattern.test(text))
+      .map(({ path }) => path);
+    expect(offenders).toEqual([]);
+  });
+
+  it('kullanıcıya görünen metinlerde uzun tire yok (NaN yer tutucusu hariç)', () => {
+    const offenders = sources.flatMap(({ path, text }) =>
+      text
+        .split('\n')
+        .map((line, index) => ({ line: line.trim(), index }))
+        .filter(({ line }) => line.includes('—'))
+        .filter(({ line }) => !/^(\/\/|\*|\/\*|\{\/\*)/.test(line))
+        .filter(({ line }) => !(path === join('lib', 'format.ts') && line.includes("return '—'")))
+        .map(({ index }) => `${path}:${index + 1}`),
+    );
+    expect(offenders).toEqual([]);
   });
 });

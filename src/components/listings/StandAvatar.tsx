@@ -1,6 +1,6 @@
 import { initials } from '@/lib/listings/format';
 
-/** Firma logosu; logo yoksa baş harfler. */
+/** Firma logosu; logo yoksa baş harfler (sade, gri kutuda). */
 export function StandAvatar({
   name,
   logo,
@@ -16,14 +16,14 @@ export function StandAvatar({
       <img
         src={logo}
         alt={`${name} logosu`}
-        className={`shrink-0 rounded-lg border border-stone-200 bg-white object-contain p-1 ${className}`}
+        className={`shrink-0 rounded-xs border border-stone-300 bg-white object-contain p-1 ${className}`}
       />
     );
   }
   return (
     <span
       aria-hidden="true"
-      className={`flex shrink-0 items-center justify-center rounded-lg bg-graphite-900 font-bold tracking-wide text-copper-400 ${className}`}
+      className={`flex shrink-0 items-center justify-center rounded-xs border border-stone-300 bg-stone-100 font-semibold text-graphite-700 [font-stretch:87.5%] ${className}`}
     >
       {initials(name)}
     </span>

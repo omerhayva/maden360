@@ -15,7 +15,7 @@ import {
 export interface Price {
   amount: number;
   currency: Currency;
-  /** Birim başına fiyatlarda: "ton", "gün", "metre" → "₺2.450 / ton" */
+  /** Birim başına fiyatlarda: "ton", "gün", "metre" → "2.450 TL/ton" */
   per?: string;
   vat?: Vat;
   negotiable?: boolean;
@@ -29,42 +29,46 @@ export interface Salary {
   basis: SalaryBasis;
 }
 
-const moneyFormatters = new Map<string, Intl.NumberFormat>();
+/** Para birimi kısaltmaları; ilan sitelerindeki yazımla: "4.750.000 TL", "210 USD" */
+const CURRENCY_CODES: Record<Currency, string> = { TRY: 'TL', USD: 'USD', EUR: 'EUR' };
 
-export function formatMoney(amount: number, currency: Currency): string {
+const amountFormatters = new Map<number, Intl.NumberFormat>();
+
+/** "4.750.000", "2.450,50" (Türkçe sayı yazımı; tam sayılarda kuruş gösterilmez) */
+function formatAmount(amount: number): string {
   const digits = Number.isInteger(amount) ? 0 : 2;
-  const key = `${currency}-${digits}`;
-  let formatter = moneyFormatters.get(key);
+  let formatter = amountFormatters.get(digits);
   if (!formatter) {
     formatter = new Intl.NumberFormat('tr-TR', {
-      style: 'currency',
-      currency,
       minimumFractionDigits: digits,
       maximumFractionDigits: digits,
     });
-    moneyFormatters.set(key, formatter);
+    amountFormatters.set(digits, formatter);
   }
   return formatter.format(amount);
 }
 
-/** "₺1.250.000 + KDV", "₺2.450 / ton (KDV dahil)", "Fiyat için iletişime geçin" */
+/** "4.750.000 TL", "210 USD" */
+export function formatMoney(amount: number, currency: Currency): string {
+  return `${formatAmount(amount)} ${CURRENCY_CODES[currency]}`;
+}
+
+/** "1.250.000 TL + KDV", "2.450 TL/ton (KDV dahil)", "Fiyat sorunuz" */
 export function formatPrice(price: Price | undefined): string {
-  if (!price) return 'Fiyat için iletişime geçin';
+  if (!price) return 'Fiyat sorunuz';
   let text = formatMoney(price.amount, price.currency);
-  if (price.per) text += ` / ${price.per}`;
+  if (price.per) text += `/${price.per}`;
   if (price.vat === 'haric') text += ` ${vatLabels.haric}`;
   if (price.vat === 'dahil') text += ` (${vatLabels.dahil})`;
   return text;
 }
 
-/** "₺45.000–60.000 net, aylık" */
+/** "45.000–60.000 TL net, aylık" */
 export function formatSalary(salary: Salary): string {
   const { min, max, currency } = salary;
   const suffix = `${salaryBasisLabels[salary.basis]}, ${salaryPeriodLabels[salary.period]}`;
   if (min !== undefined && max !== undefined && min !== max) {
-    const low = formatMoney(min, currency);
-    const high = formatMoney(max, currency).replace(/^[^\d]+/, '');
-    return `${low}–${high} ${suffix}`;
+    return `${formatAmount(min)}–${formatAmount(max)} ${CURRENCY_CODES[currency]} ${suffix}`;
   }
   const single = min ?? max;
   if (single === undefined) return 'Ücret belirtilmedi';

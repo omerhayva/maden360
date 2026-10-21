@@ -37,7 +37,7 @@ flowchart LR
 | Doğrulama | zod 4 | Hatalı içerik derlemeyi durdurur |
 | Arama | MiniSearch (tarayıcıda) | Türkçeye uyarlanmış dizinleme |
 | Test | Vitest | İçerik ve ilan kuralları, başvuru formları, sayı okuma, arama, arayüz sınıfları, renk kontrastı, fotoğraflar |
-| Yazı tipi | Inter (fontsource, kendi sunucumuzdan) | Dış yazı tipi servisi yok |
+| Yazı tipi | IBM Plex Sans, değişken (fontsource, kendi sunucumuzdan) | Dış yazı tipi servisi yok; başlıklar aynı ailenin yarı dar kesimi |
 
 ## Klasör yapısı
 
@@ -57,7 +57,7 @@ content/                  İçerik (editörlerin çalıştığı yer)
 src/
   app/                    Sayfalar (rotalar), site haritası, robots, arama dizini
   components/             Arayüz bileşenleri
-    ui/                   Ortak arayüz: düğmeler, açılır liste, kart/kutucuk, boş durum (arayuz-rehberi.md)
+    ui/                   Ortak arayüz: düğmeler, açılır liste, panel/liste/kart, boş durum (arayuz-rehberi.md)
     listings/             İlan kartları, süzme, ilan sayfası parçaları, mobil eylem çubuğu
     forms/                Erişilebilir başvuru formu
   config/site.ts          Site adı, adres, iletişim (tek yapılandırma noktası)
@@ -147,8 +147,8 @@ Tüm bağlantılar `src/i18n/routes.ts` üzerinden üretilir. İngilizce eklendi
 ## Performans
 
 - Tüm sayfalar derleme sırasında HTML olarak üretilir; içerik, JavaScript yüklenmeden okunabilir.
-- Görsel servisi, video, dış yazı tipi veya izleme betiği yoktur. Inter yazı tipi siteyle birlikte sunulur
-  ve yalnızca gereken karakter alt kümeleri (Latin + Latin genişletilmiş) indirilir.
+- Görsel servisi, video, dış yazı tipi veya izleme betiği yoktur. IBM Plex Sans siteyle birlikte sunulur
+  ve yalnızca gereken karakter alt kümeleri (Latin + Latin genişletilmiş, toplam 110 KB) indirilir.
 - Fotoğraflar önceden hazırlanmış AVIF (yedeği WebP) dosyalarıdır ve tarayıcı ekrana uygun genişliği
   seçer: ana sayfa telefonda ~170 KB, dizüstünde ~114 KB; bölüm sayfaları tek fotoğraf, ~80 KB; arama,
   kurumsal ve ilan ayrıntı sayfalarında fotoğraf yoktur. Başlık fotoğrafı öncelikli, ana sayfadaki kart

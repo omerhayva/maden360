@@ -1,49 +1,32 @@
 /**
- * Kart ve kutucuk sınıfları. Üzerine gelince kenarlık bakıra döner ve gölge hafifçe derinleşir;
- * kart içindeki bağlantı klavyeyle odaklanınca kartın tamamı çerçevelenir.
+ * Panel, liste ve kart sınıfları.
+ *
+ * İlanlar kart ızgarası yerine tek bir panel içinde satır satır listelenir (listPanel + listRow):
+ * ilan sitelerinde göz satırları yukarıdan aşağı tarar, aynı biçimli kutular arasında dolaşmaz.
+ * Kart (cardFrame) yalnızca gerçekten ayrı duran içerikte kullanılır (ör. yan sütun kutuları).
+ * Gölge kullanılmaz; ayrım 1 px kenarlık ve zemin farkıyla yapılır.
  */
 
-/** Kart çerçevesi (iç boşluk olmadan); görselli kartlarda kullanılır */
+/** Beyaz panel: kenarlıklı, küçük köşeli */
+export const panel = 'rounded-sm border border-stone-300 bg-white';
+
+/** Satırları ince çizgiyle ayrılan liste paneli (<ul> veya <ol> üzerine) */
+export const listPanel = `${panel} divide-y divide-stone-200`;
+
+/**
+ * Liste satırı: satırın tamamı başlıktaki bağlantıyla tıklanır (stretchedLink). Klavyeyle
+ * odaklanınca satır çerçevelenir; üzerine gelince zemin hafifçe koyulaşır.
+ */
+export const listRow =
+  'group relative px-4 py-4 transition-colors duration-100 sm:px-5 ui-hover:bg-stone-50 has-[a:focus-visible]:z-10 has-[a:focus-visible]:outline-3 has-[a:focus-visible]:-outline-offset-1 has-[a:focus-visible]:outline-copper-700';
+
+/** Kart çerçevesi (iç boşluk olmadan) */
 export const cardFrame =
-  'group relative flex h-full flex-col rounded-xl border border-stone-200 bg-white shadow-sm transition-[border-color,box-shadow] duration-100 ui-hover:border-copper-400 ui-hover:shadow-md has-[a:focus-visible]:outline-3 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-copper-500';
+  'group relative flex h-full flex-col rounded-sm border border-stone-300 bg-white transition-colors duration-100 ui-hover:border-graphite-400 has-[a:focus-visible]:outline-3 has-[a:focus-visible]:outline-offset-2 has-[a:focus-visible]:outline-copper-700';
 
 /** İç boşluklu standart kart */
 export const cardBase = `${cardFrame} p-5`;
 
-/** Kartın tamamını tıklanabilir yapan bağlantı (başlıktaki <Link> üzerine) */
+/** Satırın veya kartın tamamını tıklanabilir yapan bağlantı (başlıktaki <Link> üzerine) */
 export const stretchedLink =
-  'after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none';
-
-const TILE_BASE =
-  'group flex h-full rounded-xl border border-stone-200 [-webkit-tap-highlight-color:transparent] transition-[border-color,box-shadow,background-color] duration-100 ui-hover:border-copper-400 ui-hover:shadow-sm';
-
-/**
- * Bağlantı kutucuğu (kategori, salon, bölüm kısayolları): kutunun tamamı tek bir bağlantıdır.
- * Taş zeminli bölümlerde beyaz (`white`), beyaz zeminli bölümlerde açık taş renkli (`stone`)
- * yüzey kullanılır. Çok satırlı içerikte simge üste hizalanır (`align: 'start'`).
- */
-export function tileClasses({
-  surface = 'white',
-  align = 'center',
-  size = 'md',
-}: {
-  surface?: 'white' | 'stone';
-  align?: 'center' | 'start';
-  /** md: p-4, lg: p-5 (büyük başlıklı kutucuklar) */
-  size?: 'md' | 'lg';
-} = {}): string {
-  return [
-    TILE_BASE,
-    surface === 'stone'
-      ? 'bg-stone-50 ui-hover:bg-white ui-active:bg-stone-100'
-      : 'bg-white shadow-xs ui-active:bg-stone-50',
-    align === 'start' ? 'items-start gap-4' : 'items-center gap-3',
-    size === 'lg' ? 'p-5' : 'p-4',
-  ].join(' ');
-}
-
-export const tileLink = tileClasses();
-
-/** Kutucuktaki koyu simge yuvası */
-export const iconTile =
-  'flex shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-graphite-800 to-graphite-950 text-copper-400 ring-1 ring-inset ring-white/10';
+  'underline-offset-4 after:absolute after:inset-0 focus-visible:outline-none group-hover:underline';

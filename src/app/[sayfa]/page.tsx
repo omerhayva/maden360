@@ -57,7 +57,7 @@ export default async function OptionalPage({ params }: Props) {
           {page.status !== 'published' && (
             <Callout
               variant="warning"
-              title={`Önizleme: bu sayfa yayımlanmadı — ${statusLabels[page.status]}`}
+              title={`Önizleme: bu sayfa yayımlanmadı (${statusLabels[page.status].toLocaleLowerCase('tr')})`}
               className="mb-8"
             >
               Sayfa yayımlanana kadar ilan başvuru formları üretim sitesinde kapalı kalır.

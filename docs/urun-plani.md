@@ -169,15 +169,22 @@ erDiagram
 
 ## 7. Tasarım ilkeleri
 
-- **Renkler:** Koyu grafit, bakır/turuncu vurgu, açık taş tonu ve beyaz. 16 Ekim 2026'da kullanıcı
-  kararıyla tek tema korunarak renkler canlandırıldı: çelik mavisi alt tonlu derin grafit, daha doygun
-  bakır, sıcak kum tonlu zemin. Tema seçici ve karanlık mod yoktur.
+- **Renkler:** Grafit, bakır, taş ve beyaz. 16 Ekim 2026'da tek tema korunarak renkler canlandırıldı.
+  22 Ekim 2026'da kullanıcı kararıyla krem zemin yerine beyaz ve soğuk taş grisi zemine geçildi; bakır
+  koyulaştı ve yalnızca bağlantı, ana düğme, etkin menü ve salon harflerinde kullanılıyor; koyu alanlar
+  küçüldü. Tema seçici ve karanlık mod yoktur.
 - **Fotoğraflar (16 Ekim 2026):** Ana sayfa girişinde ve bölüm başlıklarında (Sanal Fuar, İş İlanları,
-  Aday Profilleri, Market, İlan ver) sitenin renklerine göre tonlanmış maden fotoğrafları; yazılar
+  İş Arayanlar, Market, İlan ver) sitenin renklerine göre tonlanmış maden fotoğrafları; yazılar
   koyu katman üzerinde durur ve okunurlukları testle denetlenir. Fotoğraflar önceden hazırlanmış
   AVIF/WebP dosyalarıdır (görsel servisi yok) ve kendi çekimlerle değiştirilebilir
-  ([assets/gorseller/README.md](../assets/gorseller/README.md)).
-- **Görünüm:** Modern mühendislik yayını; arama ve gezinme üstte.
+  ([assets/gorseller/README.md](../assets/gorseller/README.md)). 22 Ekim'de kullanıcı fotoğrafların
+  kalmasını istedi; ana sayfadaki dekoratif kart şeritleri kaldırıldı.
+- **Görünüm (22 Ekim 2026 yeniden tasarım):** İlan sitesi düzeni, içerik önde: ana sayfada arama,
+  "Ne arıyorsunuz?" girişleri ve son ilanlar ilk ekranda; ilanlar kart ızgarası yerine satır satır.
+  Hazır şablon izleri (büyük harfli üst etiketler, degrade ve parlama süsleri, ikon kutuları, oklu
+  bağlantılar) kullanılmaz ve testle denetlenir. Akılda kalan tek öğe Sanal Fuar salon planıdır.
+  Yazı tipi IBM Plex Sans; metinler kısa, somut ve sektörün dilinde. Bulgular ve gerekçeler:
+  [uzman-incelemesi.md](uzman-incelemesi.md), kurallar: [arayuz-rehberi.md](arayuz-rehberi.md).
 - **Okunabilirlik önce gelir:** Gereksiz animasyon, video arka plan ve pahalı görsel servisleri yok.
 - **Mobil:** Büyük dokunma alanları, tek sütunlu formlar, okunur tablolar, yatay taşma yok.
 - **Erişilebilirlik:** Klavyeyle kullanılabilir formlar, görünür odak, etiketli girdiler, yeterli kontrast.

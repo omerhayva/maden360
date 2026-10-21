@@ -60,20 +60,21 @@ describe('iletişim bilgisi denetimi', () => {
 
 describe('biçimlendirme', () => {
   it('fiyatı Türkçe biçimde gösterir', () => {
-    expect(formatMoney(4750000, 'TRY')).toBe('₺4.750.000');
+    expect(formatMoney(4750000, 'TRY')).toBe('4.750.000 TL');
+    expect(formatMoney(2450.5, 'EUR')).toBe('2.450,50 EUR');
     expect(formatPrice({ amount: 38000, currency: 'TRY', per: 'gün', vat: 'haric' })).toBe(
-      '₺38.000 / gün + KDV',
+      '38.000 TL/gün + KDV',
     );
-    expect(formatPrice({ amount: 210, currency: 'USD', per: 'ton' })).toBe('$210 / ton');
-    expect(formatPrice(undefined)).toBe('Fiyat için iletişime geçin');
+    expect(formatPrice({ amount: 210, currency: 'USD', per: 'ton' })).toBe('210 USD/ton');
+    expect(formatPrice(undefined)).toBe('Fiyat sorunuz');
   });
 
   it('ücret aralığını gösterir', () => {
     expect(
       formatSalary({ min: 70000, max: 90000, currency: 'TRY', period: 'aylik', basis: 'net' }),
-    ).toBe('₺70.000–90.000 net, aylık');
+    ).toBe('70.000–90.000 TL net, aylık');
     expect(formatSalary({ min: 50000, currency: 'TRY', period: 'aylik', basis: 'brut' })).toBe(
-      'En az ₺50.000 brüt, aylık',
+      'En az 50.000 TL brüt, aylık',
     );
   });
 

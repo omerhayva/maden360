@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { Briefcase, Mail, Plus, UserSearch } from 'lucide-react';
+import { Mail, Plus } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { SafetyNotice } from '@/components/listings/Detail';
@@ -8,7 +8,7 @@ import { CareerTabs, HeaderActions, SubmissionsClosedNote } from '@/components/l
 import { ButtonLink } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { routes } from '@/i18n/routes';
-import { areSubmissionsOpen, getJobs, getPosition } from '@/lib/content';
+import { areSubmissionsOpen, getCandidates, getJobs, getPosition } from '@/lib/content';
 import { isPreviewMode } from '@/lib/content/visibility';
 import {
   employmentTypeLabels,
@@ -21,11 +21,12 @@ import { pageMetadata } from '@/lib/seo/metadata';
 
 const title = 'İş İlanları';
 const description =
-  'Madencilik iş ilanları: maden ve jeoloji mühendisi, tekniker, iş makinesi operatörü, sondör, ateşleyici ve iş güvenliği uzmanı arayan işverenler.';
+  'Maden ocaklarında, tesislerde ve sondaj sahalarında açık pozisyonlar. İlanları işverenler verir, yayından önce editör kontrol eder.';
 
 export const metadata = pageMetadata({
   title: 'Madencilik iş ilanları',
-  description,
+  description:
+    'Maden ve jeoloji mühendisi, tekniker, iş makinesi operatörü, sondör, ateşleyici, daimi nezaretçi ve iş güvenliği uzmanı ilanları.',
   path: routes.jobs(),
 });
 
@@ -56,18 +57,13 @@ export default function JobsPage() {
   const empty = (
     <EmptyState
       title="Şu an yayında iş ilanı yok"
-      icon={<Briefcase aria-hidden="true" />}
       actions={
         open ? (
           <>
             <ButtonLink href={routes.postListing('is-ilani')} variant="secondary" icon={Plus}>
               İş ilanı ver
             </ButtonLink>
-            <ButtonLink
-              href={routes.postListing('aday-profili')}
-              variant="secondary"
-              icon={UserSearch}
-            >
+            <ButtonLink href={routes.postListing('aday-profili')} variant="secondary">
               Aday profili oluştur
             </ButtonLink>
           </>
@@ -79,7 +75,7 @@ export default function JobsPage() {
       }
     >
       {open
-        ? 'İşçi arıyorsanız ilk ilanı siz verin; iş arıyorsanız aday profili oluşturabilirsiniz.'
+        ? 'Eleman arıyorsanız ilk ilanı siz verin. İş arıyorsanız aday profili oluşturabilirsiniz.'
         : 'İlan başvuruları yakında açılacak.'}
     </EmptyState>
   );
@@ -92,17 +88,16 @@ export default function JobsPage() {
         description={description}
         breadcrumbs={[{ name: title, href: routes.jobs() }]}
       >
-        <CareerTabs active="jobs" />
+        <CareerTabs
+          active="jobs"
+          counts={{ jobs: items.length, candidates: getCandidates().length }}
+        />
         {open ? (
           <HeaderActions
             primary={{ href: routes.postListing('is-ilani'), label: 'İş ilanı ver' }}
             secondary={
-              <ButtonLink
-                href={routes.postListing('aday-profili')}
-                variant="inverse"
-                icon={UserSearch}
-              >
-                İş arıyorum: profil oluştur
+              <ButtonLink href={routes.postListing('aday-profili')} variant="inverse">
+                İş arıyorum, profil oluştur
               </ButtonLink>
             }
           />
@@ -110,12 +105,9 @@ export default function JobsPage() {
           <SubmissionsClosedNote />
         )}
       </PageHeader>
-      <Container className="space-y-10 py-10">
+      <Container className="space-y-10 py-8 lg:py-10">
         <section aria-labelledby="acik-pozisyonlar">
-          <h2
-            id="acik-pozisyonlar"
-            className="heading-accent mb-5 text-2xl font-bold tracking-tight text-graphite-950"
-          >
+          <h2 id="acik-pozisyonlar" className="sr-only">
             Açık pozisyonlar
           </h2>
           <Suspense fallback={<StaticListingGrid items={items} empty={empty} />}>
@@ -123,7 +115,7 @@ export default function JobsPage() {
               items={items}
               filters={filters}
               searchLabel="Pozisyon, firma veya belge ara"
-              searchPlaceholder="Ör. maden mühendisi, operatör, ateşleyici"
+              searchPlaceholder="Ör. operatör, ateşleyici"
               noun="ilan"
               showExpired={isPreviewMode()}
               empty={empty}

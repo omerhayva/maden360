@@ -1,8 +1,7 @@
 import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { SearchForm } from '@/components/search/SearchForm';
-import { tileClasses } from '@/components/ui/card';
+import { listPanel } from '@/components/ui/card';
 import { mainNav } from '@/i18n/navigation';
 import { routes } from '@/i18n/routes';
 
@@ -17,33 +16,29 @@ export default function NotFound() {
     <Container className="py-16 sm:py-24">
       <div data-not-found="true" hidden />
       <div className="max-w-2xl">
-        <p className="text-sm font-semibold uppercase tracking-wide text-copper-700">Hata 404</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-graphite-950 sm:text-4xl">
+        <h1 className="text-3xl leading-tight font-semibold text-graphite-950 sm:text-4xl">
           Sayfa bulunamadı
         </h1>
-        <p className="mt-4 text-lg leading-8 text-graphite-700">
-          Aradığınız sayfa taşınmış, kaldırılmış ya da henüz yayımlanmamış olabilir. Aşağıdan arama
-          yapabilir veya ana bölümlere göz atabilirsiniz.
+        <p className="mt-3 text-lg leading-8 text-graphite-700">
+          Bu adreste bir sayfa yok (hata 404). Sayfa taşınmış, kaldırılmış ya da henüz yayımlanmamış
+          olabilir. Arama yapabilir veya aşağıdaki bölümlerden birine geçebilirsiniz.
         </p>
         <div className="mt-8">
           <SearchForm id="not-found-search" />
         </div>
-        <ul className="mt-8 grid gap-3 sm:grid-cols-3">
+        <ul className={`mt-8 ${listPanel}`}>
           {mainNav.map((item) => (
             <li key={item.href}>
-              <Link href={item.href} className={`${tileClasses()} min-h-16`}>
-                <span className="min-w-0 flex-1">
-                  <span className="block font-semibold text-graphite-950 group-hover:text-copper-800">
-                    {item.label}
-                  </span>
-                  {item.description && (
-                    <span className="block text-sm text-graphite-600">{item.description}</span>
-                  )}
+              <Link
+                href={item.href}
+                className="group block px-4 py-3 transition-colors duration-100 ui-hover:bg-stone-50 ui-active:bg-stone-100"
+              >
+                <span className="block font-semibold text-graphite-950 underline-offset-4 group-hover:underline">
+                  {item.label}
                 </span>
-                <ChevronRight
-                  aria-hidden="true"
-                  className="h-4 w-4 shrink-0 text-graphite-400 group-hover:text-copper-600"
-                />
+                {item.description && (
+                  <span className="block text-sm text-graphite-600">{item.description}</span>
+                )}
               </Link>
             </li>
           ))}
@@ -52,7 +47,7 @@ export default function NotFound() {
           Bir bağlantının hatalı olduğunu düşünüyorsanız{' '}
           <Link
             href={routes.contact()}
-            className="font-semibold text-copper-700 underline underline-offset-4 ui-hover:text-copper-800"
+            className="font-medium text-copper-700 underline underline-offset-4 ui-hover:text-copper-900"
           >
             bize bildirin
           </Link>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Briefcase, ExternalLink, Mail, MapPin, Phone, Send } from 'lucide-react';
+import { ExternalLink, Mail, Phone, Send } from 'lucide-react';
 import { Prose } from '@/components/content/Prose';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Container } from '@/components/layout/Container';
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const job = getJob((await params).slug);
   if (!job) return {};
   return pageMetadata({
-    title: job.seoTitle ?? `${job.title} — ${job.city}`,
+    title: job.seoTitle ?? `${job.title}, ${job.city}`,
     description: job.seoDescription ?? job.summary,
     path: job.url,
     noindex: job.status !== 'published' || job.example,
@@ -69,28 +69,24 @@ export default async function JobPage({ params }: Props) {
             ]}
           />
           <div className="mt-5 max-w-3xl">
-            <p className="inline-flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-copper-700">
-              <Briefcase aria-hidden="true" className="h-4 w-4" />
-              {position?.name ?? job.position}
-            </p>
-            <h1 className="mt-2 text-3xl font-bold leading-tight tracking-tight text-graphite-950 sm:text-4xl">
+            <h1 className="text-3xl leading-tight font-semibold text-graphite-950 sm:text-4xl">
               {job.title}
             </h1>
-            <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-graphite-700">
+            <p className="mt-3 text-graphite-800">
               {stand ? (
                 <Link
                   href={stand.url}
-                  className="font-semibold text-copper-700 underline-offset-4 ui-hover:text-copper-800 ui-hover:underline"
+                  className="font-semibold text-copper-700 underline-offset-4 ui-hover:text-copper-900 ui-hover:underline"
                 >
                   {job.employer.name}
                 </Link>
               ) : (
                 <span className="font-semibold">{job.employer.name}</span>
               )}
-              <span className="inline-flex items-center gap-1">
-                <MapPin aria-hidden="true" className="h-4 w-4 text-copper-600" />
-                {locationOf(job)}
-              </span>
+              , {locationOf(job)}
+            </p>
+            <p className="mt-1 text-sm text-graphite-600">
+              Meslek: {position?.name ?? job.position}
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               <ListingStatusBadge status={job.status} />
@@ -132,7 +128,7 @@ export default async function JobPage({ params }: Props) {
             />
 
             <section aria-labelledby="is-tanimi" className="mt-10">
-              <h2 id="is-tanimi" className="text-2xl font-bold tracking-tight text-graphite-950">
+              <h2 id="is-tanimi" className="text-2xl font-semibold text-graphite-950">
                 İş tanımı
               </h2>
               <Prose html={job.html} className="mt-4" />

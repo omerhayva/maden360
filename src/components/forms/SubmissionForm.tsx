@@ -220,7 +220,7 @@ export function SubmissionForm({
           ref={summaryRef}
           tabIndex={-1}
           role="alert"
-          className="rounded-xl border border-red-300 bg-red-50 p-4 text-red-950 focus:outline-3 focus:outline-red-600"
+          className="rounded-sm border border-red-300 bg-red-50 p-4 text-red-950 focus:outline-3 focus:outline-red-700"
         >
           <p className="flex items-center gap-2 font-semibold">
             <CircleAlert aria-hidden="true" className="h-5 w-5" />
@@ -252,12 +252,9 @@ export function SubmissionForm({
           <fieldset
             key={section.id}
             aria-labelledby={`bolum-${section.id}`}
-            className="rounded-xl border border-stone-200 bg-white p-5 sm:p-6"
+            className="rounded-sm border border-stone-300 bg-white p-5 sm:p-6"
           >
-            <h2
-              id={`bolum-${section.id}`}
-              className="text-lg font-bold tracking-tight text-graphite-950"
-            >
+            <h2 id={`bolum-${section.id}`} className="text-lg font-semibold text-graphite-950">
               {section.title}
             </h2>
             {section.description && (
@@ -285,9 +282,9 @@ export function SubmissionForm({
 
       <fieldset
         aria-labelledby="bolum-onaylar"
-        className="rounded-xl border border-stone-200 bg-white p-5 sm:p-6"
+        className="rounded-sm border border-stone-300 bg-white p-5 sm:p-6"
       >
-        <h2 id="bolum-onaylar" className="text-lg font-bold tracking-tight text-graphite-950">
+        <h2 id="bolum-onaylar" className="text-lg font-semibold text-graphite-950">
           Onaylar
         </h2>
         <div className="mt-4 space-y-4">
@@ -319,11 +316,11 @@ export function SubmissionForm({
         />
       </div>
 
-      <div className="rounded-xl bg-graphite-900 p-5 text-white sm:p-6">
-        <p className="text-sm leading-6 text-graphite-200">
+      <div className="rounded-sm border border-stone-300 bg-white p-5 sm:p-6">
+        <p className="text-sm leading-6 text-graphite-700">
           {delivery.endpoint
             ? 'Başvurunuz doğrudan editörlerimize iletilir. Bir başvuru numarası alacaksınız.'
-            : `Gönder düğmesi e-posta uygulamanızı başvuru metniyle açar (${delivery.email}); e-postayı göndermeniz yeterli. Bir başvuru numarası alacaksınız.`}
+            : `Gönder düğmesi e-posta uygulamanızı başvuru metniyle açar (${delivery.email}). E-postayı göndermeniz yeterli. Bir başvuru numarası alacaksınız.`}
           {definition.durationDays
             ? ` Onaylanan ${definition.kind === 'fuar-standi' ? 'stand' : 'ilan'} ${definition.durationDays} gün yayında kalır.`
             : ''}
@@ -381,13 +378,13 @@ function SubmissionResult({
       ? 'Başvurunuz alındı'
       : outcome.status === 'mailto'
         ? 'Son adım: e-postayı gönderin'
-        : 'Gönderilemedi — e-postayla iletin';
+        : 'Gönderilemedi, e-postayla iletin';
   return (
     <div ref={resultRef} tabIndex={-1} role="status" className="space-y-5 focus:outline-none">
       <div
-        className={`rounded-xl border p-5 sm:p-6 ${outcome.status === 'failed' ? 'border-amber-300 bg-amber-50' : 'border-emerald-300 bg-emerald-50'}`}
+        className={`rounded-sm border p-5 sm:p-6 ${outcome.status === 'failed' ? 'border-amber-300 bg-amber-50' : 'border-emerald-300 bg-emerald-50'}`}
       >
-        <h2 className="flex items-center gap-2 text-xl font-bold text-graphite-950">
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-graphite-950">
           {outcome.status === 'failed' ? (
             <CircleAlert aria-hidden="true" className="h-6 w-6 text-amber-700" />
           ) : (
@@ -400,11 +397,11 @@ function SubmissionResult({
         </p>
         <p className="mt-2 text-sm leading-6 text-graphite-700">
           {outcome.status === 'sent' &&
-            'Editörlerimiz başvurunuzu kontrol edecek; eksik bilgi varsa size e-postayla yazacağız. Yazışmalarda başvuru numaranızı kullanın.'}
+            'Başvurunuzu editör kontrol edecek. Eksik bilgi varsa size e-postayla yazacağız. Yazışmalarda başvuru numaranızı kullanın.'}
           {outcome.status === 'mailto' &&
             `E-posta uygulamanız başvuru metniyle açılmış olmalı. E-postayı ${email} adresine gönderdiğinizde başvurunuz bize ulaşır. Uygulama açılmadıysa aşağıdaki düğmeyi kullanın veya metni kopyalayıp e-postayla gönderin.`}
           {outcome.status === 'failed' &&
-            `Form hizmetine şu an ulaşılamadı. Başvurunuzu ${email} adresine e-postayla gönderebilirsiniz; metin hazır.`}
+            `Form hizmetine şu an ulaşılamadı. Başvuru metni hazır, ${email} adresine e-postayla gönderebilirsiniz.`}
         </p>
         {outcome.status !== 'sent' && (
           <ButtonGroup className="mt-4">
@@ -420,11 +417,11 @@ function SubmissionResult({
       </div>
 
       {outcome.status !== 'sent' && (
-        <details className="group/ayrinti rounded-xl border border-stone-200 bg-white">
-          <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2 rounded-xl px-5 font-semibold text-graphite-900 transition-colors duration-100 ui-hover:bg-stone-50 [&::-webkit-details-marker]:hidden">
+        <details className="group/ayrinti rounded-sm border border-stone-300 bg-white">
+          <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2 rounded-sm px-5 font-semibold text-graphite-900 transition-colors duration-100 ui-hover:bg-stone-50 [&::-webkit-details-marker]:hidden">
             <ChevronRight
               aria-hidden="true"
-              className="h-4 w-4 shrink-0 text-copper-600 group-open/ayrinti:rotate-90"
+              className="h-4 w-4 shrink-0 text-graphite-500 group-open/ayrinti:rotate-90"
             />
             Başvuru metnini göster
           </summary>
@@ -437,7 +434,7 @@ function SubmissionResult({
               readOnly
               value={submission.text}
               rows={14}
-              className="w-full rounded-md border border-graphite-300 bg-stone-50 p-3 font-mono text-xs leading-5 text-graphite-900"
+              className="w-full rounded-sm border border-graphite-500 bg-stone-50 p-3 font-mono text-xs leading-5 text-graphite-900"
             />
           </div>
         </details>

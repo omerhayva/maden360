@@ -1,4 +1,3 @@
-import { BadgeCheck, FlaskConical, Star } from 'lucide-react';
 import { Badge, type BadgeTone } from '@/components/ui/Badge';
 import type { ContentStatus } from '@/lib/content/schemas';
 import { listingStatusLabels } from '@/lib/content/visibility';
@@ -19,12 +18,7 @@ export function ListingStatusBadge({ status }: { status: ContentStatus }) {
 
 export function ExampleBadge({ example }: { example?: boolean }) {
   if (!example) return null;
-  return (
-    <Badge tone="slate">
-      <FlaskConical aria-hidden="true" className="h-3 w-3" />
-      Örnek içerik
-    </Badge>
-  );
+  return <Badge tone="slate">Örnek içerik</Badge>;
 }
 
 const typeTone: Record<MarketType, BadgeTone> = {
@@ -40,20 +34,10 @@ export function MarketTypeBadge({ type }: { type: MarketType }) {
 
 export function VerifiedBadge({ checkedAt }: { checkedAt?: string }) {
   if (!checkedAt) return null;
-  return (
-    <Badge tone="green">
-      <BadgeCheck aria-hidden="true" className="h-3.5 w-3.5" />
-      Bilgiler doğrulandı
-    </Badge>
-  );
+  return <Badge tone="green">Bilgiler doğrulandı</Badge>;
 }
 
 export function FeaturedBadge({ featured }: { featured?: boolean }) {
   if (!featured) return null;
-  return (
-    <Badge tone="copper">
-      <Star aria-hidden="true" className="h-3 w-3" />
-      Öne çıkan
-    </Badge>
-  );
+  return <Badge tone="copper">Öne çıkan</Badge>;
 }

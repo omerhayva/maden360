@@ -16,7 +16,7 @@ export const mainNav: NavItem[] = [
   {
     href: routes.jobs(),
     label: 'İş İlanları',
-    description: 'İşçi arayanlar ve iş arayanlar',
+    description: 'Eleman arayanlar ve iş arayanlar',
   },
   {
     href: routes.market(),

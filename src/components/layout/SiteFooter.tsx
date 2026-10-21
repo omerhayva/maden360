@@ -5,13 +5,17 @@ import { mainNav, trustNav } from '@/i18n/navigation';
 import { optionalPageFiles, routes } from '@/i18n/routes';
 import { getOptionalPage } from '@/lib/content';
 
+const linkClass =
+  'inline-flex min-h-9 items-center text-sm text-graphite-700 underline-offset-4 pointer-coarse:min-h-11 ui-hover:text-graphite-950 ui-hover:underline';
+
+/** Altbilgi: açık zemin, kısa açıklama, bölüm ve kurumsal bağlantılar. */
 export function SiteFooter() {
   const year = new Date().getFullYear();
   const rulesPublished = Boolean(getOptionalPage(optionalPageFiles.listingRules));
   const privacyPublished = Boolean(getOptionalPage(optionalPageFiles.privacy));
-  const sectorLinks = [
+  const sectionLinks = [
     ...mainNav,
-    { href: routes.candidates(), label: 'Aday Profilleri' },
+    { href: routes.candidates(), label: 'İş Arayanlar' },
     { href: routes.postListing(), label: 'İlan ver' },
   ];
   const trustLinks = [
@@ -20,32 +24,28 @@ export function SiteFooter() {
     ...(privacyPublished ? [{ href: routes.privacy(), label: 'KVKK aydınlatma metni' }] : []),
   ];
   return (
-    <footer className="no-print contour-bg relative mt-16 bg-graphite-950 text-graphite-300">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-copper-500/50 to-transparent"
-      />
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.6fr_1fr_1fr] lg:px-8">
+    <footer className="no-print border-t border-stone-300 bg-white text-graphite-700">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1.6fr_1fr_1fr] lg:px-8">
         <div>
-          <Link href={routes.home()} className="inline-flex items-center gap-2.5 text-white">
-            <LogoMark className="h-8 w-8" />
-            <Wordmark className="text-lg font-bold tracking-tight" />
+          <Link
+            href={routes.home()}
+            className="inline-flex min-h-11 items-center gap-2 rounded-sm text-graphite-950"
+          >
+            <LogoMark className="h-7 w-7 text-copper-700" />
+            <Wordmark className="text-xl font-bold" />
           </Link>
-          <p className="mt-4 max-w-md text-sm leading-6">{siteConfig.description}</p>
-          <p className="mt-4 max-w-md text-xs leading-5 text-graphite-400">
-            Fuar standları ve ilanlar, sahiplerinin beyanıdır ve editör kontrolünden sonra
-            yayımlanır; {siteConfig.name} alım-satıma ve işe alıma taraf değildir, ödeme almaz.
+          <p className="mt-3 max-w-md text-sm leading-6">{siteConfig.footerNote}</p>
+          <p className="mt-3 max-w-md text-sm leading-6 text-graphite-600">
+            İlanlar ve stand bilgileri sahiplerinin beyanıdır. {siteConfig.name} alım satıma ve işe
+            alıma taraf değildir, kimseden ödeme almaz.
           </p>
         </div>
-        <nav aria-label="Sektör ağı">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-white">Sektör ağı</h2>
-          <ul className="mt-3 space-y-1">
-            {sectorLinks.map((item) => (
+        <nav aria-label="Bölümler">
+          <h2 className="text-sm font-semibold text-graphite-950">Bölümler</h2>
+          <ul className="mt-2 space-y-0.5">
+            {sectionLinks.map((item) => (
               <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="inline-flex min-h-9 items-center text-sm underline-offset-4 pointer-coarse:min-h-11 ui-hover:text-white ui-hover:underline"
-                >
+                <Link href={item.href} className={linkClass}>
                   {item.label}
                 </Link>
               </li>
@@ -53,14 +53,11 @@ export function SiteFooter() {
           </ul>
         </nav>
         <nav aria-label="Kurumsal">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-white">Kurumsal</h2>
-          <ul className="mt-3 space-y-1">
+          <h2 className="text-sm font-semibold text-graphite-950">Kurumsal</h2>
+          <ul className="mt-2 space-y-0.5">
             {trustLinks.map((item) => (
               <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="inline-flex min-h-9 items-center text-sm underline-offset-4 pointer-coarse:min-h-11 ui-hover:text-white ui-hover:underline"
-                >
+                <Link href={item.href} className={linkClass}>
                   {item.label}
                 </Link>
               </li>
@@ -68,12 +65,12 @@ export function SiteFooter() {
           </ul>
         </nav>
       </div>
-      <div className="border-t border-graphite-800">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-xs text-graphite-400 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
+      <div className="border-t border-stone-200 bg-stone-50">
+        <div className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 text-xs leading-5 text-graphite-600 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
           <p>
             © {year} {siteConfig.name}
           </p>
-          <p>Mevzuatın güncel ve resmî metni için Resmî Gazete ve mevzuat.gov.tr esas alınır.</p>
+          <p>Mevzuatın güncel metni için Resmî Gazete ve mevzuat.gov.tr esas alınır.</p>
         </div>
       </div>
     </footer>

@@ -2,20 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import {
-  Briefcase,
-  ChevronRight,
-  Search,
-  SearchX,
-  Store,
-  Tent,
-  X,
-  type LucideIcon,
-} from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import type MiniSearch from 'minisearch';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, IconButton } from '@/components/ui/Button';
-import { cardFrame, iconTile, stretchedLink, tileLink } from '@/components/ui/card';
+import { Facts } from '@/components/listings/ListingCards';
+import { listPanel, listRow, panel, stretchedLink } from '@/components/ui/card';
 import { chipClasses, inputClasses } from '@/components/ui/styles';
 import { siteConfig } from '@/config/site';
 import { routes } from '@/i18n/routes';
@@ -51,12 +43,6 @@ function loadIndex(): Promise<MiniSearch<SearchDocument>> {
   }
   return indexPromise;
 }
-
-const typeIcons: Record<SearchDocType, LucideIcon> = {
-  stand: Tent,
-  'is-ilani': Briefcase,
-  market: Store,
-};
 
 const FILTERS: { value: 'tum' | SearchDocType; label: string }[] = [
   { value: 'tum', label: 'Tümü' },
@@ -199,10 +185,10 @@ export function SearchClient() {
             >
               {item.label}
               <span
-                className={`rounded-full px-1.5 text-xs tabular-nums ${
+                className={`rounded-xs px-1.5 text-xs tabular-nums ${
                   filter === item.value
-                    ? 'bg-graphite-700 text-copper-200'
-                    : 'bg-stone-100 text-graphite-600'
+                    ? 'bg-graphite-700 text-white'
+                    : 'bg-stone-100 text-graphite-700'
                 }`}
               >
                 {counts[item.value]}
@@ -223,12 +209,12 @@ export function SearchClient() {
                 : !searchable
                   ? ''
                   : outcome.hits.length > 0
-                    ? `“${trimmed}” için ${outcome.hits.length} sonuç${outcome.relaxed ? ' (tüm kelimeleri içeren sonuç bulunamadı; benzer sonuçlar gösteriliyor)' : ''}`
+                    ? `“${trimmed}” için ${outcome.hits.length} sonuç${outcome.relaxed ? ' (tüm kelimeleri içeren sonuç yok, benzer sonuçlar gösteriliyor)' : ''}`
                     : `“${trimmed}” için sonuç bulunamadı`}
         </p>
 
         {loadError && (
-          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900">
+          <div className="mt-4 rounded-sm border border-red-300 bg-red-50 p-4 text-sm text-red-900">
             Arama dizini yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.
           </div>
         )}
@@ -245,32 +231,24 @@ export function SearchClient() {
         {trimmed && searchable && index && outcome.hits.length === 0 && <NoResults />}
 
         {visibleHits.length > 0 && (
-          <ol className="mt-4 space-y-3">
-            {visibleHits.map((hit) => {
-              const Icon = typeIcons[hit.type];
-              return (
-                <li key={hit.id} className={`${cardFrame} p-4 sm:p-5`}>
-                  <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-graphite-500">
-                    <Icon aria-hidden="true" className="h-4 w-4 text-copper-600" />
-                    <span>{typeLabels[hit.type]}</span>
-                    {hit.category && (
-                      <>
-                        <span aria-hidden="true">·</span>
-                        <span>{hit.category}</span>
-                      </>
-                    )}
-                  </div>
-                  <h2 className="mt-1.5 text-lg font-semibold text-graphite-950 group-hover:text-copper-800">
-                    <Link href={hit.url} className={stretchedLink}>
-                      {hit.title}
-                    </Link>
-                  </h2>
-                  <p className="mt-1 line-clamp-2 text-sm leading-6 text-graphite-600">
-                    {hit.summary}
-                  </p>
-                </li>
-              );
-            })}
+          <ol className={`mt-4 ${listPanel}`}>
+            {visibleHits.map((hit) => (
+              <li key={hit.id} className={listRow}>
+                <h2 className="text-lg leading-snug font-semibold text-graphite-950">
+                  <Link href={hit.url} className={stretchedLink}>
+                    {hit.title}
+                  </Link>
+                </h2>
+                <Facts
+                  items={[typeLabels[hit.type], hit.category]}
+                  label="Sonuç türü"
+                  className="mt-1"
+                />
+                <p className="mt-1 line-clamp-2 text-sm leading-6 text-graphite-700">
+                  {hit.summary}
+                </p>
+              </li>
+            ))}
           </ol>
         )}
 
@@ -293,7 +271,7 @@ function SearchSuggestions({ hasDocuments }: { hasDocuments: boolean }) {
           olacak.{' '}
           <Link
             href={routes.postListing()}
-            className="font-semibold text-copper-700 underline underline-offset-4 ui-hover:text-copper-800"
+            className="font-medium text-copper-700 underline underline-offset-4 ui-hover:text-copper-900"
           >
             İlan verin
           </Link>
@@ -305,14 +283,11 @@ function SearchSuggestions({ hasDocuments }: { hasDocuments: boolean }) {
   }
   return (
     <div className="mt-2">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-graphite-500">
-        Sık aranan
-      </h2>
-      <ul className="mt-3 flex flex-wrap gap-2">
+      <h2 className="text-base font-semibold text-graphite-950">Sık arananlar</h2>
+      <ul className="mt-2 flex flex-wrap gap-2">
         {siteConfig.popularSearches.map((term) => (
           <li key={term}>
             <Link href={routes.search(term)} className={chipClasses()}>
-              <Search aria-hidden="true" className="text-graphite-400" />
               {term}
             </Link>
           </li>
@@ -325,23 +300,19 @@ function SearchSuggestions({ hasDocuments }: { hasDocuments: boolean }) {
 
 function BrowseLinks() {
   const links = [
-    { href: routes.fair(), label: 'Sanal fuar', icon: Tent },
-    { href: routes.jobs(), label: 'İş ilanları', icon: Briefcase },
-    { href: routes.market(), label: 'Market', icon: Store },
+    { href: routes.jobs(), label: 'İş ilanları' },
+    { href: routes.market(), label: 'Market' },
+    { href: routes.fair(), label: 'Sanal Fuar' },
   ];
   return (
-    <ul className="mt-8 grid gap-3 sm:grid-cols-3">
-      {links.map(({ href, label, icon: Icon }) => (
+    <ul className={`mt-8 ${listPanel} sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0`}>
+      {links.map(({ href, label }) => (
         <li key={href}>
-          <Link href={href} className={`${tileLink} min-h-16 font-semibold text-graphite-900`}>
-            <span className={`${iconTile} h-10 w-10`}>
-              <Icon aria-hidden="true" className="h-5 w-5" />
-            </span>
-            <span className="flex-1 group-hover:text-copper-800">{label}</span>
-            <ChevronRight
-              aria-hidden="true"
-              className="h-4 w-4 text-graphite-400 group-hover:text-copper-600"
-            />
+          <Link
+            href={href}
+            className="flex min-h-12 items-center px-4 py-3 font-semibold text-graphite-950 underline-offset-4 transition-colors duration-100 ui-hover:bg-stone-50 ui-hover:underline ui-active:bg-stone-100"
+          >
+            {label}
           </Link>
         </li>
       ))}
@@ -351,21 +322,22 @@ function BrowseLinks() {
 
 function NoResults() {
   return (
-    <div className="mt-4 rounded-xl border border-dashed border-graphite-300 bg-white p-6">
-      <div className="flex items-start gap-3">
-        <SearchX aria-hidden="true" className="mt-0.5 h-6 w-6 shrink-0 text-copper-600" />
+    <div className={`${panel} mt-4 p-5`}>
+      <div>
         <div>
           <h2 className="text-lg font-semibold text-graphite-950">Sonuç bulunamadı</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-graphite-700">
             <li>Yazımı kontrol edin veya Türkçe karakter kullanmadan deneyin (ör. “kirici”).</li>
             <li>Daha genel bir kelime deneyin (ör. marka ve model yerine “ekskavatör”).</li>
-            <li>Aşağıdaki bölümlere göz atın; ilanlar şehir, kategori ve türe göre süzülebilir.</li>
+            <li>
+              Aşağıdaki bölümlere göz atın. İlanları il, kategori ve türe göre süzebilirsiniz.
+            </li>
           </ul>
           <p className="mt-3 text-sm text-graphite-700">
             Aradığınızı bulamadıysanız{' '}
             <Link
               href={routes.postListing()}
-              className="font-semibold text-copper-700 underline underline-offset-4 ui-hover:text-copper-800"
+              className="font-medium text-copper-700 underline underline-offset-4 ui-hover:text-copper-900"
             >
               “Aranıyor” ilanı veya aday profili gönderebilirsiniz
             </Link>

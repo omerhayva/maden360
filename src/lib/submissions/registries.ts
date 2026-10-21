@@ -9,7 +9,10 @@ import type { FormRegistries } from './forms';
 export function formRegistries(): FormRegistries {
   return {
     positions: getPositions().map((position) => ({ value: position.slug, label: position.name })),
-    halls: getHalls().map((hall) => ({ value: hall.slug, label: `${hall.code} · ${hall.name}` })),
+    halls: getHalls().map((hall) => ({
+      value: hall.slug,
+      label: `Salon ${hall.code}: ${hall.name}`,
+    })),
     marketCategories: getMarketCategories().map((category) => ({
       value: category.slug,
       label: category.name,

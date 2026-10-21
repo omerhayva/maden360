@@ -1,16 +1,15 @@
-import Link from 'next/link';
 import { Suspense } from 'react';
-import { ArrowDown, ChevronRight, Mail, Plus, Tent } from 'lucide-react';
+import { Mail, Plus } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { SafetyNotice } from '@/components/listings/Detail';
+import { FairPlan } from '@/components/listings/FairPlan';
 import { ListingBrowser, StaticListingGrid } from '@/components/listings/ListingBrowser';
 import { HeaderActions, SubmissionsClosedNote } from '@/components/listings/SectionNav';
 import { ButtonLink } from '@/components/ui/Button';
-import { iconTile, tileClasses } from '@/components/ui/card';
-import { CategoryIcon } from '@/components/ui/CategoryIcon';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { SectionHeading } from '@/components/ui/SectionHeading';
+import { TextLink } from '@/components/ui/TextLink';
 import { routes } from '@/i18n/routes';
 import { areSubmissionsOpen, getHall, getHalls, getStands, getStandsByHall } from '@/lib/content';
 import { isPreviewMode } from '@/lib/content/visibility';
@@ -19,11 +18,12 @@ import { pageMetadata } from '@/lib/seo/metadata';
 
 const title = 'Sanal Fuar';
 const description =
-  'Madencilik tedarikçileri ve hizmet firmaları salon salon: iş makineleri, kırma-eleme, sondaj, delme-patlatma, İSG, laboratuvar, mühendislik ve yedek parça firmalarının ürün ve hizmetleri.';
+  'Madencilik tedarikçileri ve hizmet firmaları faaliyet alanlarına göre salonlarda. Firma sayfalarında ürünler, markalar ve iletişim bilgileri yer alır.';
 
 export const metadata = pageMetadata({
   title: 'Sanal Fuar: madencilik tedarikçileri ve hizmet firmaları',
-  description,
+  description:
+    'İş makinesi, kırma-eleme, sondaj, delme-patlatma, İSG, laboratuvar, mühendislik ve yedek parça firmaları. Ürünler, markalar ve iletişim bilgileri.',
   path: routes.fair(),
 });
 
@@ -39,15 +39,14 @@ export default function FairPage() {
       sort: false,
       labelFor: (slug) => {
         const hall = getHall(slug);
-        return hall ? `${hall.code} · ${hall.name}` : slug;
+        return hall ? `Salon ${hall.code}: ${hall.name}` : slug;
       },
     }),
     facetFilter(items, { id: 'il', label: 'İl', allLabel: 'Tüm iller' }),
   ];
   const empty = (
     <EmptyState
-      title="Henüz yayımlanmış stand yok"
-      icon={<Tent aria-hidden="true" />}
+      title="Henüz stand açan firma yok"
       actions={
         open ? (
           <ButtonLink href={routes.postListing('fuar-standi')} variant="secondary" icon={Plus}>
@@ -62,8 +61,8 @@ export default function FairPage() {
     >
       Sanal fuar yeni açılıyor.{' '}
       {open
-        ? 'Firmanızı tanıtmak için stand başvurusu yapın; başvurular editör kontrolünden sonra yayımlanır.'
-        : 'Stand başvuruları yakında açılacak; firmanızı şimdiden tanıtmak isterseniz bize yazın.'}
+        ? 'Firmanızı tanıtmak için stand başvurusu yapın. Başvurunuzu editör okuyup yayımlar.'
+        : 'Stand başvuruları yakında açılacak. Firmanızı şimdiden tanıtmak isterseniz bize yazın.'}
     </EmptyState>
   );
 
@@ -71,7 +70,6 @@ export default function FairPage() {
     <>
       <PageHeader
         photo="fuar"
-        eyebrow="Tedarikçiler ve hizmet firmaları"
         title={title}
         description={description}
         breadcrumbs={[{ name: title, href: routes.fair() }]}
@@ -79,73 +77,52 @@ export default function FairPage() {
         {open ? (
           <HeaderActions
             primary={{ href: routes.postListing('fuar-standi'), label: 'Stand açın' }}
-            secondary={
-              <ButtonLink href="#salonlar" variant="inverse" iconEnd={ArrowDown}>
-                Salonları gezin
-              </ButtonLink>
-            }
           />
         ) : (
           <SubmissionsClosedNote />
         )}
       </PageHeader>
 
-      <Container className="space-y-14 py-10">
+      <Container className="space-y-10 py-8 lg:py-10">
         <section aria-labelledby="salonlar">
           <SectionHeading
             id="salonlar"
-            title="Salonlar"
-            description="Firmalar faaliyet alanlarına göre salonlarda yer alır; bir firma en fazla üç salonda bulunabilir."
+            title="Salon planı"
+            description="Bir firma en çok üç salonda yer alabilir."
           />
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {halls.map((hall) => {
-              const count = getStandsByHall(hall.slug).length;
-              return (
-                <li key={hall.slug}>
-                  <Link href={routes.hall(hall.slug)} className={tileClasses({ align: 'start' })}>
-                    <span className={`${iconTile} h-12 w-12 flex-col`}>
-                      <CategoryIcon icon={hall.icon} className="h-5 w-5" />
-                      <span className="text-[0.65rem] font-bold leading-none text-graphite-200">
-                        {hall.code}
-                      </span>
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-semibold text-graphite-950 group-hover:text-copper-800">
-                        <span className="sr-only">Salon {hall.code}: </span>
-                        {hall.name}
-                      </span>
-                      <span className="mt-1 block text-sm leading-5 text-graphite-600">
-                        {hall.description}
-                      </span>
-                      <span className="mt-2 block text-xs font-semibold text-copper-700">
-                        {count > 0 ? `${count} stand` : 'Stand bekleniyor'}
-                      </span>
-                    </span>
-                    <ChevronRight
-                      aria-hidden="true"
-                      className="h-4 w-4 shrink-0 self-center text-graphite-400 group-hover:text-copper-600"
-                    />
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="mt-5">
+            <FairPlan
+              halls={halls}
+              counts={Object.fromEntries(
+                halls.map((hall) => [hall.slug, getStandsByHall(hall.slug).length]),
+              )}
+              extra={
+                <>
+                  <span className="font-semibold text-graphite-950">Fuaye</span>
+                  {open ? (
+                    <TextLink href={routes.postListing('fuar-standi')} className="-my-2">
+                      Stand başvurusu
+                    </TextLink>
+                  ) : (
+                    <span className="text-graphite-700">Giriş</span>
+                  )}
+                </>
+              }
+            />
+          </div>
         </section>
 
         <section aria-labelledby="standlar">
-          <h2
-            id="standlar"
-            className="heading-accent mb-5 text-2xl font-bold tracking-tight text-graphite-950"
-          >
-            Tüm standlar
+          <h2 id="standlar" className="mb-4 text-2xl leading-tight font-semibold text-graphite-950">
+            Firmalar
           </h2>
           <Suspense fallback={<StaticListingGrid items={items} empty={empty} />}>
             <ListingBrowser
               items={items}
               filters={filters}
               searchLabel="Firma, ürün veya marka ara"
-              searchPlaceholder="Ör. karotlu sondaj, konkasör, gaz dedektörü"
-              noun="stand"
+              searchPlaceholder="Ör. sondaj, konkasör"
+              noun="firma"
               showExpired={isPreviewMode()}
               empty={empty}
             />

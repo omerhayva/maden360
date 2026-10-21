@@ -1,13 +1,4 @@
-import {
-  ExternalLink,
-  Flag,
-  Globe,
-  Mail,
-  MapPin,
-  MessageSquareText,
-  Phone,
-  ShieldAlert,
-} from 'lucide-react';
+import { ExternalLink, Globe, Mail, MapPin, Phone, ShieldAlert } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { ButtonLink } from '@/components/ui/Button';
 import { Callout } from '@/components/ui/Callout';
@@ -27,20 +18,38 @@ export interface Fact {
   value?: ReactNode;
 }
 
-/** Etiket–değer listesi; boş değerler atlanır. */
+/**
+ * Son satırdaki boş hücreler ızgara zemininde gri blok olarak görünmesin diye son öğe kalan
+ * sütunları kaplar (2 sütunda sm, 3 sütunda lg kırılımında).
+ */
+function lastCellSpan(count: number, columns: 2 | 3): string {
+  const sm = count % 2 === 1 ? 'sm:col-span-2' : '';
+  if (columns === 2) return sm;
+  const lg = { 0: 'lg:col-span-1', 1: 'lg:col-span-3', 2: 'lg:col-span-2' }[count % 3] ?? '';
+  return `${sm} ${lg}`;
+}
+
+/**
+ * Etiket–değer tablosu; boş değerler atlanır. Hücreler ince çizgilerle ayrılır (teknik
+ * çizimlerdeki antet gibi): küçük etiket üstte, değer altta.
+ */
 export function FactList({ facts, columns = 2 }: { facts: Fact[]; columns?: 2 | 3 }) {
   const shown = facts.filter(
     (fact) => fact.value !== undefined && fact.value !== null && fact.value !== '',
   );
   if (shown.length === 0) return null;
+  const lastSpan = lastCellSpan(shown.length, columns);
   return (
     <dl
-      className={`grid gap-x-6 gap-y-4 rounded-xl border border-stone-200 bg-white p-5 text-sm sm:grid-cols-2 ${columns === 3 ? 'lg:grid-cols-3' : ''}`}
+      className={`grid gap-px overflow-hidden rounded-sm border border-stone-300 bg-stone-200 sm:grid-cols-2 ${columns === 3 ? 'lg:grid-cols-3' : ''}`}
     >
-      {shown.map((fact) => (
-        <div key={fact.label} className="min-w-0">
-          <dt className="font-medium text-graphite-600">{fact.label}</dt>
-          <dd className="mt-1 break-words text-graphite-950">{fact.value}</dd>
+      {shown.map((fact, index) => (
+        <div
+          key={fact.label}
+          className={`min-w-0 bg-white px-4 py-3 ${index === shown.length - 1 ? lastSpan : ''}`}
+        >
+          <dt className="text-sm text-graphite-600">{fact.label}</dt>
+          <dd className="mt-0.5 font-medium break-words text-graphite-950">{fact.value}</dd>
         </div>
       ))}
     </dl>
@@ -51,10 +60,10 @@ export function BulletList({ title, items, id }: { title: string; items: string[
   if (items.length === 0) return null;
   return (
     <section aria-labelledby={id} className="mt-8">
-      <h2 id={id} className="text-xl font-bold tracking-tight text-graphite-950">
+      <h2 id={id} className="text-xl font-semibold text-graphite-950">
         {title}
       </h2>
-      <ul className="mt-3 list-disc space-y-1.5 pl-5 text-graphite-800 marker:text-copper-500">
+      <ul className="mt-3 list-disc space-y-1.5 pl-5 text-graphite-800 marker:text-graphite-400">
         {items.map((item) => (
           <li key={item}>{item}</li>
         ))}
@@ -70,7 +79,7 @@ export function ChipList({ items, label }: { items: string[]; label: string }) {
       {items.map((item) => (
         <li
           key={item}
-          className="rounded-md border border-stone-200 bg-white px-2.5 py-1 text-sm font-medium text-graphite-800"
+          className="rounded-xs border border-stone-300 bg-white px-2 py-0.5 text-sm font-medium text-graphite-800"
         >
           {item}
         </li>
@@ -94,7 +103,7 @@ export function NoticeBox({
   return (
     <aside
       aria-label={title}
-      className="rounded-xl border border-amber-300 bg-amber-50 p-5 text-amber-950"
+      className="rounded-sm border border-amber-300 bg-amber-50 p-5 text-amber-950"
     >
       <p className="flex items-center gap-2 font-semibold">
         <ShieldAlert aria-hidden="true" className="h-5 w-5 shrink-0 text-amber-700" />
@@ -113,7 +122,7 @@ export function NoticeBox({
               >
                 {reference.title}
               </a>
-              {reference.locator ? ` — ${reference.locator}` : ''}. Son kontrol:{' '}
+              {reference.locator ? `, ${reference.locator}` : ''}. Son kontrol:{' '}
               {formatDate(reference.checkedAt)}.
             </li>
           ))}
@@ -127,9 +136,9 @@ const safetyTexts = {
   market: {
     title: 'Güvenli alışveriş',
     items: [
-      'Maden360 alım-satıma taraf değildir ve ödeme almaz.',
+      'Maden360 alım satıma taraf değildir, ödeme almaz.',
       'Ürünü veya sahayı görmeden kapora ya da ön ödeme göndermeyin.',
-      'Fatura, ruhsat, muayene ve bakım belgelerini isteyin; sözleşmeyi yazılı yapın.',
+      'Fatura, ruhsat, muayene ve bakım belgelerini isteyin. Sözleşmeyi yazılı yapın.',
     ],
   },
   job: {
@@ -143,7 +152,7 @@ const safetyTexts = {
   stand: {
     title: 'Firma bilgileri hakkında',
     items: [
-      'Stand bilgileri firmanın beyanıdır; Maden360 ürün ve hizmetlerin kalitesini garanti etmez.',
+      'Stand bilgileri firmanın kendi beyanıdır. Maden360 ürün ve hizmetlerin kalitesini garanti etmez.',
       'Sözleşme öncesinde belgeleri ve referansları doğrulayın.',
     ],
   },
@@ -181,11 +190,11 @@ export function ListingPreviewNotice({
       )}
       {example && (
         <p>
-          Bu, sayfa düzenini göstermek için hazırlanmış örnek bir içeriktir; gerçek bir ilan veya
+          Bu, sayfa düzenini göstermek için hazırlanmış örnek bir içeriktir. Gerçek bir ilan veya
           firma değildir.
         </p>
       )}
-      {expiredAtBuild && <p>İlanın süresi doldu; üretim derlemesinde yayımlanmaz.</p>}
+      {expiredAtBuild && <p>İlanın süresi doldu. Yayındaki sitede gösterilmez.</p>}
     </Callout>
   );
 }
@@ -201,7 +210,7 @@ export interface ContactItems {
 
 /** İletişim satırı: tüm satır tek dokunuşla arar, e-posta yazar veya siteyi açar. */
 const contactRow =
-  'flex min-h-12 items-center gap-3 rounded-lg border border-stone-200 bg-white px-3 py-2 font-semibold text-graphite-900 [-webkit-tap-highlight-color:transparent] transition-colors duration-100 ui-hover:border-copper-400 ui-hover:bg-copper-50/60 ui-active:bg-copper-50';
+  'flex min-h-12 items-center gap-3 rounded-sm border border-stone-300 bg-white px-3 py-2 font-semibold text-graphite-900 [-webkit-tap-highlight-color:transparent] transition-colors duration-100 ui-hover:border-graphite-500 ui-hover:bg-stone-50 ui-active:bg-stone-100';
 
 /** Doğrudan iletişim bilgileri (dış bağlantılar kullanıcı içeriği olarak işaretlenir). */
 export function ContactList({
@@ -219,7 +228,7 @@ export function ContactList({
       {items.phone && (
         <li>
           <a href={telHref(items.phone)} className={contactRow}>
-            <Phone aria-hidden="true" className="h-4 w-4 shrink-0 text-copper-600" />
+            <Phone aria-hidden="true" className="h-4 w-4 shrink-0 text-graphite-500" />
             <span>
               <span className="sr-only">Telefon: </span>
               {items.phone}
@@ -230,7 +239,7 @@ export function ContactList({
       {mailHref && (
         <li>
           <a href={mailHref} className={contactRow}>
-            <Mail aria-hidden="true" className="h-4 w-4 shrink-0 text-copper-600" />
+            <Mail aria-hidden="true" className="h-4 w-4 shrink-0 text-graphite-500" />
             <span className="break-all">
               <span className="sr-only">E-posta: </span>
               {items.email}
@@ -241,7 +250,7 @@ export function ContactList({
       {items.website && (
         <li>
           <a href={items.website} rel="nofollow ugc noopener noreferrer" className={contactRow}>
-            <Globe aria-hidden="true" className="h-4 w-4 shrink-0 text-copper-600" />
+            <Globe aria-hidden="true" className="h-4 w-4 shrink-0 text-graphite-500" />
             <span className="break-all">
               <span className="sr-only">Web sitesi: </span>
               {items.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
@@ -255,7 +264,7 @@ export function ContactList({
       )}
       {items.address && (
         <li className="flex items-start gap-3 px-3 py-2 text-graphite-700">
-          <MapPin aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-copper-600" />
+          <MapPin aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-graphite-500" />
           {items.address}
         </li>
       )}
@@ -268,13 +277,7 @@ export function RelayContact({ refCode, description }: { refCode?: string; descr
   return (
     <div>
       <p className="text-sm leading-6 text-graphite-700">{description}</p>
-      <ButtonLink
-        href={routes.contactRequest(refCode)}
-        size="lg"
-        width="full"
-        icon={MessageSquareText}
-        className="mt-3"
-      >
+      <ButtonLink href={routes.contactRequest(refCode)} size="lg" width="full" className="mt-3">
         İletişim talebi gönder
       </ButtonLink>
     </div>
@@ -293,9 +296,9 @@ export function SideCard({
   return (
     <section
       aria-labelledby={id}
-      className="ilan-iletisim rounded-xl border border-stone-200 bg-white p-5"
+      className="ilan-iletisim rounded-sm border border-stone-300 bg-white p-5"
     >
-      <h2 id={id} className="text-base font-bold text-graphite-950">
+      <h2 id={id} className="text-lg font-semibold text-graphite-950">
         {title}
       </h2>
       <div className="mt-3">{children}</div>
@@ -330,14 +333,14 @@ export function ListingMetaFooter({
   return (
     <section
       aria-label="İlan bilgileri"
-      className="mt-10 space-y-3 border-t border-stone-200 pt-5 text-sm text-graphite-700"
+      className="mt-10 space-y-3 border-t border-stone-300 pt-5 text-sm text-graphite-700"
     >
       <ExpiryNotice expiresAt={expiresAt} label={expiryLabel} />
       <dl className="flex flex-wrap gap-x-6 gap-y-1">
         {refCode && (
           <div className="flex gap-1">
             <dt>İlan no:</dt>
-            <dd className="font-mono font-semibold text-graphite-900">{refCode}</dd>
+            <dd className="font-semibold text-graphite-900 tabular-nums">{refCode}</dd>
           </div>
         )}
         {postedAt && (
@@ -360,11 +363,10 @@ export function ListingMetaFooter({
         )}
       </dl>
       <p className="no-print flex flex-wrap items-center gap-x-2 gap-y-1">
-        <Flag aria-hidden="true" className="h-4 w-4 text-copper-600" />
         Yanıltıcı veya kurallara aykırı mı?
         <a
           href={report}
-          className="inline-flex min-h-11 items-center font-semibold text-copper-700 underline underline-offset-4 ui-hover:text-copper-800"
+          className="inline-flex min-h-11 items-center font-semibold text-copper-700 underline underline-offset-4 ui-hover:text-copper-900"
         >
           İlanı bildirin
         </a>

@@ -1,4 +1,4 @@
-import { CalendarClock, Mail } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { SubmissionForm } from '@/components/forms/SubmissionForm';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -15,7 +15,7 @@ const definition = () => getFormDefinition('iletisim-talebi', formRegistries());
 export const metadata = pageMetadata({
   title: 'İletişim talebi gönder',
   description:
-    'Aday profilleri ve iletişim bilgisi gizli market ilanları için talebinizi gönderin; editörlerimiz ilan sahibine iletir.',
+    'Aday profilleri ve iletişim bilgisi gizli market ilanları için talebinizi gönderin. Editör talebinizi ilan sahibine iletir.',
   path: routes.contactRequest(),
   noindex: true,
 });
@@ -41,14 +41,13 @@ export default function ContactRequestPage() {
           ) : (
             <EmptyState
               title="İletişim talepleri yakında açılacak"
-              icon={<CalendarClock aria-hidden="true" />}
               actions={
                 <ButtonLink href={routes.contact()} variant="secondary" icon={Mail}>
                   Bize ulaşın
                 </ButtonLink>
               }
             >
-              Bu sürede iletişim sayfasından bize ulaşabilirsiniz.
+              O zamana kadar iletişim sayfasından bize yazabilirsiniz.
             </EmptyState>
           )}
         </div>

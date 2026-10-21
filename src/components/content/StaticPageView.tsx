@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
-import { Mail } from 'lucide-react';
 import { Container } from '@/components/layout/Container';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { iconTile, tileClasses } from '@/components/ui/card';
+import { panel } from '@/components/ui/card';
 import { siteConfig } from '@/config/site';
 import { routes, staticPageFiles, type StaticPageKey } from '@/i18n/routes';
 import { getPage } from '@/lib/content';
@@ -26,26 +25,21 @@ export function StaticPageView({ pageKey }: { pageKey: StaticPageKey }) {
   return (
     <>
       <PageHeader title={page.title} description={page.summary} breadcrumbs={[{ name: page.title, href: path }]} />
-      <Container className="py-10">
+      <Container className="py-8 lg:py-10">
         <div className="max-w-3xl">
           {pageKey === 'contact' && (
-            <a
-              href={`mailto:${siteConfig.contactEmail}`}
-              className={`${tileClasses({ size: 'lg' })} mb-8`}
-            >
-              <span className={`${iconTile} h-11 w-11`}>
-                <Mail aria-hidden="true" className="h-5 w-5" />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-sm text-graphite-600">E-posta</span>
-                <span className="block break-all text-lg font-semibold text-graphite-950 group-hover:text-copper-800">
-                  {siteConfig.contactEmail}
-                </span>
-              </span>
-            </a>
+            <p className={`${panel} mb-8 px-5 py-4`}>
+              <span className="block text-sm text-graphite-600">E-posta</span>
+              <a
+                href={`mailto:${siteConfig.contactEmail}`}
+                className="inline-flex min-h-11 items-center text-lg font-semibold break-all text-copper-700 underline underline-offset-4 ui-hover:text-copper-900"
+              >
+                {siteConfig.contactEmail}
+              </a>
+            </p>
           )}
           <Prose html={page.html} />
-          <p className="mt-10 border-t border-stone-200 pt-4 text-sm text-graphite-600">
+          <p className="mt-10 border-t border-stone-300 pt-4 text-sm text-graphite-600">
             Son güncelleme: {formatDate(page.updatedAt)}
           </p>
         </div>

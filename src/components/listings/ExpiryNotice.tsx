@@ -42,7 +42,7 @@ export function ExpiryNotice({
     return (
       <p
         role="status"
-        className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-900"
+        className="flex items-start gap-2 rounded-sm border border-red-300 bg-red-50 p-3 text-sm font-medium text-red-900"
       >
         <CircleAlert aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
         Bu ilanın süresi {formatDate(expiresAt)} tarihinde doldu; ilan kısa süre içinde
@@ -53,7 +53,7 @@ export function ExpiryNotice({
 
   return (
     <p className="flex items-center gap-2 text-sm text-graphite-700">
-      <CalendarClock aria-hidden="true" className="h-4 w-4 text-copper-600" />
+      <CalendarClock aria-hidden="true" className="h-4 w-4 text-graphite-500" />
       <span>
         {label}:{' '}
         <strong className="font-semibold text-graphite-900">{formatDate(expiresAt)}</strong>

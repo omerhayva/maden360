@@ -47,7 +47,7 @@ export function Breadcrumbs({
               ) : (
                 <Link
                   href={crumb.href}
-                  className={`-my-1 inline-block rounded py-1 underline-offset-4 ui-hover:underline ${colors.link}`}
+                  className={`-my-1 inline-flex items-center rounded-xs py-1 underline-offset-4 pointer-coarse:-my-2 pointer-coarse:min-h-11 ui-hover:underline ${colors.link}`}
                 >
                   {crumb.name}
                 </Link>

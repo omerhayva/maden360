@@ -44,7 +44,7 @@ export function buildSubmission(
 ): Submission {
   const { ref, today } = context;
   const lines: string[] = [
-    `Maden360 — ${definition.title}`,
+    `Maden360: ${definition.title}`,
     `Başvuru no: ${ref}`,
     `Tarih: ${formatDate(today)}`,
   ];

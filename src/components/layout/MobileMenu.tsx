@@ -44,17 +44,17 @@ export function MobileMenu() {
         ref={buttonRef}
         label="Menü"
         icon={open ? X : Menu}
-        variant="ghost-inverse"
+        variant="subtle"
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((value) => !value)}
-        className="aria-expanded:bg-graphite-800"
+        className="aria-expanded:bg-stone-200"
       />
 
       <div
         id={panelId}
         hidden={!open}
-        className="absolute inset-x-0 top-16 max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-graphite-800 bg-graphite-950 shadow-xl"
+        className="absolute inset-x-0 top-16 max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-stone-300 bg-white shadow-lg"
       >
         <div className="mx-auto max-w-7xl px-4 pb-6 pt-4 sm:px-6">
           <Form
@@ -69,7 +69,7 @@ export function MobileMenu() {
             <div className="relative">
               <Search
                 aria-hidden="true"
-                className="pointer-events-none absolute left-3 top-3.5 h-5 w-5 text-graphite-400"
+                className="pointer-events-none absolute left-3 top-3.5 h-5 w-5 text-graphite-500"
               />
               <input
                 id="mobile-search"
@@ -77,13 +77,13 @@ export function MobileMenu() {
                 type="search"
                 enterKeyHint="search"
                 placeholder="Firma, iş ilanı, ürün ara"
-                className={inputClasses({ tone: 'dark', size: 'lg', className: 'pl-10 pr-3' })}
+                className={inputClasses({ size: 'lg', className: 'pl-10 pr-3' })}
               />
             </div>
           </Form>
 
           <nav aria-label="Mobil ana menü" className="mt-4">
-            <ul className="divide-y divide-graphite-800">
+            <ul className="divide-y divide-stone-200">
               {mainNav.map((item) => {
                 const active = isActivePath(pathname, item.href);
                 return (
@@ -91,11 +91,11 @@ export function MobileMenu() {
                     <Link
                       href={item.href}
                       aria-current={active ? 'page' : undefined}
-                      className={`-mx-2 flex min-h-14 flex-col justify-center rounded-md px-2 py-2 transition-colors duration-100 ui-hover:bg-graphite-900 ui-active:bg-graphite-800 ${active ? 'text-copper-400' : 'text-white'}`}
+                      className={`-mx-2 flex min-h-14 flex-col justify-center rounded-sm px-2 py-2 transition-colors duration-100 ui-hover:bg-stone-100 ui-active:bg-stone-200 ${active ? 'text-copper-700' : 'text-graphite-950'}`}
                     >
                       <span className="text-base font-semibold">{item.label}</span>
                       {item.description && (
-                        <span className="text-sm text-graphite-400">{item.description}</span>
+                        <span className="text-sm text-graphite-600">{item.description}</span>
                       )}
                     </Link>
                   </li>
@@ -114,13 +114,13 @@ export function MobileMenu() {
             İlan ver
           </ButtonLink>
 
-          <nav aria-label="Kurumsal bağlantılar" className="mt-4 border-t border-graphite-800 pt-4">
+          <nav aria-label="Kurumsal bağlantılar" className="mt-4 border-t border-stone-200 pt-4">
             <ul className="grid grid-cols-2 gap-x-4">
               {trustNav.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="flex min-h-11 items-center text-sm text-graphite-300 underline-offset-4 ui-hover:text-white ui-hover:underline"
+                    className="flex min-h-11 items-center text-sm text-graphite-700 underline-offset-4 ui-hover:text-graphite-950 ui-hover:underline"
                   >
                     {item.label}
                   </Link>

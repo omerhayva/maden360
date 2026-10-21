@@ -64,6 +64,11 @@ export type PageFrontmatter = z.infer<typeof pageFrontmatterSchema>;
 /* YAML kayıt dosyaları                                                */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Salon ve kategori simge anahtarı. 2026-10 tasarım güncellemesinden beri arayüzde simge
+ * gösterilmiyor (salonlar harf koduyla, kategoriler adıyla listeleniyor); alan, içerik dosyalarını
+ * değiştirmeden ileride kullanılabilsin diye korunuyor.
+ */
 export const categoryIconSchema = z.enum([
   'pickaxe',
   'layers',
@@ -173,7 +178,7 @@ export type Position = z.infer<typeof positionSchema>;
 
 /**
  * Tüm ilan türlerinde ortak yayın alanları.
- * draft: başvuru alındı / hazırlanıyor · review: editör onayı bekliyor · published: yayında
+ * draft: başvuru alındı / hazırlanıyor; review: editör onayı bekliyor; published: yayında
  */
 const listingFields = {
   status: contentStatusSchema,

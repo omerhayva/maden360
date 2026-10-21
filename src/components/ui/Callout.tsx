@@ -19,8 +19,8 @@ const variants = {
   },
   safety: {
     icon: ShieldCheck,
-    className: 'border-graphite-200 bg-white text-graphite-800',
-    iconClass: 'text-copper-600',
+    className: 'border-stone-300 bg-white text-graphite-800',
+    iconClass: 'text-copper-700',
   },
 } as const;
 
@@ -34,7 +34,7 @@ interface CalloutProps {
 export function Callout({ variant = 'info', title, children, className = '' }: CalloutProps) {
   const { icon: Icon, className: tone, iconClass } = variants[variant];
   return (
-    <div className={`flex gap-3 rounded-lg border p-4 ${tone} ${className}`}>
+    <div className={`flex gap-3 rounded-sm border p-4 ${tone} ${className}`}>
       <Icon aria-hidden="true" className={`mt-0.5 h-5 w-5 shrink-0 ${iconClass}`} />
       <div className="min-w-0 text-sm leading-6">
         {title && <p className="font-semibold">{title}</p>}

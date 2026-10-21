@@ -8,21 +8,21 @@ import { routes } from '@/i18n/routes';
 import { MobileMenu } from './MobileMenu';
 import { NavLinks } from './NavLinks';
 
-/** Üst bilgi (yapışkan, 4rem): logo, ana menü, arama ve "İlan ver". */
+/** Üst bilgi (yapışkan, 4rem, beyaz): logo, ana menü, arama ve "İlan ver". */
 export function SiteHeader() {
   return (
-    <header className="no-print sticky top-0 z-40 border-b border-graphite-800 bg-graphite-950 text-white">
+    <header className="no-print sticky top-0 z-40 border-b border-stone-300 bg-white text-graphite-900">
       <div className="relative mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
         <Link
           href={routes.home()}
-          className="flex shrink-0 items-center gap-2.5 rounded-md py-1"
+          className="flex min-h-11 shrink-0 items-center gap-2 rounded-sm text-graphite-950"
           aria-label={`${siteConfig.name} ana sayfa`}
         >
-          <LogoMark className="h-8 w-8" />
-          <Wordmark className="text-lg font-bold tracking-tight" />
+          <LogoMark className="h-7 w-7 text-copper-700" />
+          <Wordmark className="text-xl font-bold" />
         </Link>
 
-        <nav aria-label="Ana menü" className="ml-4 hidden lg:block">
+        <nav aria-label="Ana menü" className="ml-6 hidden lg:block">
           <NavLinks />
         </nav>
 
@@ -41,16 +41,11 @@ export function SiteHeader() {
           href={routes.search()}
           label="Ara"
           icon={Search}
-          variant="ghost-inverse"
+          variant="subtle"
           className="ml-auto md:hidden"
         />
         <MobileMenu />
       </div>
-      {/* Bakır ince çizgi (dekoratif) */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 -bottom-px h-px bg-linear-to-r from-transparent via-copper-500/70 to-transparent"
-      />
     </header>
   );
 }

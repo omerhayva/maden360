@@ -1,4 +1,4 @@
-import { ArrowLink } from './TextLink';
+import { TextLink } from './TextLink';
 
 interface SectionHeadingProps {
   id?: string;
@@ -9,6 +9,7 @@ interface SectionHeadingProps {
   as?: 'h2' | 'h3';
 }
 
+/** Bölüm başlığı; varsa sağında "Tümü" bağlantısı. Süs çizgisi veya üst etiket kullanılmaz. */
 export function SectionHeading({
   id,
   title,
@@ -18,17 +19,17 @@ export function SectionHeading({
   as: Tag = 'h2',
 }: SectionHeadingProps) {
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <Tag id={id} className="heading-accent text-2xl font-bold tracking-tight text-graphite-950">
+    <div className="flex flex-wrap items-end justify-between gap-x-4">
+      <div className="min-w-0">
+        <Tag id={id} className="text-2xl leading-tight font-semibold text-graphite-950">
           {title}
         </Tag>
         {description && <p className="mt-1 max-w-2xl text-graphite-600">{description}</p>}
       </div>
       {href && linkLabel && (
-        <ArrowLink href={href} className="shrink-0">
+        <TextLink href={href} className="shrink-0">
           {linkLabel}
-        </ArrowLink>
+        </TextLink>
       )}
     </div>
   );

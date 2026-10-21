@@ -9,9 +9,7 @@ import { NoticeBox, SafetyNotice } from '@/components/listings/Detail';
 import { ListingBrowser, StaticListingGrid } from '@/components/listings/ListingBrowser';
 import { HeaderActions } from '@/components/listings/SectionNav';
 import { ButtonLink } from '@/components/ui/Button';
-import { CategoryIcon } from '@/components/ui/CategoryIcon';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { chipClasses } from '@/components/ui/styles';
 import { routes } from '@/i18n/routes';
 import {
   areSubmissionsOpen,
@@ -36,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const category = getMarketCategory((await params).slug);
   if (!category) return {};
   return pageMetadata({
-    title: `${category.name} ilanları — Market`,
+    title: `Market: ${category.name} ilanları`,
     description: category.description,
     path: routes.marketCategory(category.slug),
   });
@@ -51,7 +49,6 @@ export default async function MarketCategoryPage({ params }: Props) {
   const empty = (
     <EmptyState
       title="Bu kategoride şu an ilan yok"
-      icon={<CategoryIcon icon={category.icon} />}
       actions={
         open ? (
           <ButtonLink href={routes.postListing('market-ilani')} variant="secondary" icon={Plus}>
@@ -74,7 +71,6 @@ export default async function MarketCategoryPage({ params }: Props) {
     <>
       <PageHeader
         photo="market"
-        eyebrow="Market kategorisi"
         title={category.name}
         description={category.description}
         breadcrumbs={[
@@ -88,7 +84,7 @@ export default async function MarketCategoryPage({ params }: Props) {
           />
         )}
       </PageHeader>
-      <Container className="space-y-10 py-10">
+      <Container className="space-y-10 py-8 lg:py-10">
         {category.notice && (
           <NoticeBox
             title={category.notice.title}
@@ -97,11 +93,8 @@ export default async function MarketCategoryPage({ params }: Props) {
           />
         )}
         <section aria-labelledby="kategori-ilanlari">
-          <h2
-            id="kategori-ilanlari"
-            className="heading-accent mb-5 text-2xl font-bold tracking-tight text-graphite-950"
-          >
-            İlanlar
+          <h2 id="kategori-ilanlari" className="sr-only">
+            {category.name} ilanları
           </h2>
           <Suspense fallback={<StaticListingGrid items={items} empty={empty} />}>
             <ListingBrowser
@@ -126,14 +119,16 @@ export default async function MarketCategoryPage({ params }: Props) {
         </section>
         <SafetyNotice variant="market" />
         <nav aria-labelledby="diger-kategoriler">
-          <h2 id="diger-kategoriler" className="text-lg font-bold text-graphite-950">
+          <h2 id="diger-kategoriler" className="text-xl font-semibold text-graphite-950">
             Diğer kategoriler
           </h2>
-          <ul className="mt-3 flex flex-wrap gap-2">
+          <ul className="mt-2 grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
             {others.map((other) => (
-              <li key={other.slug}>
-                <Link href={routes.marketCategory(other.slug)} className={chipClasses()}>
-                  <CategoryIcon icon={other.icon} className="text-copper-600" />
+              <li key={other.slug} className="border-b border-stone-300">
+                <Link
+                  href={routes.marketCategory(other.slug)}
+                  className="flex min-h-12 items-center py-3 font-medium text-graphite-950 underline-offset-4 ui-hover:underline"
+                >
                   {other.name}
                 </Link>
               </li>

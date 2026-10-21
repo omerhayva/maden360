@@ -25,46 +25,51 @@ describe('renk paleti (globals.css → @theme)', () => {
     },
   );
 
-  /** [ön plan, arka plan, en az oran, kullanıldığı yer] — WCAG 2.2 AA */
+  /** [ön plan, arka plan, en az oran, kullanıldığı yer]: WCAG 2.2 AA */
   const pairs: [string, string, number, string][] = [
-    ['white', 'copper-600', 4.5, 'birincil düğme'],
-    ['white', 'copper-700', 4.5, 'birincil düğme, üzerine gelince'],
-    ['white', 'copper-800', 4.5, 'birincil düğme, basılıyken'],
-    ['copper-700', 'white', 4.5, 'bağlantılar (beyaz kart)'],
-    ['copper-700', 'stone-50', 4.5, 'bağlantılar (taş kart)'],
+    // Metin (≥ 4,5:1)
+    ['white', 'copper-700', 4.5, 'birincil düğme'],
+    ['white', 'copper-800', 4.5, 'birincil düğme, üzerine gelince'],
+    ['white', 'copper-900', 4.5, 'birincil düğme, basılıyken'],
+    ['copper-700', 'white', 4.5, 'bağlantılar (beyaz panel)'],
+    ['copper-700', 'stone-50', 4.5, 'bağlantılar (satır üzerine gelince)'],
     ['copper-700', 'stone-100', 4.5, 'bağlantılar (sayfa zemini)'],
+    ['copper-700', 'copper-50', 4.5, 'fuar planı harfi, üzerine gelince'],
     ['copper-800', 'copper-50', 4.5, 'bakır rozet, hayalet düğme'],
     ['copper-800', 'copper-100', 4.5, 'bakır rozet, basılı'],
-    ['copper-400', 'graphite-950', 4.5, 'koyu zeminde vurgu (logo, menü)'],
-    ['copper-400', 'graphite-900', 4.5, 'simge kutusu'],
     ['graphite-950', 'stone-100', 4.5, 'gövde metni'],
+    ['graphite-700', 'white', 4.5, 'üst menü, altbilgi bağlantıları'],
     ['graphite-700', 'stone-100', 4.5, 'açıklama metni'],
-    ['graphite-600', 'white', 4.5, 'ikincil metin (kart)'],
+    ['graphite-600', 'white', 4.5, 'ikincil metin'],
+    ['graphite-600', 'stone-50', 4.5, 'altbilgi alt şeridi'],
     ['graphite-600', 'stone-100', 4.5, 'ikincil metin (sayfa zemini)'],
-    ['graphite-500', 'white', 4.5, 'küçük bilgi metni (kart)'],
-    ['graphite-500', 'stone-50', 4.5, 'küçük bilgi metni (taş kart)'],
+    ['graphite-500', 'white', 4.5, 'küçük bilgi metni'],
+    ['graphite-500', 'stone-50', 4.5, 'küçük bilgi metni (açık zemin)'],
     ['graphite-500', 'stone-100', 4.5, 'küçük bilgi metni (sayfa zemini)'],
-    ['graphite-200', 'graphite-950', 4.5, 'üst menü bağlantıları'],
-    ['graphite-300', 'graphite-950', 4.5, 'altbilgi metni'],
-    ['graphite-400', 'graphite-950', 4.5, 'altbilgi küçük metni'],
-    ['graphite-300', 'graphite-900', 4.5, 'koyu kart metni'],
-    ['copper-500', 'white', 3, 'odak çerçevesi (beyaz)'],
-    ['copper-500', 'stone-100', 3, 'odak çerçevesi (sayfa zemini)'],
-    ['copper-500', 'graphite-950', 3, 'odak çerçevesi (koyu zemin)'],
-    ['graphite-950', 'copper-500', 3, 'logo işareti'],
+    ['copper-300', 'graphite-900', 4.5, 'fuar planı: bulunulan salonun harfi'],
+    ['graphite-100', 'graphite-900', 4.5, 'fuar planı: "Buradasınız" notu'],
+    // Arayüz sınırları (WCAG 1.4.11, ≥ 3:1)
+    ['graphite-500', 'white', 3, 'form alanı kenarlığı'],
+    ['graphite-500', 'stone-50', 3, 'form alanı kenarlığı (açık zemin)'],
+    ['graphite-400', 'white', 3, 'ikincil düğme ve çip kenarlığı'],
+    // Odak çerçevesi (≥ 3:1)
+    ['copper-700', 'white', 3, 'odak çerçevesi'],
+    ['copper-700', 'stone-100', 3, 'odak çerçevesi (sayfa zemini)'],
+    ['copper-700', 'stone-200', 3, 'odak çerçevesi (ayırıcı çizgi üzerinde)'],
+    ['copper-300', 'graphite-950', 3, 'odak çerçevesi (fotoğraflı başlık)'],
+    // Logo ve simgeler
+    ['copper-700', 'white', 3, 'logo işareti (beyaz üst bilgi)'],
+    ['white', 'copper-700', 3, 'tarayıcı ve uygulama simgesi'],
   ];
 
-  it.each(pairs)('%s / %s ≥ %s:1 — %s', (foreground, background, minimum) => {
+  it.each(pairs)('%s / %s ≥ %s:1 (%s)', (foreground, background, minimum) => {
     expect(contrastRatio(color(foreground), color(background))).toBeGreaterThanOrEqual(minimum);
   });
 
-  it('kontur deseninin çizgisi üzerinde de altbilgi ve koyu bölüm metinleri ≥ 4,5:1', () => {
-    const css = readFileSync(join(root, 'src/app/globals.css'), 'utf8');
-    const stroke = /\.contour-bg\s*\{[^}]*stroke='%23([0-9a-f]{6})'/i.exec(css)?.[1];
-    expect(stroke, '.contour-bg çizgi rengi bulunamadı').toBeTruthy();
-    const line = hexToRgb(`#${stroke}`);
-    for (const text of ['graphite-300', 'graphite-400', 'copper-400', 'white']) {
-      expect(contrastRatio(color(text), line), text).toBeGreaterThanOrEqual(4.5);
+  it('zemin krem değil, soğuk gri: stone ölçeğinde mavi kanal kırmızıdan düşük değil', () => {
+    for (const step of [50, 100, 200, 300]) {
+      const [r, , b] = color(`stone-${step}`);
+      expect(b, `stone-${step}`).toBeGreaterThanOrEqual(r);
     }
   });
 
